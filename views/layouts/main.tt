@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>jitterbug</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+    <meta charset="UTF-8" />
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $('.commits a').click(function() {
+          var url = '/api/build/'
+            + $(this).parent("li").parent("ul").attr('id')
+            + '/'
+            + $(this).parent("li").attr('id')
+            + '/'
+            + $(this).text().toLowerCase();
+          $.getJSON(url, null, function(data) {
+            $("#display_test_result").html("<pre>" + data.content + "<pre>")
+          });
+      })})
+    </script>
+  </head>
+  <body>
+    <h1>jitterbug</h1>
+    <div id="content">
+      <: $content :>
+    </div>
+    <footer>
+      Powered by <a href="http://perldancer.org/">Dancer</a> 1.1810
+    </footer>
+  </body>
+</html>

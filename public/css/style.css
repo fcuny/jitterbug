@@ -1,0 +1,34 @@
+body {
+    font-family: Lucida,sans-serif;
+    color: #eee;
+    background-color: #1f1b1a;
+}
+
+#content {
+    color: #000;
+    background-color: #eee;
+    padding: 1em;
+    margin: 1em;
+    padding-top: 0.5em;
+}
+
+a {
+    color: #a5ec02;
+}
+
+h1 {
+    color: #a5ec02;
+}
+
+footer {
+    border-top: 1px solid #aba29c;
+    margin-top: 2em;
+    padding-top: 1em;
+    font-size: 10px;
+    color: #ddd;
+}
+
+pre {
+    font-family: \"lucida console\",\"monaco\",\"andale mono\",\"bitstream vera sans mono\",\"consolas\",monospace;
+}
+

@@ -1,0 +1,24 @@
+<h2><: $project :></h2>
+
+<ul>
+  <li>url: <: $url :></li>
+  <li>description: <: $description :></li>
+  <li><a href="<: $base_uri :>/project/<: $project :>/feed">feed</a></li>
+</ul>
+
+<h3>Builds</h3>
+
+<ul class="commits" id="<: $project :>">
+  :for $builds -> $build {
+  <li id="<: $build.commit :>">
+    Commit <: $build.commit :> (<: $build.date.ymd :>)<br />
+    author: <: $build.author.name :> - <a href="<: $build.compare :>">compare</a><br />
+    :for $build.version.keys() -> $version {
+        <a href="#"><: $version :></a>=<: $build.version[$version] :>
+    :}
+  </li>
+  :}
+</ul>
+
+<div id="display_test_result">
+</div>

@@ -1,0 +1,8 @@
+<h2>Projects</h2>
+
+<ul>
+  : for $projects -> $project {
+  <li><a href="<: $uri_base :>project/<: $project :>"><: $project :></a></li>
+  : }
+</ul>
+

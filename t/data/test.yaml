@@ -1,0 +1,42 @@
+--- 
+after: 22116bcdb229c1514f3069aaaf9c87e9d5455409
+before: db8d02317fce7fa2d8f5b75273302eee7b266b87
+commits: 
+  - 
+    added: []
+
+    author: 
+      email: franck@lumberjaph.net
+      name: franck cuny
+    id: 8c3c1d6be0fa27ada4f03258ddea7683c967a925
+    message: test
+    modified: 
+      - lib/Dancer.pm
+    removed: []
+
+    timestamp: 2010-09-23T08:04:42-07:00
+    url: https://github.com/franckcuny/Dancer/commit/22116bcdb229c1514f3069aaaf9c87e9d5455409
+compare: https://github.com/franckcuny/Dancer/compare/db8d023...22116bc
+forced: !!perl/scalar:JSON::XS::Boolean 0
+pusher: 
+  email: franck@lumberjaph.net
+  name: franckcuny
+ref: refs/heads/test
+repository: 
+  created_at: 2010/01/14 12:58:56 -0800
+  description: Minimal-effort oriented web application framework for Perl (port of Ruby's Sinatra)
+  fork: !!perl/scalar:JSON::XS::Boolean 1
+  forks: 0
+  has_downloads: !!perl/scalar:JSON::XS::Boolean 1
+  has_issues: !!perl/scalar:JSON::XS::Boolean 0
+  has_wiki: !!perl/scalar:JSON::XS::Boolean 1
+  homepage: ''
+  name: Dancer
+  open_issues: 0
+  owner: 
+    email: franck@lumberjaph.net
+    name: franckcuny
+  private: !!perl/scalar:JSON::XS::Boolean 1
+  pushed_at: 2010/09/23 08:04:49 -0700
+  url: https://github.com/sukria/Dancer
+  watchers: 1

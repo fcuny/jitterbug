@@ -1,0 +1,17 @@
+layout: "main"
+logger: "file"
+appname: "jitterbug"
+serializer: "JSON"
+redis: "127.0.0.1:6379"
+template: "xslate"
+engines:
+  xslate:
+    path: /
+    type: text
+    cache: 0
+
+jitterbug:
+  reports:
+    dir: /tmp/jitterbug
+  build:
+    dir: /tmp/build
