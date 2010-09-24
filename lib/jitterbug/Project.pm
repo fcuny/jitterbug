@@ -1,9 +1,9 @@
 package jitterbug::Project;
 
-BEGIN {
+#BEGIN {
     use Dancer ':syntax';
-    load_plugin 'jitterbug::Plugin::Redis';
-};
+    use jitterbug::Plugin::Redis;
+#};
 
 use DateTime;
 use XML::Feed;
