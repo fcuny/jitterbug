@@ -1,9 +1,7 @@
 package jitterbug::Hook;
 
-BEGIN {
-    use Dancer ':syntax';
-    load_plugin 'jitterbug::Plugin::Redis';
-};
+use Dancer ':syntax';
+use jitterbug::Plugin::Redis;
 
 setting serializer => 'JSON';
 
