@@ -24,6 +24,8 @@ get '/:project' => sub {
         push @builds, from_json($res) if $res;
     }
 
+    @builds = sort {$b->{timestamp} cmp $a->{timestamp}} @builds;
+
     template 'project/index',
       { project => $project, builds => \@builds, %$desc };
 };

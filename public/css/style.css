@@ -207,7 +207,7 @@ pre {
    overflow:hidden;
 }
 
-#display_test_result {
+.display_test_result {
    background: black;
    color: white;
 }

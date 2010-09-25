@@ -28,10 +28,9 @@
             </ul>
         </div>
     </div>
+    <div class="display_test_result" id="result-<: $build.commit :>">
+    </div>
 :}
-</div>
-
-<div id="display_test_result">
 </div>
 
 </div>
