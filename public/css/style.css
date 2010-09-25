@@ -233,5 +233,5 @@ font-family:Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",m
 .commit .name{clear:left;margin-top:.75em;line-height:1.5em}
 .commit .date{color:#888;line-height:1em;}
 .commit .builds span {font-size:110%;font-weight: bolder;}
-.commit .builds span .PASS {color:red}
+.commit .builds span .PASS{color:green}
 .commit .builds span .FAILED{color:red}

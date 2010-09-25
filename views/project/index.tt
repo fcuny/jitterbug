@@ -25,7 +25,7 @@
             commit&nbsp;&nbsp;<a href="<: $build.url :>"><: $build.commit :></a><br />
         </div>
     </div>
-    <div class="display_test_result" id="result-<: $build.commit :>">
+    <div class="display_test_result" style="display: none" id="result-<: $build.commit :>">
     </div>
 :}
 </div>

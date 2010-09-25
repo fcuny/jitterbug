@@ -12,7 +12,7 @@
           var id = $(this).parents('.commit').attr('id');
           console.log("id => " + id);
           $.getJSON(url, null, function(data) {
-            $("#result-" + id).html("<pre>" + data.content + "<pre>");
+            $("#result-" + id).html("<pre>" + data.content + "<pre>").toggle();
           });
           return false;
       })})
