@@ -4,31 +4,30 @@
 
     <strong>"<: $description :>"</strong>
 
-<h3>Builds</h3>
-
-
-
-<div class="commits">
-:for $builds -> $build {
-    <div class="commit" id="<: $build.commit :>">
-        <div class="description">
-            <div class="message"><pre><: $build.message :></pre></div>
-            <div class="name"><: $build.author.name :></div>
-            <div class="date"><: $build.timestamp :></div>
-            <div class="builds">
+    :for $builds.keys() -> $day {
+      <h3 class="builds-day" id="builds-day-<: $day :>"><: $day :></h3>
+      <div class="commits" id="commits-day-<: $day :>">
+        :for $builds[$day] -> $build {
+          <div class="commit" id="<: $build.commit :>">
+            <div class="description">
+              <div class="message"><pre><: $build.message :></pre></div>
+              <div class="name"><: $build.author.name :></div>
+              <div class="date"><: $build.timestamp :></div>
+              <div class="builds">
                 :for $build.version.keys() -> $version {
-                    <a href="<: $uri_base :>/api/build/<: $project :>/<: $build.commit :>/<: $version :>"><: $version :></a> <span class="<: $build.version[$version] :>"><: $build.version[$version] :></span>
+                  <a href="<: $uri_base :>/api/build/<: $project :>/<: $build.commit :>/<: $version :>"><: $version :></a> <span class="<: $build.version[$version] :>"><: $build.version[$version] :></span>
                 :}
+              </div>
             </div>
-        </div>
-        <div class="git">
-            commit&nbsp;&nbsp;<a href="<: $build.url :>"><: $build.commit :></a><br />
-        </div>
-    </div>
-    <div class="display_test_result" style="display: none" id="result-<: $build.commit :>">
-    </div>
-:}
-</div>
-
-</div>
+            <div class="git">
+              commit&nbsp;&nbsp;<a href="<: $build.url :>"><: $build.commit :></a><br />
+            </div>
+          </div>
+          <div class="display_test_result" style="display: none" id="result-<: $build.commit :>">
+          </div>
+        :}
+      </div>
+      <hr />
+      :}
+  </div>
 </div>

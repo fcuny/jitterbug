@@ -7,10 +7,15 @@
     <meta charset="UTF-8" />
     <script type="text/javascript">
       $(document).ready(function() {
+        $('.builds-day').click(function() {
+          var day = $(this).text();
+          var class = "#commits-day-" + day;
+          console.log("on toggle " + class);
+          $(class).toggle();
+        });
         $('.builds a').click(function() {
           var url = $(this).attr("href");
           var id = $(this).parents('.commit').attr('id');
-          console.log("id => " + id);
           $.getJSON(url, null, function(data) {
             $("#result-" + id).html("<pre>" + data.content + "<pre>").toggle();
           });

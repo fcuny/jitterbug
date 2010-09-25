@@ -18,8 +18,15 @@ get '/:project' => sub {
 
     my $builds = _sorted_builds($project);
 
+    my $commits;
+    foreach (@$builds) {
+        my $t = $_->{timestamp};
+        (my $d) = $t =~ /^(\d{4}-\d{2}-\d{2})/;
+        push @{$commits->{$d}}, $_;
+    }
+
     template 'project/index',
-      { project => $project, builds => $builds, %$desc };
+      { project => $project, builds => $commits, %$desc };
 };
 
 get '/:project/feed' => sub {
