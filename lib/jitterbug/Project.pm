@@ -16,6 +16,41 @@ get '/:project' => sub {
 
     my $desc = from_json($res);
 
+    my $builds = _sorted_builds($project);
+
+    template 'project/index',
+      { project => $project, builds => $builds, %$desc };
+};
+
+get '/:project/feed' => sub {
+    my $project = params->{project};
+
+    my $builds = _sorted_builds($project);
+
+    my $feed = XML::Feed->new('Atom');
+    $feed->title('builds for '.$project);
+
+    foreach my $build (@$builds) {
+        foreach my $version (keys %{$build->{version}}) {
+            my $entry = XML::Feed::Entry->new();
+            $entry->link( request->base
+                  . 'api/build/'
+                  . $project . '/'
+                  . $build->{commit} . '/'
+                  .$version );
+            $entry->title( "build for " . $build->{commit} . ' on ' . $version );
+            $entry->summary( "Result: " . $build->{version}->{$version} );
+            $feed->add_entry($entry);
+        }
+    }
+
+    content_type('application/atom+xml');
+    $feed->as_xml;
+};
+
+sub _sorted_builds {
+    my $project = shift;
+
     my @ids = redis->smembers( key_builds_project($project) );
 
     my @builds;
@@ -23,42 +58,8 @@ get '/:project' => sub {
         my $res = redis->get($id);
         push @builds, from_json($res) if $res;
     }
-
     @builds = sort {$b->{timestamp} cmp $a->{timestamp}} @builds;
-
-    template 'project/index',
-      { project => $project, builds => \@builds, %$desc };
-};
-
-get '/:project/feed' => sub {
-    my $project = params->{project};
-
-    my @builds = reverse( redis->smembers( key_builds_project($project) ) );
-
-    my $feed = XML::Feed->new('Atom');
-    $feed->title('builds for '.$project);
-
-    foreach (splice(@builds, 0, 5)) {
-        my $res = redis->get($_);
-        next unless $res;
-        my $desc = from_json($res);
-
-        foreach my $version (keys %{$desc->{version}}) {
-            my $entry = XML::Feed::Entry->new();
-            $entry->link( request->base
-                  . 'api/build/'
-                  . $project . '/'
-                  . $desc->{commit} . '/'
-                  .$version );
-            $entry->title( "build for " . $desc->{commit} . ' on ' . $version );
-            $entry->summary( "Result: " . $desc->{version}->{$version} );
-            $feed->add_entry($entry);
-
-        }
-    }
-
-    content_type('application/atom+xml');
-    $feed->as_xml;
-};
+    \@builds;
+}
 
 1;
