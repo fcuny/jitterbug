@@ -205,6 +205,7 @@ margin-top:.5em;
 padding:0 .5em .5em .5em;
 background:#eaf2f5;
 overflow:hidden;
+font-family:Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",monospace;
 }
 
 .display_test_result {
@@ -221,10 +222,16 @@ float: right;
 }
 
 .git {
-width:18em;padding:.8em 0 .8em 1.2em;border-left:1px solid #bedce7;color:#808080;font-family:Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",monospace;font-size:.85em;line-height:1.5em;
+width:18em;padding:.8em 0 .8em 1.2em;border-left:1px solid #bedce7;color:#808080;;font-size:.85em;line-height:1.5em;
 }
 
 .message {
 font-family:Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",monospace;   
 }
 .message pre{white-space:pre-wrap;word-wrap:break-word;width:40em;}
+
+.commit .name{clear:left;margin-top:.75em;line-height:1.5em}
+.commit .date{color:#888;line-height:1em;}
+.commit .builds span {font-size:110%;font-weight: bolder;}
+.commit .builds span .PASS {color:red}
+.commit .builds span .FAILED{color:red}

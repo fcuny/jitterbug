@@ -17,7 +17,7 @@
             <div class="date"><: $build.timestamp :></div>
             <div class="builds">
                 :for $build.version.keys() -> $version {
-                    <a href="<: $uri_base :>/api/build/<: $project :>/<: $build.commit :>/<: $version :>"><: $version :></a> <: $build.version[$version] :>
+                    <a href="<: $uri_base :>/api/build/<: $project :>/<: $build.commit :>/<: $version :>"><: $version :></a> <span class="<: $build.version[$version] :>"><: $build.version[$version] :></span>
                 :}
             </div>
         </div>
