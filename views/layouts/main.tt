@@ -8,15 +8,11 @@
     <script type="text/javascript">
       $(document).ready(function() {
         $('.commits a').click(function() {
-          var url = '/api/build/'
-            + $(this).parent("li").parent("ul").attr('id')
-            + '/'
-            + $(this).parent("li").attr('id')
-            + '/'
-            + $(this).text().toLowerCase();
+          var url = $(this).attr("href");
           $.getJSON(url, null, function(data) {
-            $("#display_test_result").html("<pre>" + data.content + "<pre>")
+            $("#display_test_result").html("<pre>" + data.content + "<pre>");
           });
+          return false;
       })})
     </script>
   </head>

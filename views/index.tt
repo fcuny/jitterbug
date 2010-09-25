@@ -1,4 +1,6 @@
-<h2>Projects</h2>
+<h2>Dashboard</h2>
+
+<h3>Projects</h3>
 
 <ul>
   : for $projects -> $project {
@@ -6,3 +8,10 @@
   : }
 </ul>
 
+<h3>Builds pending</h3>
+
+<ul>
+  : for $builds -> $build {
+  <li><a href="<: $uri_base :>task/<: $build :>"><: $build :></a></li>
+  : }
+</ul>

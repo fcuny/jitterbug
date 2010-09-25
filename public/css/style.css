@@ -32,3 +32,24 @@ pre {
     font-family: \"lucida console\",\"monaco\",\"andale mono\",\"bitstream vera sans mono\",\"consolas\",monospace;
 }
 
+.commits{
+   border:1px solid #bedce7;
+   margin-top:.5em;
+   padding:0 .5em .5em .5em;
+   background:#eaf2f5;
+   overflow:hidden;
+}
+
+#display_test_result {
+   background: black;
+   color: white;
+}
+
+.commits .description {
+   float: left;
+}
+
+.commits .git {
+   float: right;
+}
+
