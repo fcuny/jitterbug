@@ -2,6 +2,7 @@ package jitterbug::Project;
 
 use Dancer ':syntax';
 use jitterbug::Plugin::Redis;
+use jitterbug::Plugin::Template;
 
 use DateTime;
 use XML::Feed;
@@ -42,9 +43,15 @@ get '/:project/feed' => sub {
 
         foreach my $version (keys %{$desc->{version}}) {
             my $entry = XML::Feed::Entry->new();
-            $entry->title("build for ".$desc->{commit}.' on '.$version);
-            $entry->summary("Result: ".$desc->{version}->{$version});
+            $entry->link( request->base
+                  . 'api/build/'
+                  . $project . '/'
+                  . $desc->{commit} . '/'
+                  .$version );
+            $entry->title( "build for " . $desc->{commit} . ' on ' . $version );
+            $entry->summary( "Result: " . $desc->{version}->{$version} );
             $feed->add_entry($entry);
+
         }
     }
 

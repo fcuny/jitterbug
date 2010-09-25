@@ -21,11 +21,18 @@ get '/build/:project/:commit/:version' => sub {
         open my $fh, '<', $file;
         my @content = <$fh>;
         close $fh;
-        {
-            commit  => $commit,
-            version => $version,
-            content => join( '', @content ),
-        };
+
+        if ( request->accept =~ m!application/json! ) {
+            return {
+                commit  => $commit,
+                version => $version,
+                content => join( '', @content ),
+            };
+        }
+        else {
+            content_type 'text/plain';
+            return join( '', @content );
+        }
     }
 };
 
