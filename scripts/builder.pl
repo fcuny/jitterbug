@@ -33,12 +33,12 @@ while (1) {
         my $build_dir =
           File::Spec->catdir( $conf->{jitterbug}->{build}->{dir}, $project );
 
-        # my $r = Git::Repository->create( clone => $repo => $build_dir );
-        # $r->run('checkout', $commit);
+        my $r = Git::Repository->create( clone => $repo => $build_dir );
+        $r->run('checkout', $commit);
 
-        # my $res = `./scripts/capsule.sh $build_dir $report_path`;
+        my $res = `./scripts/capsule.sh $build_dir $report_path`;
 
-        # rmtree($build_dir);
+        rmtree($build_dir);
 
         $redis->del($task_key);
 
