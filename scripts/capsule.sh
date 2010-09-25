@@ -21,6 +21,7 @@ do
     logfile="$report_path/$theperl.txt"
 
     perl Makefile.PL
+    cpanm --installdeps .
     make
     HARNESS_VERBOSE=1 make test >> $logfile  2>&1
 done

@@ -1,12 +1,12 @@
 <div id="page">
-<div id="content">
-<h2><: $project :></h2>
+  <div id="content">
+    <h2><a href="<: $url :>"><: $project :></a> / build history <a href="<: $base_uri :>/project/<: $project :>/feed"><img src="<: $uri_base :>/images/feed.png" /></a></h2>
 
-<small>"<: $description :>"</small> &mdash; <a href="<: $url :>">view more</a>.
+    <strong>"<: $description :>"</strong>
 
 <h3>Builds</h3>
 
-<a href="<: $base_uri :>/project/<: $project :>/feed">feed</a>
+
 
 <div class="commits">
 :for $builds -> $build {
@@ -22,10 +22,7 @@
             </div>
         </div>
         <div class="git">
-            <ul>
-            <li>commit&nbsp;&nbsp;<a href="<: $build.url :>"><: $build.commit :></a></li>
-            <li><a href="<: $build.compare :>">compare</a></li>
-            </ul>
+            commit&nbsp;&nbsp;<a href="<: $build.url :>"><: $build.commit :></a><br />
         </div>
     </div>
     <div class="display_test_result" id="result-<: $build.commit :>">
