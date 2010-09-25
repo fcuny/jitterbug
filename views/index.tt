@@ -1,3 +1,6 @@
+<div id="page">
+
+<div id="content">
 <h2>Dashboard</h2>
 
 <h3>Projects</h3>
@@ -15,3 +18,5 @@
   <li><a href="<: $uri_base :>task/<: $build :>"><: $build :></a></li>
   : }
 </ul>
+</div>
+</div>

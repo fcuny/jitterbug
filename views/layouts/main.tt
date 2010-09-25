@@ -7,7 +7,7 @@
     <meta charset="UTF-8" />
     <script type="text/javascript">
       $(document).ready(function() {
-        $('.commits a').click(function() {
+        $('.builds a').click(function() {
           var url = $(this).attr("href");
           $.getJSON(url, null, function(data) {
             $("#display_test_result").html("<pre>" + data.content + "<pre>");
@@ -17,10 +17,7 @@
     </script>
   </head>
   <body>
-    <h1>jitterbug</h1>
-    <div id="content">
-      <: $content :>
-    </div>
+    <: $content :>
     <footer>
       Powered by <a href="http://perldancer.org/">Dancer</a> 1.1810
     </footer>

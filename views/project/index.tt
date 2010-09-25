@@ -1,3 +1,5 @@
+<div id="page">
+<div id="content">
 <h2><: $project :></h2>
 
 <small>"<: $description :>"</small> &mdash; <a href="<: $url :>">view more</a>.
@@ -32,3 +34,5 @@
 <div id="display_test_result">
 </div>
 
+</div>
+</div>
