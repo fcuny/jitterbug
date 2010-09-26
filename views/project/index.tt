@@ -4,7 +4,7 @@
 
     <strong>"<: $description :>"</strong>
 
-    :for $builds.keys() -> $day {
+    :for $days -> $day {
       <h3 class="builds-day" id="builds-day-<: $day :>"><: $day :></h3>
       <div class="commits" id="commits-day-<: $day :>">
         :for $builds[$day] -> $build {

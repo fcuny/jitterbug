@@ -25,8 +25,10 @@ get '/:project' => sub {
         push @{$commits->{$d}}, $_;
     }
 
+    my @days = sort {$b cmp $a} keys %$commits;
+
     template 'project/index',
-      { project => $project, builds => $commits, %$desc };
+      { project => $project, days => \@days, builds => $commits, %$desc };
 };
 
 get '/:project/feed' => sub {
