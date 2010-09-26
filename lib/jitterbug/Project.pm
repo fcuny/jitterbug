@@ -47,6 +47,7 @@ get '/:project/feed' => sub {
                   . $project . '/'
                   . $build->{commit} . '/'
                   .$version );
+            $entry->author($build->{author}->{name});
             $entry->title( "build for " . $build->{commit} . ' on ' . $version );
             $entry->summary( "Result: " . $build->{version}->{$version} );
             $feed->add_entry($entry);
