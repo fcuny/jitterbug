@@ -20,8 +20,14 @@ do
     perlversion=$(perl -v)
     logfile="$report_path/$theperl.txt"
 
-    perl Makefile.PL
-    cpanm --installdeps .
-    make
-    HARNESS_VERBOSE=1 make test >> $logfile  2>&1
+    if [ -f 'dist.ini' ]
+        dzil authordeps | cpanm
+        cpanm --installdeps .
+        HARNESS_VERBOSE=1 dzil test >> $logfile  2>&1
+    else
+        perl Makefile.PL
+        cpanm --installdeps .
+        make
+        HARNESS_VERBOSE=1 make test >> $logfile  2>&1
+    fi
 done
