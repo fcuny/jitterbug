@@ -1,7 +1,7 @@
 layout: "main"
 logger: "file"
 appname: "jitterbug"
-serializer: "JSON"
+
 redis: "127.0.0.1:6379"
 template: "xslate"
 engines:
@@ -11,6 +11,7 @@ engines:
     cache: 0
 
 jitterbug:
+  namespace: jitterbug
   reports:
     dir: /tmp/jitterbug
   build:

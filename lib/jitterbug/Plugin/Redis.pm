@@ -8,7 +8,11 @@ register redis => sub {
     Redis->new( server => setting('redis') );
 };
 
-sub _key { join( ':', 'jitterbug', @_ ); }
+sub _key {
+    my $s = setting('jitterbug');
+    my $ns = $s->{namespace} || 'jitterbug';
+    join( ':', $ns, @_ );
+}
 
 register key_projects       => sub { _key('projects'); };
 register key_project        => sub { _key('project', @_); };
