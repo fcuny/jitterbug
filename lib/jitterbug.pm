@@ -22,7 +22,7 @@ get '/' => sub {
         my $desc = from_json($proj);
         my @ids  = redis->smembers( key_builds_project($_) );
         my $last_build;
-        if (!@ids) {
+        if (@ids) {
             my $res = redis->get( pop @ids );
             if ($res) {
                 $last_build = from_json($res);
