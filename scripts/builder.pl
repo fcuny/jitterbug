@@ -46,21 +46,32 @@ while (1) {
             project    => $project,
             repo       => $repo,
             commit     => $commit,
-            status     => 1,
             time       => time(),
             %$desc,
         };
 
-        my @versions = glob($report_path.'/*');
+        my @versions = glob( $report_path . '/*' );
         foreach my $version (@versions) {
             open my $fh, '<', $version;
-            my @lines = <$fh>;
+            my @lines  = <$fh>;
             my $result = pop @lines;
+            while ( $result !~ /^Result/ ) {
+                $result = pop @lines;
+            }
             chomp $result;
             $result =~ s/Result:\s//;
-            my ($name, ) = basename($version);
+            my ( $name, ) = basename($version);
             $name =~ s/\.txt//;
+            if ( $result !~ /PASS/ ) {
+                # mail author of the commit
+                my $message  = $desc->{message};
+                my $commiter = $desc->{author}->{email};
+                my $output   = "Build failed";
+                my $sha      = $desc->{commit};
+                `./scripts/build-failed $commiter $message $output $sha`;
+            }
             $build->{version}->{$name} = $result;
+            close $fh;
         }
 
         my $build_key = join( ':', 'jitterbug', 'build', $commit );
