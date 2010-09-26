@@ -17,17 +17,18 @@ get '/' => sub {
     my @projects  = ();
 
     foreach (@proj_name) {
-        my $proj = redis->get(key_project($_));
+        my $proj = redis->get( key_project($_) );
         next unless $proj;
         debug("on a $proj");
         my $desc = from_json($proj);
         my @ids  = redis->smembers( key_builds_project($_) );
-        my $res  = redis->get( pop @ids );
-        if ($res) {
-            my $last_build = from_json($res);
-            $desc->{last_build} = $last_build;
-        }
-        push @projects, $desc;
+        if(@ids) {
+            my $res = redis->get( pop @ids );
+              if ($res) {
+                my $last_build = from_json($res);
+                $desc->{last_build} = $last_build;
+            }
+        } push @projects, $desc;
     }
 
     @projects =
