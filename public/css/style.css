@@ -29,7 +29,7 @@ text-decoration: none;
 
 #page {
 background-color: #ddd;
-width: 750px;
+width: 80%;
 margin: auto;
 margin-left: auto;
 padding-left: 0px;
@@ -41,7 +41,7 @@ background-color: white;
 border: 3px solid #aaa;
 border-top: none;
 padding: 25px;
-width: 750px;
+width: 90%;
 }
 
 #sidebar {
@@ -235,3 +235,15 @@ font-family:Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",m
 .commit .builds span {font-size:110%;font-weight: bolder;}
 .commit .builds span .PASS{color:green}
 .commit .builds span .FAILED{color:red}
+
+.repo{border:1px solid #d8d8d8;background-color:#f0f0f0;}
+
+ul.repositories{margin:0;}
+ul.repositories>li{list-style-type:none;margin:0 0 10px 0;padding:8px 10px 0 10px;border:1px solid #ddd;-webkit-border-radius:4px;-moz-border-radius:4px;border-radius:4px;}
+ul.repositories h3{margin:0;font-size:14px;white-space:nowrap;}
+ul.repositories p.desc{margin:0 0 3px 0;font-size:12px;color:#444;}
+ul.repositories p.updated-at{margin:0;font-size:11px;color:#888;}
+
+
+.columns .first{float:left;width:450px;}
+.columns .last{float:right;width:450px;}
