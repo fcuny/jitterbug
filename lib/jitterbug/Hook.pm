@@ -6,33 +6,40 @@ use jitterbug::Plugin::Redis;
 setting serializer => 'JSON';
 
 post '/' => sub {
-    my $hook = from_json(params->{payload});
+    my $payload = params->{payload};
 
-    my $repo = $hook->{repository}->{name};
+    if (!defined $payload) {
+        # don't confuse poster, and don't care about it
+        status 200;
+        return;
+    }
+
+    $payload = from_json($payload);
+    my $repo = $payload->{repository}->{name};
 
     my $repo_key = key_project($repo);
 
     if ( !redis->exists($repo_key) ) {
         my $project = {
             name        => $repo,
-            url         => $hook->{repository}->{url},
-            description => $hook->{repository}->{description},
-            owner       => $hook->{repository}->{owner},
+            url         => $payload->{repository}->{url},
+            description => $payload->{repository}->{description},
+            owner       => $payload->{repository}->{owner},
         };
         redis->set( $repo_key, to_json($project) );
-        redis->sadd(key_projects, $repo);
+        redis->sadd( key_projects, $repo );
     }
 
-    my $last_commit = pop @{ $hook->{commits} };
+    my $last_commit = pop @{ $payload->{commits} };
 
-    $last_commit->{repo}    = $hook->{repository}->{url};
+    $last_commit->{repo}    = $payload->{repository}->{url};
     $last_commit->{project} = $repo;
-    $last_commit->{compare} = $hook->{compare};
+    $last_commit->{compare} = $payload->{compare};
 
     my $task_key = key_task_repo($repo);
-    redis->set($task_key, to_json($last_commit));
+    redis->set( $task_key, to_json($last_commit) );
 
-    redis->sadd(key_tasks, $task_key);
+    redis->sadd( key_tasks, $task_key );
 
     { updated => $repo };
 };
