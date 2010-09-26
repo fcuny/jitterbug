@@ -11,7 +11,7 @@ cd $builddir
 
 source $HOME/perl5/perlbrew/etc/bashrc
 
-for perl in $HOME/perl5/perlbrew/perls/perl-5.12.*
+for perl in $HOME/perl5/perlbrew/perls/perl-5.*
 do
     theperl="$(basename $perl)"
     perlbrew switch $theperl
