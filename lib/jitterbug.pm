@@ -19,16 +19,20 @@ get '/' => sub {
     foreach (@proj_name) {
         my $proj = redis->get( key_project($_) );
         next unless $proj;
-        debug("on a $proj");
         my $desc = from_json($proj);
         my @ids  = redis->smembers( key_builds_project($_) );
-        if(@ids) {
+        my $last_build;
+        if (!@ids) {
             my $res = redis->get( pop @ids );
-              if ($res) {
-                my $last_build = from_json($res);
-                $desc->{last_build} = $last_build;
+            if ($res) {
+                $last_build = from_json($res);
             }
-        } push @projects, $desc;
+        }
+        else {
+            $last_build = { timestamp => '' };
+        }
+        $desc->{last_build} = $last_build;
+        push @projects, $desc;
     }
 
     @projects =
