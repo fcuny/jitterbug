@@ -5,7 +5,7 @@
     <div class="columns">
 
       <div class="first"> 
-        <h3>Repositories</h3>
+        <h3>Repositories (<: $projects.size() :>)</h3>
 
         <ul class="repositories">
           : for $projects -> $project {
