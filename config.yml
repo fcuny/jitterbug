@@ -16,3 +16,6 @@ jitterbug:
     dir: /tmp/jitterbug
   build:
     dir: /tmp/build
+  build_process:
+    builder: ./scripts/capsule.sh
+    on_failure: ./scripts/on_failure.sh

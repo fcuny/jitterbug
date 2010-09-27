@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# first arg:  build_dir
+# second arg: report path
+
 set -e
 
 builddir=$1
