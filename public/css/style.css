@@ -209,8 +209,10 @@ font-family:Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",m
 }
 
 .display_test_result {
+font-family:Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",monospace;
 background: black;
 color: white;
+overflow: hidden;
 }
 
 .commit .description {
