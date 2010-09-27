@@ -20,7 +20,7 @@ do
     perlversion=$(perl -v)
     logfile="$report_path/$theperl.txt"
 
-    if [ -f 'dist.ini' ]
+    if [ -f 'dist.ini' ]; then
         dzil authordeps | cpanm
         cpanm --installdeps .
         HARNESS_VERBOSE=1 dzil test >> $logfile  2>&1
