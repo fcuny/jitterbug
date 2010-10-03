@@ -1,0 +1,382 @@
+---
+builds:
+  - added: []
+    author:
+      email: davidp@preshweb.co.uk
+      name: David Precious
+    commit: 9de81ea9b8d123dd8eb024ccfa61fbf75c37c19f
+    compare: http://github.com/sukria/Dancer/compare/1f40399...9de81ea
+    message: A few typo fixes in CHANGES
+    modified:
+      - CHANGES
+    project: Dancer
+    removed: []
+    repo: http://github.com/sukria/Dancer
+    time: 1285671797
+    timestamp: 2010-09-28T04:00:24-07:00
+    url: http://github.com/sukria/Dancer/commit/9de81ea9b8d123dd8eb024ccfa61fbf75c37c19f
+    version:
+      perl-5.10.1: PASS
+      perl-5.12.1: PASS
+      perl-5.12.2: PASS
+      perl-5.8.9: PASS
+  - added: []
+    author:
+      email: sukria@sukria.net
+      name: Alexis Sukrieh
+    commit: b30a56394a1c13012185c423f4a61bd241c6a2ee
+    compare: http://github.com/sukria/Dancer/compare/897eeb1...b30a563
+    message: update tests script that uses Dancer::Test to make sure their appdir is OK
+    modified:
+      - t/00_base/09_load_app.t
+      - t/15_plugins/03_namespace.t
+    project: Dancer
+    removed: []
+    repo: http://github.com/sukria/Dancer
+    time: 1285949940
+    timestamp: 2010-10-01T09:10:04-07:00
+    url: http://github.com/sukria/Dancer/commit/b30a56394a1c13012185c423f4a61bd241c6a2ee
+    version:
+      perl-5.10.1: PASS
+      perl-5.12.1: PASS
+      perl-5.12.2: PASS
+      perl-5.8.9: PASS
+  - added: []
+    author:
+      email: sukria@sukria.net
+      name: Alexis Sukrieh
+    commit: 2db08293c8d8816afc9e9d0036af86454a29153c
+    compare: http://github.com/sukria/Dancer/compare/7694193...2db0829
+    message: 'FIX (really) for non-ASCII chars in views, tested with UTF8 and ISO-8859-1'
+    modified:
+      - CHANGES
+      - lib/Dancer/FileUtils.pm
+      - lib/Dancer/Handler.pm
+    project: Dancer
+    removed: []
+    repo: http://github.com/sukria/Dancer
+    time: 1285690156
+    timestamp: 2010-09-28T09:09:19-07:00
+    url: http://github.com/sukria/Dancer/commit/2db08293c8d8816afc9e9d0036af86454a29153c
+    version:
+      perl-5.10.1: FAIL
+  - added: []
+    author:
+      email: sukria@sukria.net
+      name: Alexis Sukrieh
+    commit: 1f4039906e9da0bb57681ecc4d707e9ac5b0c4c2
+    compare: http://github.com/sukria/Dancer/compare/28c52aa...1f40399
+    message: CHANGES entries for 1.1902
+    modified:
+      - CHANGES
+    project: Dancer
+    removed: []
+    repo: http://github.com/sukria/Dancer
+    time: 1285667707
+    timestamp: 2010-09-28T02:54:08-07:00
+    url: http://github.com/sukria/Dancer/commit/1f4039906e9da0bb57681ecc4d707e9ac5b0c4c2
+    version:
+      perl-5.10.1: PASS
+      perl-5.12.1: PASS
+      perl-5.12.2: PASS
+      perl-5.8.9: PASS
+  - added: []
+    author:
+      email: sukria@sukria.net
+      name: Alexis Sukrieh
+    commit: 7694193d38477742638781cd7d06ffa1458ae8ac
+    compare: http://github.com/sukria/Dancer/compare/9de81ea...7694193
+    message: Merge branch 'master' of github.com:sukria/Dancer
+    modified:
+      - CHANGES
+    project: Dancer
+    removed: []
+    repo: http://github.com/sukria/Dancer
+    time: 1285683623
+    timestamp: 2010-09-28T07:18:37-07:00
+    url: http://github.com/sukria/Dancer/commit/7694193d38477742638781cd7d06ffa1458ae8ac
+    version:
+      perl-5.10.1: PASS
+      perl-5.12.1: PASS
+      perl-5.12.2: PASS
+      perl-5.8.9: PASS
+  - added: []
+    author:
+      email: franck@lumberjaph.net
+      name: franck cuny
+    commit: bb8bebae87d5f828ba6da3120be5fa5f732d73a8
+    compare: http://github.com/sukria/Dancer/compare/b1a13a8...bb8beba
+    message: update todo
+    modified:
+      - TODO
+    project: Dancer
+    removed: []
+    repo: http://github.com/sukria/Dancer
+    status: 1
+    time: 1285495944
+    timestamp: 2010-09-26T03:10:38-07:00
+    url: http://github.com/sukria/Dancer/commit/bb8bebae87d5f828ba6da3120be5fa5f732d73a8
+    version:
+      perl-5.12.1: PASS
+      perl-5.12.2: PASS
+  - added: []
+    author:
+      email: sukria@sukria.net
+      name: Alexis Sukrieh
+    commit: 897eeb10896e0fc5a2ee1d236759e4c9074eaa9c
+    compare: http://github.com/sukria/Dancer/compare/b552e62...897eeb1
+    message: FIX the test failure (revert Dancer::_init())
+    modified:
+      - lib/Dancer.pm
+    project: Dancer
+    removed: []
+    repo: http://github.com/sukria/Dancer
+    time: 1285946021
+    timestamp: 2010-10-01T08:10:57-07:00
+    url: http://github.com/sukria/Dancer/commit/897eeb10896e0fc5a2ee1d236759e4c9074eaa9c
+    version:
+      perl-5.10.1: PASS
+      perl-5.12.1: PASS
+      perl-5.12.2: PASS
+      perl-5.8.9: PASS
+  - added: []
+    author:
+      email: franck@lumberjaph.net
+      name: franck cuny
+    commit: 242442b28c85b27361985c0e34b748303de0c489
+    compare: http://github.com/sukria/Dancer/compare/2d0938d...242442b
+    message: dancer_response handle correctly POST and PUT request with content_type set to form-urlencoded
+    modified:
+      - lib/Dancer/Test.pm
+      - t/00_base/dancer_test.t
+      - t/lib/TestApp.pm
+    project: Dancer
+    removed: []
+    repo: http://github.com/sukria/Dancer
+    time: 1285703377
+    timestamp: 2010-09-28T12:46:57-07:00
+    url: http://github.com/sukria/Dancer/commit/242442b28c85b27361985c0e34b748303de0c489
+    version:
+      perl-5.10.1: PASS
+      perl-5.12.1: PASS
+      perl-5.12.2: PASS
+      perl-5.8.9: PASS
+  - added: []
+    author:
+      email: sukria@sukria.net
+      name: Alexis Sukrieh
+    commit: ba54d9b7d82eabe4ba35ec212eb24d00869119d5
+    compare: http://github.com/sukria/Dancer/compare/b30a563...ba54d9b
+    message: FIX appdir initialization for Dancer::Test and old app layouts (franck++)
+    modified:
+      - lib/Dancer.pm
+      - lib/Dancer/Test.pm
+    project: Dancer
+    removed: []
+    repo: http://github.com/sukria/Dancer
+    time: 1286027107
+    timestamp: 2010-10-02T06:43:50-07:00
+    url: http://github.com/sukria/Dancer/commit/ba54d9b7d82eabe4ba35ec212eb24d00869119d5
+    version:
+      perl-5.10.1: FAIL
+  - added: []
+    author:
+      email: afoxson@pobox.com
+      name: Adam J. Foxson
+    commit: b2b1cdcb14cab152f66f0c75d4773f6a44eef415
+    compare: http://github.com/sukria/Dancer/compare/3f481d4...b2b1cdc
+    message: 'Addresses issue 136: "readline() on closed filehandle DATA"'
+    modified:
+      - lib/Dancer/Renderer.pm
+    project: Dancer
+    removed: []
+    repo: http://github.com/sukria/Dancer
+    time: 1285659554
+    timestamp: 2010-09-28T00:38:24-07:00
+    url: http://github.com/sukria/Dancer/commit/b2b1cdcb14cab152f66f0c75d4773f6a44eef415
+  - added: []
+    author:
+      email: xsawyerx@cpan.org
+      name: Sawyer X
+    commit: 2253efe256e8a475fb9989ea0ea1870eea5e05f7
+    compare: http://github.com/sukria/Dancer/compare/242442b...2253efe
+    message: missed a few files from MANIFEST
+    modified:
+      - MANIFEST
+    project: Dancer
+    removed: []
+    repo: http://github.com/sukria/Dancer
+    time: 1285708877
+    timestamp: 2010-09-28T14:19:08-07:00
+    url: http://github.com/sukria/Dancer/commit/2253efe256e8a475fb9989ea0ea1870eea5e05f7
+    version:
+      perl-5.10.1: PASS
+      perl-5.12.1: PASS
+      perl-5.12.2: PASS
+      perl-5.8.9: PASS
+  - added:
+      - t/00_base/utf8.tt
+    author:
+      email: sukria@sukria.net
+      name: Alexis Sukrieh
+    commit: 2d0938d5d559a416b256482b772f51ee665939b2
+    compare: http://github.com/sukria/Dancer/compare/2db0829...2d0938d
+    message: FIX charset tests
+    modified:
+      - t/00_base/12_utf8_charset.t
+    project: Dancer
+    removed:
+      - t/00_base/test.tt
+    repo: http://github.com/sukria/Dancer
+    time: 1285691533
+    timestamp: 2010-09-28T09:30:02-07:00
+    url: http://github.com/sukria/Dancer/commit/2d0938d5d559a416b256482b772f51ee665939b2
+    version:
+      perl-5.10.1: PASS
+      perl-5.12.1: PASS
+      perl-5.12.2: PASS
+      perl-5.8.9: PASS
+  - added:
+      - t/03_route_handler/public/404.html
+    author:
+      email: franck@lumberjaph.net
+      name: franck cuny
+    commit: db369aba64bcbc553d5eae597e81ae30877d408d
+    compare: http://github.com/sukria/Dancer/compare/16ad3a9...db369ab
+    message: "fix gh#129 - don't add multiple content-type to headers"
+    modified:
+      - lib/Dancer/Route.pm
+      - t/03_route_handler/00_route_object.t
+    project: Dancer
+    removed: []
+    repo: http://github.com/sukria/Dancer
+    status: 1
+    time: 1285526946
+    timestamp: 2010-09-26T11:47:17-07:00
+    url: http://github.com/sukria/Dancer/commit/db369aba64bcbc553d5eae597e81ae30877d408d
+    version:
+      perl-5.12.1: PASS
+      perl-5.12.2: PASS
+  - added: []
+    author:
+      email: sukria@sukria.net
+      name: Alexis Sukrieh
+    commit: b552e62a0732a8a55e587494dad233f28b06c2a2
+    compare: http://github.com/sukria/Dancer/compare/2253efe...b552e62
+    message: scaffolded app doesn't use load_app but 'use'
+    modified:
+      - script/dancer
+    project: Dancer
+    removed: []
+    repo: http://github.com/sukria/Dancer
+    time: 1285932703
+    timestamp: 2010-10-01T04:30:00-07:00
+    url: http://github.com/sukria/Dancer/commit/b552e62a0732a8a55e587494dad233f28b06c2a2
+    version:
+      perl-5.10.1: FAIL
+  - added: []
+    author:
+      email: dams@erable.local
+      name: Damien Krotkine
+    commit: 16ad3a9b093104b29fe2d1843d0cd4758d6b0573
+    compare: http://github.com/sukria/Dancer/compare/e2ad52e...16ad3a9
+    message: |-
+      github issue #115: documentation about compression
+      
+      Added documentation about content compression (gz, deflate) using
+      Plack::Middleware::Deflater
+    modified:
+      - lib/Dancer/Deployment.pod
+    project: Dancer
+    removed: []
+    repo: http://github.com/sukria/Dancer
+    status: 1
+    time: 1285515604
+    timestamp: 2010-09-26T08:24:09-07:00
+    url: http://github.com/sukria/Dancer/commit/16ad3a9b093104b29fe2d1843d0cd4758d6b0573
+    version:
+      perl-5.12.1: PASS
+      perl-5.12.2: PASS
+  - added: []
+    author:
+      email: franck@lumberjaph.net
+      name: franck cuny
+    commit: 8d6436875821447651d78c14caa3d9e88569402e
+    compare: http://github.com/sukria/Dancer/compare/b09c41a...8d64368
+    message: set appdir to env once it's set; update test
+    modified:
+      - lib/Dancer.pm
+      - t/00_base/09_load_app.t
+    project: Dancer
+    removed: []
+    repo: http://github.com/sukria/Dancer
+    time: 1286103677
+    timestamp: 2010-10-03T03:57:41-07:00
+    url: http://github.com/sukria/Dancer/commit/8d6436875821447651d78c14caa3d9e88569402e
+    version:
+      perl-5.10.1: PASS
+      perl-5.12.1: PASS
+      perl-5.12.2: PASS
+      perl-5.8.9: PASS
+  - added: []
+    author:
+      email: sebu@kpricorn.org
+      name: sebastian de castelberg
+    commit: 28c52aae7cadd4102ea26a585fbd2294fc76a3b8
+    compare: http://github.com/sukria/Dancer/compare/b2b1cdc...28c52aa
+    message: 'LWP::UserAgent: set env_proxy'
+    modified:
+      - script/dancer
+    project: Dancer
+    removed: []
+    repo: http://github.com/sukria/Dancer
+    time: 1285660651
+    timestamp: 2010-09-28T00:56:31-07:00
+    url: http://github.com/sukria/Dancer/commit/28c52aae7cadd4102ea26a585fbd2294fc76a3b8
+  - added: []
+    author:
+      email: franck@lumberjaph.net
+      name: franck cuny
+    commit: b09c41ab6fc0cb20b302b90d9feba924727e7e07
+    compare: http://github.com/sukria/Dancer/compare/45a1dd1...b09c41a
+    message: prefix is missing the starting / in cookbook
+    modified:
+      - lib/Dancer/Cookbook.pod
+    project: Dancer
+    removed: []
+    repo: http://github.com/sukria/Dancer
+    time: 1286044270
+    timestamp: 2010-10-02T11:27:31-07:00
+    url: http://github.com/sukria/Dancer/commit/b09c41ab6fc0cb20b302b90d9feba924727e7e07
+    version:
+      perl-5.10.1: PASS
+      perl-5.12.1: PASS
+      perl-5.12.2: PASS
+      perl-5.8.9: PASS
+  - added: []
+    author:
+      email: sukria@sukria.net
+      name: Alexis Sukrieh
+    commit: 45a1dd17c08c7bd38c1e5ba1b442239259b2b66a
+    compare: http://github.com/sukria/Dancer/compare/ba54d9b...45a1dd1
+    message: FIX test
+    modified:
+      - t/00_base/09_load_app.t
+    project: Dancer
+    removed: []
+    repo: http://github.com/sukria/Dancer
+    time: 1286028293
+    timestamp: 2010-10-02T07:02:22-07:00
+    url: http://github.com/sukria/Dancer/commit/45a1dd17c08c7bd38c1e5ba1b442239259b2b66a
+    version:
+      perl-5.10.1: PASS
+      perl-5.12.1: PASS
+      perl-5.12.2: PASS
+      perl-5.8.9: PASS
+desc:
+  description: Minimal-effort oriented web application framework for Perl (inspired by Ruby's Sinatra)
+  name: Dancer
+  owner:
+    email: sukria@sukria.net
+    name: sukria
+  url: http://github.com/sukria/Dancer
