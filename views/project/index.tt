@@ -16,7 +16,7 @@
                   <img src="http://www.gravatar.com/avatar/<: $commit.avatar :>?s=30" />
                 </div>
                 <div class="author"><: $commit.author.name :></div>
-                <div class="date"><: $commit.dt.month :></div>
+                <div class="date"><: $commit.timestamp :></div>
               </div>
               <div style="clear:both;"></div>
               <br />
