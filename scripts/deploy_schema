@@ -1,0 +1,14 @@
+use strict;
+use warnings;
+use jitterbug::Schema;
+use YAML qw/LoadFile/;
+
+my $config = shift;
+die "need configuration file" unless $config;
+
+my $dancer_conf = LoadFile($config);
+
+my $dbix_conf = $dancer_conf->{plugins}->{DBIC}->{schema};
+my $schema    = jitterbug::Schema->connect( @{ $dbix_conf->{connect_info} } );
+$schema->deploy;
+print "done!\n";
