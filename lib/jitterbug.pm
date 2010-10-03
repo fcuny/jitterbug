@@ -27,7 +27,7 @@ get '/' => sub {
 
         my $last_commit =
           schema->resultset('Commit')
-          ->search( { projectid => $project->projectid }, {} )->single();
+          ->search( { projectid => $project->projectid }, {order_by => {-desc => 'timestamp'}} )->first();
 
         if ($last_commit) {
             # XXX see what data to store here
