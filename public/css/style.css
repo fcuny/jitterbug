@@ -1,6 +1,6 @@
 
 body {
-font-family: 'Linux Libertine', Palatino, 'Palatino Linotype', 'Book Antiqua', Georgia, 'Times New Roman', serif;
+font:13px helvetica,arial,freesans,clean,sans-serif;
 margin: 0;
 margin-bottom: 25px;
 padding: 0;
@@ -8,9 +8,6 @@ background-color: #ddd;
 background-image: url("/images/perldancer-bg.jpg"); 
 background-repeat: no-repeat;
 background-position: top left;
-
-font-family: "Lucida Grande", "Bitstream Vera Sans", "Verdana";
-font-size: 13px;
 color: #333;
 }
 
@@ -215,6 +212,8 @@ color: white;
 overflow: hidden;
 }
 
+.project_baseline {font-size: 110%; margin-top: 3em;margin-bottom: 2.5em;margin-left:1.1em;}
+
 .commit .description {
 float: left;
 }
@@ -232,11 +231,11 @@ font-family:Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",m
 }
 .message pre{white-space:pre-wrap;word-wrap:break-word;width:40em;}
 
-.commit .name{clear:left;margin-top:.75em;line-height:1.5em}
+/* .commit .name{clear:left;margin-top:.75em;line-height:2em} */
 .commit .date{color:#888;line-height:1em;}
 .commit .builds span {font-size:110%;font-weight: bolder;}
-.commit .builds span .PASS{color:green}
-.commit .builds span .FAILED{color:red}
+.commit .builds span.PASS{color:green}
+.commit .builds span.FAIL{color:red}
 
 .repo{border:1px solid #d8d8d8;background-color:#f0f0f0;}
 
@@ -246,6 +245,10 @@ ul.repositories h3{margin:0;font-size:14px;white-space:nowrap;}
 ul.repositories p.desc{margin:0 0 3px 0;font-size:12px;color:#444;}
 ul.repositories p.updated-at{margin:0;font-size:11px;color:#888;}
 
+.commit .name{float:left; width: 100%;}
+.commit .name .date{color:#888;font-size:90%;}
+.commit .name .author{font-weight: bolder;}
+.commit .gravatar{border:1px solid #d0d0d0;padding:2px;background-color:white;float:left;margin-right:.7em;}
 
 .columns .first{float:left;width:450px;}
 .columns .last{float:right;width:450px;}

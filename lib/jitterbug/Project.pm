@@ -4,6 +4,7 @@ use Dancer ':syntax';
 use Dancer::Plugin::DBIC;
 use jitterbug::Plugin::Template;
 
+use Digest::MD5 qw/md5_hex/;
 use DateTime;
 use XML::Feed;
 
@@ -18,6 +19,7 @@ get '/:project' => sub {
 
     my $commits;
     foreach (@$builds) {
+        $_->{avatar} = md5_hex( lc( $_->{author}->{email} ) );
         my $t = $_->{timestamp};
         (my $d) = $t =~ /^(\d{4}-\d{2}-\d{2})/;
         push @{$commits->{$d}}, $_;
@@ -69,7 +71,9 @@ sub _sorted_builds {
 
     my @builds;
     while ( my $c = $commits->next ) {
-        push @builds, from_json( $c->content );
+        my $content = from_json($c->content);
+        $content->{id} = $c->sha256 if (!$content->{id});
+        push @builds, $content;
     }
 
     @builds = sort { $b->{timestamp} cmp $a->{timestamp} } @builds;

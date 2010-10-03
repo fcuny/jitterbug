@@ -2,7 +2,7 @@
   <div id="content">
     <h2><a href="<: $project.url :>"><: $project.name :></a> / build history <a href="<: $base_uri :>/project/<: $project.name :>/feed"><img src="<: $uri_base :>/images/feed.png" /></a></h2>
 
-    <strong>"<: $project.description :>"</strong>
+    <div class="project_baseline"><strong>"<: $project.description :>"</strong></div>
 
     :for $days -> $day {
       <h3 class="builds-day" id="builds-day-<: $day :>"><: $day :></h3>
@@ -11,7 +11,14 @@
           <div class="commit" id="<: $commit.id :>">
             <div class="description">
               <div class="message"><pre><: $commit.message :></pre></div>
-              <div class="name"><: $commit.author.name :></div>
+              <div class="name">
+                <div class="gravatar">
+                  <img src="http://www.gravatar.com/avatar/<: $commit.avatar :>?s=30" />
+                </div>
+                <div class="author"><: $commit.author.name :></div>
+                <div class="date"><: $commit.dt.month :></div>
+              </div>
+              <div style="clear:both;"></div>
               <br />
               <div class="builds">
                 :for $commit.build.version.keys() -> $version {
@@ -21,11 +28,15 @@
             </div>
             <div class="git">
               commit&nbsp;&nbsp;&nbsp;<a href="<: $commit.url :>"><: $commit.id :></a><br />
-              commited&nbsp;<: $commit.timestamp :><br />
-              ref&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<: $commit.ref :><br />
-              <: if $commit.build { :>
-                built in&nbsp;<: $commit.build.end_time - $commit.build.start_time :>&nbsp;seconds</br >
+
+              <: if $commit.ref { :>
+                on&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<: $commit.ref :>
               <: } :>
+              <br />
+              <: if $commit.build.start_time { :>
+                built in&nbsp;<: $commit.build.end_time - $commit.build.start_time :>&nbsp;seconds
+              <: } :>
+              <br />
             </div>
           </div>
           <div class="display_test_result" style="display: none" id="result-<: $commit.id :>">
