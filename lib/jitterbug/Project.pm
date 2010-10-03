@@ -1,20 +1,18 @@
 package jitterbug::Project;
 
 use Dancer ':syntax';
-use jitterbug::Plugin::Redis;
+use Dancer::Plugin::DBIC;
 use jitterbug::Plugin::Template;
 
 use DateTime;
 use XML::Feed;
 
 get '/:project' => sub {
-    my $project = params->{project};
+    my $project =
+      schema->resultset('Project')->find( { name => params->{project} } );
 
-    my $res = redis->get( key_project($project) );
-
-    send_error( "Project $project not found", 404 ) if !$res;
-
-    my $desc = from_json($res);
+    send_error( "Project " . params->{project} . " not found", 404 )
+      unless $project;
 
     my $builds = _sorted_builds($project);
 
@@ -28,16 +26,20 @@ get '/:project' => sub {
     my @days = sort {$b cmp $a} keys %$commits;
 
     template 'project/index',
-      { project => $project, days => \@days, builds => $commits, %$desc };
+        {project => $project, days => \@days, commits => $commits};
 };
 
 get '/:project/feed' => sub {
-    my $project = params->{project};
+    my $project =
+      schema->resultset('Project')->find( { name => params->{project} } );
+
+    send_error( "Project " . params->{project} . " not found", 404 )
+      unless $project;
 
     my $builds = _sorted_builds($project);
 
     my $feed = XML::Feed->new('Atom');
-    $feed->title('builds for '.$project);
+    $feed->title('builds for '.$project->name);
 
     foreach my $build (@$builds) {
         foreach my $version (keys %{$build->{version}}) {
@@ -61,14 +63,16 @@ get '/:project/feed' => sub {
 sub _sorted_builds {
     my $project = shift;
 
-    my @ids = redis->smembers( key_builds_project($project) );
+    my $commits =
+      schema->resultset('Commit')
+      ->search( { projectid => $project->projectid } );
 
     my @builds;
-    foreach my $id (@ids) {
-        my $res = redis->get($id);
-        push @builds, from_json($res) if $res;
+    while ( my $c = $commits->next ) {
+        push @builds, from_json( $c->content );
     }
-    @builds = sort {$b->{timestamp} cmp $a->{timestamp}} @builds;
+
+    @builds = sort { $b->{timestamp} cmp $a->{timestamp} } @builds;
     \@builds;
 }
 

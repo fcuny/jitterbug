@@ -1,7 +1,7 @@
 package jitterbug::WebService;
 
 use Dancer ':syntax';
-use jitterbug::Plugin::Redis;
+use Dancer::Plugin::DBIC;
 
 use File::Spec;
 

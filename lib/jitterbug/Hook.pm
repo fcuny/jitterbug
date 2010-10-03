@@ -1,15 +1,18 @@
 package jitterbug::Hook;
 
 use Dancer ':syntax';
-use jitterbug::Plugin::Redis;
+use Dancer::Plugin::DBIC;
+
+use Try::Tiny;
 
 setting serializer => 'JSON';
 
 post '/' => sub {
     my $payload = params->{payload};
 
+    # don't confuse poster, and don't care about it
     if (!defined $payload) {
-        # don't confuse poster, and don't care about it
+        error("no payload in input");
         status 200;
         return;
     }
@@ -17,29 +20,66 @@ post '/' => sub {
     $payload = from_json($payload);
     my $repo = $payload->{repository}->{name};
 
-    my $repo_key = key_project($repo);
+    my $project = schema->resultset('Project')->find( { name => $repo } );
 
-    if ( !redis->exists($repo_key) ) {
-        my $project = {
-            name        => $repo,
-            url         => $payload->{repository}->{url},
-            description => $payload->{repository}->{description},
-            owner       => $payload->{repository}->{owner},
+    if ( !$project ) {
+        debug("need to create a new project");
+        try {
+            schema->txn_do(
+                sub {
+                    $project = schema->resultset('Project')->create(
+                        {
+                            name => $repo,
+                            url  => $payload->{repository}->{url},
+                            description =>
+                              $payload->{repository}->{description},
+                            owner => to_json($payload->{repository}->{owner}),
+                        }
+                    );
+                }
+            );
+        }
+        catch {
+            error($_);
         };
-        redis->set( $repo_key, to_json($project) );
-        redis->sadd( key_projects, $repo );
     }
 
     my $last_commit = pop @{ $payload->{commits} };
-
-    $last_commit->{repo}    = $payload->{repository}->{url};
-    $last_commit->{project} = $repo;
     $last_commit->{compare} = $payload->{compare};
+    $last_commit->{pusher}  = $payload->{pushed};
+    $last_commit->{ref}     = $payload->{ref};
 
-    my $task_key = key_task_repo($repo);
-    redis->set( $task_key, to_json($last_commit) );
+    try {
+        schema->txn_do(
+            sub {
+                schema->resultset('Commit')->create(
+                    {
+                        sha256    => $last_commit->{id},
+                        content   => to_json($last_commit),
+                        projectid => $project->projectid,
+                        timestamp => $last_commit->{timestamp},
+                    }
+                );
+            }
+        );
+    }
+    catch {
+        debug($_);
+    };
 
-    redis->sadd( key_tasks, $task_key );
+    try {
+        schema->txn_do(
+            sub {
+                schema->resultset('Task')->create(
+                    {sha256 => $last_commit->{id}, projectid => $project->projectid}
+                );
+            }
+        );
+    }catch{
+        debug($_);
+    };
+
+    debug("hook accepted");
 
     { updated => $repo };
 };
