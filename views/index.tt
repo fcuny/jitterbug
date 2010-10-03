@@ -7,24 +7,22 @@
       <div class="first"> 
         <h3>Repositories (<: $projects.size() :>)</h3>
 
-        <ul class="repositories">
-          : for $projects -> $project {
-          <li class="repo">
-            <h3><a href="<: $uri_base :>project/<: $project.name :>"><: $project.name :></a></h3>
-            <div class="repo-body">
-              <p class="desc"><: $project.description :></p>
-              :if $project.last_build.timestamp {
-                <p class="updated-at">last updated at <: $project.last_build.timestamp :></p>
+        : for $projects -> $project {
+        <div class="repo">
+          <h3><a href="<: $uri_base :>project/<: $project.name :>"><: $project.name :></a></h3>
+          <div class="repo-body">
+            <p class="desc"><: $project.description :></p>
+            :if $project.last_build.timestamp {
+            <p class="updated-at">last updated at <: $project.last_build.timestamp :></p>
+            :}
+            <div class="last-builds">
+              :for $project.last_build.version.keys() -> $version {
+              <a href="<: $uri_base :>/api/build/<: $project.name :>/<: $project.last_build.commit :>/<: $version :>"><: $version :></a> <span class="<: $project.last_build.version[$version] :>"><: $project.last_build.version[$version] :></span>
               :}
-              <div class="last-builds">
-                :for $project.last_build.version.keys() -> $version {
-                  <a href="<: $uri_base :>/api/build/<: $project.name :>/<: $project.last_build.commit :>/<: $version :>"><: $version :></a> <span class="<: $project.last_build.version[$version] :>"><: $project.last_build.version[$version] :></span>
-                :}
-              </div>
             </div>
-          </li>
-          : }
-        </ul>
+          </div>
+        </div>
+        : }
       </div>
 
       <div class="last">
