@@ -43,17 +43,19 @@ get '/:project/feed' => sub {
     my $feed = XML::Feed->new('Atom');
     $feed->title('builds for '.$project->name);
 
-    foreach my $build (@$builds) {
-        foreach my $version (keys %{$build->{version}}) {
+    my $builds_per_feed = setting('builds_per_feed') || 5;
+    for(0..$builds_per_feed) {
+        my $build = $builds->[$_];
+        foreach my $version (keys %{$build->{build}->{version}}) {
             my $entry = XML::Feed::Entry->new();
             $entry->link( request->base
                   . 'api/build/'
-                  . $project . '/'
-                  . $build->{commit} . '/'
+                  . $project->name . '/'
+                  . $build->{id} . '/'
                   .$version );
             $entry->author($build->{author}->{name});
-            $entry->title( "build for " . $build->{commit} . ' on ' . $version );
-            $entry->summary( "Result: " . $build->{version}->{$version} );
+            $entry->title( "build for " . $build->{id} . ' on ' . $version );
+            $entry->summary( "Result: " . $build->{build}->{version}->{$version} );
             $feed->add_entry($entry);
         }
     }
