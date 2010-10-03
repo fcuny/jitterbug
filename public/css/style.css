@@ -4,9 +4,7 @@ font:13px helvetica,arial,freesans,clean,sans-serif;
 margin: 0;
 margin-bottom: 25px;
 padding: 0;
-background-color: #ddd;
-background-image: url("/images/perldancer-bg.jpg"); 
-background-repeat: no-repeat;
+background-color:#eaeaea;
 background-position: top left;
 color: #333;
 }
@@ -16,16 +14,11 @@ font-size: 28px;
 color: #000;
 }
 
-a  {color: #03c}
-a:hover {
-background-color: #03c;
-color: white;
-text-decoration: none;
-}
-
+a{color:#4183c4;text-decoration:none;}
+a:hover{text-decoration:underline;}
 
 #page {
-background-color: #ddd;
+background-color:#eaeaea;
 width: 80%;
 margin: auto;
 margin-left: auto;
@@ -34,9 +27,9 @@ margin-right: auto;
 }
 
 #content {
+   margin-top: 30px;
 background-color: white;
-border: 3px solid #aaa;
-border-top: none;
+border: 3px solid #000;
 padding: 25px;
 width: 90%;
 }

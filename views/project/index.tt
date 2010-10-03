@@ -6,7 +6,11 @@
 
     :for $days -> $day {
       <h3 class="builds-day" id="builds-day-<: $day :>"><: $day :></h3>
-      <div class="commits" id="commits-day-<: $day :>">
+      : if $~day == 0 {
+        <div class="commits" id="commits-day-<: $day :>">
+      : }else{
+        <div class="commits" id="commits-day-<: $day :>" style="display:none">
+      :}
         :for $commits[$day] -> $commit {
           <div class="commit" id="<: $commit.id :>">
             <div class="description">
