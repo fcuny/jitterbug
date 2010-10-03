@@ -24,6 +24,7 @@ WriteMakefile(
         'Dancer::Plugin::DBIC'    => 0,
         'DBIx::Class'             => 0,
         'SQL::Translator'         => 0,
+        'Digest::MD5'             => 0,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES    => 'jitterbug-*' },
