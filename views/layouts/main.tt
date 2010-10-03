@@ -5,23 +5,7 @@
     <link rel="stylesheet" href="/css/style.css" />
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
     <meta charset="UTF-8" />
-    <script type="text/javascript">
-      $(document).ready(function() {
-        $('.builds-day').click(function() {
-          var day = $(this).text();
-          var class = "#commits-day-" + day;
-          console.log("on toggle " + class);
-          $(class).toggle();
-        });
-        $('.builds a').click(function() {
-          var url = $(this).attr("href");
-          var id = $(this).parents('.commit').attr('id');
-          $.getJSON(url, null, function(data) {
-            $("#result-" + id).html("<pre>" + data.content + "<pre>").toggle();
-          });
-          return false;
-      })})
-    </script>
+    <script src="<: $uri_base :>/js/common.js" type="text/javascript"></script>
   </head>
   <body>
     <: $content :>
