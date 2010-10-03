@@ -18,4 +18,14 @@ jitterbug:
     dir: /tmp/build
   build_process:
     builder: ./scripts/capsule.sh
-    on_failure: ./scripts/on_failure.sh
+    on_failure: ./scripts/build-failed.sh
+
+plugins:
+  DBIC:
+    schema:
+      skip_automake: 1
+      pckg: "jitterbug::Schema"
+      connect_info:
+        - dbi:SQLite:dbname=jitterbug.db
+
+

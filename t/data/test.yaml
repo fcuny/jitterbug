@@ -8,7 +8,8 @@ commits:
     author: 
       email: franck@lumberjaph.net
       name: franck cuny
-    id: 8c3c1d6be0fa27ada4f03258ddea7683c967a925
+    #id: 8c3c1d6be0fa27ada4f03258ddea7683c967a925
+    id: ba54d9b7d82eabe4ba35ec212eb24d00869119d5
     message: test
     modified: 
       - lib/Dancer.pm

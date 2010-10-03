@@ -1,33 +1,37 @@
 <div id="page">
   <div id="content">
-    <h2><a href="<: $url :>"><: $project :></a> / build history <a href="<: $base_uri :>/project/<: $project :>/feed"><img src="<: $uri_base :>/images/feed.png" /></a></h2>
+    <h2><a href="<: $project.url :>"><: $project.name :></a> / build history <a href="<: $base_uri :>/project/<: $project.name :>/feed"><img src="<: $uri_base :>/images/feed.png" /></a></h2>
 
-    <strong>"<: $description :>"</strong>
+    <strong>"<: $project.description :>"</strong>
 
     :for $days -> $day {
       <h3 class="builds-day" id="builds-day-<: $day :>"><: $day :></h3>
       <div class="commits" id="commits-day-<: $day :>">
-        :for $builds[$day] -> $build {
-          <div class="commit" id="<: $build.commit :>">
+        :for $commits[$day] -> $commit {
+          <div class="commit" id="<: $commit.id :>">
             <div class="description">
-              <div class="message"><pre><: $build.message :></pre></div>
-              <div class="name"><: $build.author.name :></div>
-              <div class="date"><: $build.timestamp :></div>
+              <div class="message"><pre><: $commit.message :></pre></div>
+              <div class="name"><: $commit.author.name :></div>
+              <br />
               <div class="builds">
-                :for $build.version.keys() -> $version {
-                  <a href="<: $uri_base :>/api/build/<: $project :>/<: $build.commit :>/<: $version :>"><: $version :></a> <span class="<: $build.version[$version] :>"><: $build.version[$version] :></span>
+                :for $commit.build.version.keys() -> $version {
+                  <a href="<: $uri_base :>/api/build/<: $project.name :>/<: $commit.id :>/<: $version :>"><: $version :></a> <span class="<: $commit.build.version[$version] :>"><: $commit.build.version[$version] :></span>
                 :}
               </div>
             </div>
             <div class="git">
-              commit&nbsp;&nbsp;<a href="<: $build.url :>"><: $build.commit :></a><br />
+              commit&nbsp;&nbsp;&nbsp;<a href="<: $commit.url :>"><: $commit.id :></a><br />
+              commited&nbsp;<: $commit.timestamp :><br />
+              ref&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<: $commit.ref :><br />
+              <: if $commit.build { :>
+                built in&nbsp;<: $commit.build.end_time - $commit.build.start_time :>&nbsp;seconds</br >
+              <: } :>
             </div>
           </div>
-          <div class="display_test_result" style="display: none" id="result-<: $build.commit :>">
+          <div class="display_test_result" style="display: none" id="result-<: $commit.id :>">
           </div>
         :}
       </div>
-      <hr />
       :}
   </div>
 </div>
