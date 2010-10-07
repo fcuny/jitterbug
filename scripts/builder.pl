@@ -53,7 +53,7 @@ while (1) {
         while (<$fh>){
             $lines .= $_;
         }
-        ($result) = $lines =~ /^Result:\s(.*)$/;
+        ($result) = $lines =~ /Result:\s(\w+)/;
         my ( $name, ) = basename($version);
         $name =~ s/\.txt//;
         if ( !$result || ($result && $result !~ /PASS/ )) {
