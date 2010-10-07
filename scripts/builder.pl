@@ -15,15 +15,14 @@ $|++;
 
 my $conf      = LoadFile('config.yml');
 my $dbix_conf = $conf->{plugins}->{DBIC}->{schema};
-my $schema =
-  jitterbug::Schema->connect( $dbix_conf->{dsn}, $dbix_conf->{user},
-    $dbix_conf->{pass} );
+my $schema    = jitterbug::Schema->connect( @{ $dbix_conf->{connect_info} } );
+my $interval  = $conf->{jitterbug}->{builder}->{sleep} || 30;
 
 while (1) {
     my $task = $schema->resultset('Task')->search()->single();
 
     unless ($task) {
-        sleep 5;
+        sleep $interval;
         next;
     }
 
