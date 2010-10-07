@@ -1,7 +1,8 @@
-use Test::More tests => 1;
+use Test::More tests => 2;
 use strict;
 use warnings;
 ok 1;
+ok 2;
 #use jitterbug;
 #use JSON;
 #use YAML qw/LoadFile/;
