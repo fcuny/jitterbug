@@ -8,7 +8,6 @@ add_hook(
     sub {
         my $tokens = shift;
         $tokens->{uri_base} = request->base;
-        print "on a " . $tokens->{uri_base} . "\n";
     }
 );
 

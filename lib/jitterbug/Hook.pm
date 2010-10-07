@@ -64,7 +64,7 @@ post '/' => sub {
         );
     }
     catch {
-        debug($_);
+        error($_);
     };
 
     try {
@@ -76,7 +76,7 @@ post '/' => sub {
             }
         );
     }catch{
-        debug($_);
+        error($_);
     };
 
     debug("hook accepted");
