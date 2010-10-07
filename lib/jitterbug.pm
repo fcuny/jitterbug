@@ -8,7 +8,7 @@ our $VERSION = '0.1';
 
 load_app 'jitterbug::Hook',       prefix => '/hook';
 load_app 'jitterbug::Project',    prefix => '/project';
-#load_app 'jitterbug::WebService', prefix => '/api';
+load_app 'jitterbug::WebService', prefix => '/api';
 #load_app 'jitterbug::Task',       prefix => '/task';
 
 get '/' => sub {
