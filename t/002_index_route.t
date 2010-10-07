@@ -3,6 +3,7 @@ use strict;
 use warnings;
 
 ok 1;
+ok 2;
 # the order is important
 #use jitterbug;
 #use Dancer::Test;
