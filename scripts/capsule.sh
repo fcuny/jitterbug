@@ -3,8 +3,6 @@
 # first arg:  build_dir
 # second arg: report path
 
-set -e
-
 builddir=$1
 report_path=$2
 
@@ -18,7 +16,6 @@ for perl in $HOME/perl5/perlbrew/perls/perl-5.*
 do
     theperl="$(basename $perl)"
     perlbrew switch $theperl
-	hash -r
 
     perlversion=$(perl -v)
     logfile="$report_path/$theperl.txt"
@@ -31,6 +28,6 @@ do
         perl Makefile.PL
         cpanm --installdeps .
         make
-        HARNESS_VERBOSE=1 make test >> $logfile  2>&1
+        HARNESS_VERBOSE=1 make test >> $logfile 2>&1
     fi
 done
