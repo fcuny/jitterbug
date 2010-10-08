@@ -13,7 +13,8 @@ use jitterbug::Schema;
 
 $|++;
 
-my $conf      = LoadFile('config.yml');
+my $conf_file = shift || die "config.yml is missing";
+my $conf      = LoadFile($conf_file);
 my $dbix_conf = $conf->{plugins}->{DBIC}->{schema};
 my $schema    = jitterbug::Schema->connect( @{ $dbix_conf->{connect_info} } );
 my $interval  = $conf->{jitterbug}->{builder}->{sleep} || 30;
