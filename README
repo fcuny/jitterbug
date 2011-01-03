@@ -6,9 +6,14 @@ as Dancer, DBIx::Class and Git::Repository.
 Installing Jitterbug
 ===================
 
-perl Makefile.PL
+perl Build.PL
 
-# ... install missing dependencies with cpan or cpanm ...
+# You can also use Makefile.PL, but you will then have to manually 
+# install dependencies
+# perl Makefile.PL
+
+# install missing dependencies
+./Build installdeps
 
 # start the jitterbug Dancer app, which by default binds to port 3000
 perl jitterbug.pl

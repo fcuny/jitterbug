@@ -1,0 +1,16 @@
+\.git*
+tmp.*
+.*\.o
+\..*sw?
+\.bak
+_build
+^Build$
+blib/*
+.*\.data
+.*core
+foo*
+.*\.gz
+^tags
+jitterbug-\d+\..*
+.prove
+^MYMETA.yml$

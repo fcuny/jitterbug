@@ -5,3 +5,10 @@ blib/*
 pm_to_blib
 Makefile
 Makefile.old
+_build
+META.yml
+MYMETA.yml
+*.bak
+*.swp
+Makefile.PL
+Build
