@@ -24,6 +24,10 @@ do
         dzil authordeps | cpanm
         cpanm --installdeps .
         HARNESS_VERBOSE=1 dzil test >> $logfile  2>&1
+    else if [ -f 'Build.PL' ]; then
+        perl Build.PL
+        ./Build installdeps
+        HARNESS_VERBOSE=1 ./Build test >> $logfile 2>&1
     else
         perl Makefile.PL
         cpanm --installdeps .
