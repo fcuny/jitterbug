@@ -2,3 +2,24 @@ Jitterbug : A continuous integration system built on Dancer and git hooks
 
 Jitterbug is written in Perl 5 and depends on various CPAN modules, such
 as Dancer, DBIx::Class and Git::Repository.
+
+Installing Jitterbug
+===================
+
+perl Makefile.PL
+
+# ... install missing dependencies with cpan or cpanm ...
+
+# start the jitterbug Dancer app, which by default binds to port 3000
+perl jitterbug.pl
+
+# If you need to start it on a different port use -p
+# perl jitterbug.pl -p 3001
+
+Now add a post-receive hook to your github project that hits the /hook/ URL
+on the server that the jitterbug Dancer app is running on, i.e.
+
+    http://example.com:3001/hook/
+
+TODO: Deploy a DBIx::Class schema
+
