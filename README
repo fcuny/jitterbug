@@ -1,0 +1,4 @@
+Jitterbug : A continuous integration system built on Dancer and git hooks
+
+Jitterbug is written in Perl 5 and depends on various CPAN modules, such
+as Dancer, DBIx::Class and Git::Repository.
