@@ -12,3 +12,4 @@ MYMETA.yml
 *.swp
 Makefile.PL
 Build
+jitterbug.db

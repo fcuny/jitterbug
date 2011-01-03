@@ -14,3 +14,7 @@ foo*
 jitterbug-\d+\..*
 .prove
 ^MYMETA.yml$
+jitterbug.db
+logs/
+META.yml
+Makefile.PL

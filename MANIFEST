@@ -3,7 +3,6 @@ config.yml
 eg/post_hook.t
 environments/development.yml
 environments/production.yml
-jitterbug.db
 jitterbug.pl
 lib/jitterbug.pm
 lib/jitterbug/Hook.pm
@@ -15,12 +14,9 @@ lib/jitterbug/Schema/Result/Project.pm
 lib/jitterbug/Schema/Result/Task.pm
 lib/jitterbug/Task.pm
 lib/jitterbug/WebService.pm
-logs/development.log
 Makefile
-Makefile.PL
 MANIFEST			This list of files
 MANIFEST.SKIP
-META.yml
 public/404.html
 public/500.html
 public/dispatch.cgi
