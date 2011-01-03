@@ -16,10 +16,14 @@ perl jitterbug.pl
 # If you need to start it on a different port use -p
 # perl jitterbug.pl -p 3001
 
+In another terminal, deploy a DBIx::Class schema ( which is SQLite by default, 
+change the values in config.yml to tweak) :
+
+perl scripts/deploy_schema config.yml
+
 Now add a post-receive hook to your github project that hits the /hook/ URL
 on the server that the jitterbug Dancer app is running on, i.e.
 
     http://example.com:3001/hook/
 
-TODO: Deploy a DBIx::Class schema
-
+TODO: docs for builder.pl
