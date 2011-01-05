@@ -96,8 +96,8 @@ sub run_task {
     );
 
     debug("Removing $build_dir");
-    rmtree($build_dir);
-    warn $@ if $@;
+    rmtree($build_dir, { error => \my $err } );
+    warn @$err if @$err;
 
     my $repo    = $task->project->url . '.git';
     my $r       = Git::Repository->create( clone => $repo => $build_dir );
