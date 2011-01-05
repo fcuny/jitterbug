@@ -53,10 +53,11 @@ sub run {
 
 sub build {
     my $self  = shift;
-    my @tasks = $self->{'schema'}->resultset('Task')->all();
 
     while (1) {
+        my @tasks = $self->{'schema'}->resultset('Task')->all();
         debug("Found " . scalar(@tasks) . " tasks");
+
         foreach my $task (@tasks) {
             $task ? $self->run_task($task) : $self->sleep;
         }
