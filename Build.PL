@@ -10,7 +10,7 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/jitterbug.pm',
     include_dirs        => '',
     build_requires => {
-        'Test::More'      => 0,
+        'Test::Most'      => 0,
     },
     requires => {
         'YAML'                     => 0,
