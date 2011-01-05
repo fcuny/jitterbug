@@ -53,7 +53,6 @@ sub build {
 
         $self->{'cron'} and return 0;
 
-        warn "done\n";
         sleep 5;
     }
 
@@ -118,7 +117,10 @@ sub run_task {
     $task->commit->update( {
         content => JSON::encode_json($desc),
     } );
+    warn "Task completed for " . $task->commitsha256 . "\n";
 
     $task->delete();
+
+    warn "Task removed from " . $task->project->name . "\n";
 }
 
