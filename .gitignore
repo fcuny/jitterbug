@@ -9,7 +9,7 @@ _build
 META.yml
 MYMETA.yml
 *.bak
-*.swp
+*.sw?
 Makefile.PL
 Build
 jitterbug.db

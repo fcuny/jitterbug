@@ -82,6 +82,7 @@ sub run_task {
     my $conf   = $self->{'conf'};
 
     $desc->{'build'}{'start_time'} = time();
+    debug("Build Start");
 
     my $report_path = dir(
         $conf->{'jitterbug'}{'reports'}{'dir'},
@@ -94,6 +95,7 @@ sub run_task {
         $task->project->name,
     );
 
+    debug("Removing $build_dir");
     rmtree($build_dir);
     warn $@ if $@;
 
