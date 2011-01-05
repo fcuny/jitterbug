@@ -85,6 +85,8 @@ sub run_task {
         $task->project->name,
     );
 
+    rmtree($build_dir);
+
     my $repo    = $task->project->url . '.git';
     my $r       = Git::Repository->create( clone => $repo => $build_dir );
     $r->run( 'checkout', $task->commit->sha256 );
@@ -92,7 +94,6 @@ sub run_task {
     my $builder = $conf->{'jitterbug'}{'build_process'}{'builder'};
     my $res     = `$builder $build_dir $report_path`;
 
-    rmtree($build_dir);
 
     $desc->{'build'}{'end_time'} = time();
 
