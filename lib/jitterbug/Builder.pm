@@ -48,15 +48,22 @@ sub build {
 
     while (1) {
         foreach my $task (@tasks) {
-            $task ? $self->run_task($task) : sleep $self->{'interval'};
+            $task ? $self->run_task($task) : $self->sleep;
         }
 
         $self->{'cron'} and return 0;
 
-        sleep 5;
+        $self->sleep(5);
     }
 
     return 1;
+}
+
+sub sleep {
+    my ($self, $interval) = @_;
+    $interval ||= $self->{'interval'};
+    warn "sleeping for $interval seconds\n";
+    sleep $interval;
 }
 
 sub run_task {
@@ -117,7 +124,7 @@ sub run_task {
     $task->commit->update( {
         content => JSON::encode_json($desc),
     } );
-    warn "Task completed for " . $task->commitsha256 . "\n";
+    warn "Task completed for " . $task->commit->sha256 . "\n";
 
     $task->delete();
 
