@@ -11,8 +11,10 @@ use Getopt::Long qw/:config no_ignore_case/;
 use File::Basename;
 use Git::Repository;
 use jitterbug::Schema;
+#use Data::Dumper;
 
 local $| = 1;
+use constant DEBUG => 1;
 
 sub new {
     my $self = bless {} => shift;
@@ -29,13 +31,17 @@ sub new {
     return $self;
 }
 
+sub debug {
+    warn @_ if DEBUG;
+}
+
 sub run {
     my $self      = shift || die "Must call run() from object\n";
     my $conf      = $self->{'conf'} = LoadFile( $self->{'configfile'} );
     my $dbix_conf = $conf->{'plugins'}{'DBIC'}{'schema'};
 
-    warn "Loaded config file: " . $self->{'conf'};
-    warn "Connection Info: " . @{ $dbix_conf->{'connect_info'} };
+    debug("Loaded config file: " . $self->{'configfile'});
+    debug("Connection Info: " . join ':', @{ $dbix_conf->{'connect_info'} });
 
     $self->{'schema'}   = jitterbug::Schema->connect( @{ $dbix_conf->{'connect_info'} } );
     $self->{'interval'} = $self->{'sleep'}                         ||
@@ -65,7 +71,7 @@ sub build {
 sub sleep {
     my ($self, $interval) = @_;
     $interval ||= $self->{'interval'};
-    warn "sleeping for $interval seconds\n";
+    debug("sleeping for $interval seconds\n");
     sleep $interval;
 }
 
@@ -93,7 +99,8 @@ sub run_task {
 
     my $repo    = $task->project->url . '.git';
     my $r       = Git::Repository->create( clone => $repo => $build_dir );
-    warn "Checking out " . $task->commit->sha256 . " from $repo into $build_dir";
+
+    debug("Checking out " . $task->commit->sha256 . " from $repo into $build_dir\n");
     $r->run( 'checkout', $task->commit->sha256 );
 
     my $builder = $conf->{'jitterbug'}{'build_process'}{'builder'};
@@ -130,10 +137,10 @@ sub run_task {
     $task->commit->update( {
         content => JSON::encode_json($desc),
     } );
-    warn "Task completed for " . $task->commit->sha256 . "\n";
+    debug("Task completed for " . $task->commit->sha256 . "\n");
 
     $task->delete();
 
-    warn "Task removed from " . $task->project->name . "\n";
+    debug("Task removed from " . $task->project->name . "\n");
 }
 
