@@ -8,4 +8,4 @@ Message:
 $MESSAGE
 
 $OUTPUT
-" | mail -s "[jitterbug] BUILD FAILED $SHA" --to $COMMITER
+" | mail -s "[jitterbug] BUILD FAILED $SHA" $COMMITER
