@@ -25,6 +25,8 @@ my $builder = Module::Build->new(
         'DBIx::Class'              => 0,
         'SQL::Translator'          => 0,
         'Digest::MD5'              => 0,
+        'App::perlbrew'            => 0,
+        'Dist::Zilla'              => 0,
     },
     add_to_cleanup      => [ 'jitterbug-' ],
     create_makefile_pl  => 'traditional',
