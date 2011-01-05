@@ -56,6 +56,7 @@ sub build {
     my @tasks = $self->{'schema'}->resultset('Task')->all();
 
     while (1) {
+        debug("Found " . scalar(@tasks) . " tasks");
         foreach my $task (@tasks) {
             $task ? $self->run_task($task) : $self->sleep;
         }
@@ -99,15 +100,21 @@ sub run_task {
     rmtree($build_dir, { error => \my $err } );
     warn @$err if @$err;
 
+    $self->sleep(1); # avoid race conditions
+
     my $repo    = $task->project->url . '.git';
     my $r       = Git::Repository->create( clone => $repo => $build_dir );
 
     debug("Checking out " . $task->commit->sha256 . " from $repo into $build_dir\n");
     $r->run( 'checkout', $task->commit->sha256 );
 
-    my $builder = $conf->{'jitterbug'}{'build_process'}{'builder'};
-    my $res     = `$builder $build_dir $report_path`;
+    my $builder         = $conf->{'jitterbug'}{'build_process'}{'builder'};
 
+    my $builder_command = "$builder $build_dir $report_path";
+    debug("Going to run builder : $builder_command");
+
+    my $res             = `$builder_command`;
+    debug($res);
 
     $desc->{'build'}{'end_time'} = time();
 
