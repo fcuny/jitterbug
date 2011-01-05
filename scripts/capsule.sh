@@ -33,7 +33,7 @@ do
         echo "Found Build.PL, using Build.PL"
         perl Build.PL
         ./Build installdeps
-        HARNESS_VERBOSE=1 ./Build test >> $logfile 2>&1
+        HARNESS_VERBOSE=1 ./Build test --verbose >> $logfile 2>&1
     else
         echo "Hoping to find Makefile.PL"
         perl Makefile.PL
