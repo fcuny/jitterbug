@@ -34,6 +34,9 @@ sub run {
     my $conf      = $self->{'conf'} = LoadFile( $self->{'configfile'} );
     my $dbix_conf = $conf->{'plugins'}{'DBIC'}{'schema'};
 
+    warn "Loaded config file: " . $self->{'conf'};
+    warn "Connection Info: " . @{ $dbix_conf->{'connect_info'} };
+
     $self->{'schema'}   = jitterbug::Schema->connect( @{ $dbix_conf->{'connect_info'} } );
     $self->{'interval'} = $self->{'sleep'}                         ||
                           $conf->{'jitterbug'}{'builder'}{'sleep'} ||
@@ -86,9 +89,11 @@ sub run_task {
     );
 
     rmtree($build_dir);
+    warn $@ if $@;
 
     my $repo    = $task->project->url . '.git';
     my $r       = Git::Repository->create( clone => $repo => $build_dir );
+    warn "Checking out " . $task->commit->sha256 . " from $repo into $build_dir";
     $r->run( 'checkout', $task->commit->sha256 );
 
     my $builder = $conf->{'jitterbug'}{'build_process'}{'builder'};
