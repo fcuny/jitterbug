@@ -31,4 +31,13 @@ on the server that the jitterbug Dancer app is running on, i.e.
 
     http://example.com:3001/hook/
 
-TODO: docs for builder.pl
+Now you must start the builder, which actually clones a new git repo for
+each task (this could be network-intensive) and actually runs the build
+and test commands for each project.
+
+    perl scripts/builder.pl -c config.yml
+
+Now, when you commit to a project that has a Jitterbug post-receive hook,
+the builder check every 30 seconds for a new task and build and test your
+projects!
+
