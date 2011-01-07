@@ -28,6 +28,8 @@ sub new {
     $self->{'configfile'}
         or die qq{missing config.yml, use "-c config.yml" to help us find it\n};
 
+    die "Does not exist!: " . $self->{'configfile'} unless -e $self->{'configfile'};
+
     return $self;
 }
 
