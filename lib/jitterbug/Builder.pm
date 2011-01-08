@@ -113,7 +113,9 @@ sub run_task {
 
     my $builder         = $conf->{'jitterbug'}{'build_process'}{'builder'};
 
-    my $builder_command = "$builder $build_dir $report_path";
+    my $perlbrew = $conf->{'options'}{'perlbrew'} || 1;
+
+    my $builder_command = "$builder $build_dir $report_path $perlbrew";
 
     debug("Going to run builder : $builder_command");
     my $res             = `$builder_command`;

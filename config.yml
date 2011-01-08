@@ -18,6 +18,8 @@ jitterbug:
   build_process:
     builder: ./scripts/capsule.sh
     on_failure: ./scripts/build-failed.sh
+  options:
+    perlbrew: 1
 
 plugins:
   DBIC:

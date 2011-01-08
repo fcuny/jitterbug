@@ -3,27 +3,36 @@
 # first arg:  build_dir
 # second arg: report path
 
+# this is getting smelly
 builddir=$1
 report_path=$2
+perlbrew=$3
 
 echo "Creating report_path=$report_path"
 mkdir -p $report_path
 
 cd $builddir
 
-source $HOME/perl5/perlbrew/etc/bashrc
+if [ $use_perlbrew ]; then
+    source $HOME/perl5/perlbrew/etc/bashrc
+    for perl in $HOME/perl5/perlbrew/perls/perl-5.*
+    do
+        theperl="$(basename $perl)"
 
-for perl in $HOME/perl5/perlbrew/perls/perl-5.*
-do
-    theperl="$(basename $perl)"
+        echo ">perlbrew switch $theperl"
+        perlbrew switch $theperl
+        # TODO: check error condition
 
-    echo ">perlbrew switch $theperl"
-    perlbrew switch $theperl
-    # TODO: check error condition
+        logfile="$report_path/$theperl.txt"
+        jitterbug_build
+    done
+else
+        theperl="$(basename perl -e \"print $]\")"
+        logfile="$report_path/$theperl.txt"
+        jitterbug_build
+fi
 
-    perlversion=$(perl -v)
-    logfile="$report_path/$theperl.txt"
-
+function jitterbug_build () {
     if [ -f 'dist.ini' ]; then
         echo "Found dist.ini, using Dist::Zilla"
         dzil authordeps | cpanm
@@ -42,4 +51,4 @@ do
         make
         HARNESS_VERBOSE=1 make test >> $logfile 2>&1
     fi
-done
+}
