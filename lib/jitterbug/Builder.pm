@@ -114,8 +114,8 @@ sub run_task {
     my $builder         = $conf->{'jitterbug'}{'build_process'}{'builder'};
 
     my $builder_command = "$builder $build_dir $report_path";
-    debug("Going to run builder : $builder_command");
 
+    debug("Going to run builder : $builder_command");
     my $res             = `$builder_command`;
     debug($res);
 
@@ -140,7 +140,9 @@ sub run_task {
             my $sha      = $desc->{'id'};
             my $on_failure =
                 $conf->{'jitterbug'}{'build_process'}{'on_failure'};
-            `$on_failure $commiter $message $output $sha`;
+            my $failure_cmd = "$on_failure $commiter $message $output $sha";
+            debug("Running failure command: $failure_cmd");
+            `$failure_cmd`;
         }
         $desc->{'build'}{'version'}{$name} = $result;
         close $fh;
