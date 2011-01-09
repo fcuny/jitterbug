@@ -38,7 +38,7 @@ if [ $use_perlbrew ]; then
     source $HOME/perl5/perlbrew/etc/bashrc
     for perl in $HOME/perl5/perlbrew/perls/perl-5.*
     do
-        theperl="$(perl -e \"print $]\")"
+        theperl=$(perl -e 'print $^V')
         logfile="$report_path/perl-$theperl.txt"
 
         echo ">perlbrew switch $theperl"
@@ -48,7 +48,7 @@ if [ $use_perlbrew ]; then
         jitterbug_build
     done
 else
-        theperl="$(perl -e \"print $]\")"
+        theperl=$(perl -e 'print $^V')
         logfile="$report_path/perl-$theperl.txt"
         jitterbug_build
 fi
