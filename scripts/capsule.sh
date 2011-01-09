@@ -38,17 +38,17 @@ if [ $use_perlbrew ]; then
     source $HOME/perl5/perlbrew/etc/bashrc
     for perl in $HOME/perl5/perlbrew/perls/perl-5.*
     do
-        theperl="$(basename $perl)"
+        theperl="$(perl -e \"print $]\")"
+        logfile="$report_path/perl-$theperl.txt"
 
         echo ">perlbrew switch $theperl"
         perlbrew switch $theperl
         # TODO: check error condition
 
-        logfile="$report_path/$theperl.txt"
         jitterbug_build
     done
 else
-        theperl="$(basename perl -e \"print $]\")"
-        logfile="$report_path/$theperl.txt"
+        theperl="$(perl -e \"print $]\")"
+        logfile="$report_path/perl-$theperl.txt"
         jitterbug_build
 fi
