@@ -18,6 +18,7 @@ jitterbug:
   build_process:
     builder: ./scripts/capsule.sh
     on_failure: ./scripts/build-failed.sh
+    on_failure_email: alice@example.com
   options:
     perlbrew: 1
 

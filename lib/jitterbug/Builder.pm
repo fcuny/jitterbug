@@ -142,7 +142,9 @@ sub run_task {
             my $sha      = $desc->{'id'};
             my $on_failure =
                 $conf->{'jitterbug'}{'build_process'}{'on_failure'};
-            my $failure_cmd = "$on_failure $commiter $message $output $sha";
+            my $on_failure_email =
+                $conf->{'jitterbug'}{'build_process'}{'on_failure_email'};
+            my $failure_cmd = "$on_failure $commiter $message $output $sha $on_failure_email";
             debug("Running failure command: $failure_cmd");
             `$failure_cmd`;
         }
