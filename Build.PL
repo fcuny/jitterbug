@@ -27,6 +27,7 @@ my $builder = Module::Build->new(
         'Digest::MD5'              => 0,
         'App::perlbrew'            => 0,
         'Dist::Zilla'              => 0,
+        'Email::Stuff'             => 0,
     },
     add_to_cleanup      => [ 'jitterbug-' ],
     create_makefile_pl  => 'traditional',
