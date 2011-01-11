@@ -138,13 +138,13 @@ sub run_task {
             $result = "FAIL";
             my $message          = $desc->{'message'};
             my $commiter         = $desc->{'author'}{'email'};
-            my $output           = "Build failed";
+            my $output           = $lines;
             my $sha              = $desc->{'id'};
             my $on_failure       = $conf->{'jitterbug'}{'build_process'}{'on_failure'};
             my $on_failure_email = $conf->{'jitterbug'}{'build_process'}{'on_failure_email'};
 
             $message  =~ s/'/\\'/g; $commiter =~ s/'/\\'/g; $output =~ s/'/\\'/g;
-            my $failure_cmd = qq{$on_failure '$commiter' '$message' '$output' $sha $on_failure_email};
+            my $failure_cmd = sprintf("%s '%s' %s '%s' '%s' %s %s", $on_failure, $commiter, $task->project->name, $message, $output, $sha, $on_failure_email);
             debug("Running failure command: $failure_cmd");
             `$failure_cmd`;
         }
