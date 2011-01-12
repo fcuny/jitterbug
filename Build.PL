@@ -11,6 +11,7 @@ my $builder = Module::Build->new(
     include_dirs        => '',
     build_requires => {
         'Test::Most'      => 0,
+        'Test::MockObject'=> 0,
     },
     requires => {
         'YAML'                     => 0,
