@@ -1,29 +1,42 @@
 use strict;
 use warnings;
-use Test::Most tests => 3;
+use Test::Most tests => 5;
 use Data::Dumper;
 use Test::MockObject;
 
 use_ok "jitterbug::Emailer";
 
 {
-    my $conf = { jitterbug => { build_process => 'bar'} };
-    my $commit = Test::MockObject->new;
+    my $buildconf = {
+        on_failure_from_email     => 'bob@example.com',
+        on_failure_cc_email       => 'steve@apple.com',
+        on_failure_subject_prefix => 'BLARG',
+    };
+
+    my $conf    = { jitterbug => { build_process => $buildconf } };
+    my $commit  = Test::MockObject->new;
     my $project = Test::MockObject->new;
-    my $task = Test::MockObject->new;
+    my $task    = Test::MockObject->new;
 
     $project->mock('name', sub { 'ponie' });
 
     $commit->mock('sha256', sub { 'c0decafe' });
-    $commit->mock('content', sub { 'this should be JSON' } );
+    $commit->mock('content', sub { '{  }' } );
 
     $task->mock('commit', sub { $commit });
     $task->mock('project', sub { $project });
 
-    my $tap = "1..1\nok 1\n";
+    my $tap = "THIS IS TAP";
     my $e = jitterbug::Emailer->new($conf, $task, $tap);
 
     isa_ok($e,'jitterbug::Emailer');
     can_ok($e,qw/new run/);
+
+    $e->run;
+    my $email = $e->{'last_email_sent'}{'email'};
+    like($email->body, qr/THIS IS TAP/, 'email body looks right');
+
+    my $header = $email->{'header'};
+    isa_ok($header, 'Email::MIME::Header');
 
 }
