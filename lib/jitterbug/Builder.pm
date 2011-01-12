@@ -146,7 +146,14 @@ sub run_task {
             $message  =~ s/'/\\'/g; $commiter =~ s/'/\\'/g; $output =~ s/'/\\'/g;
             my $failure_cmd = sprintf("%s '%s' %s '%s' '%s' %s %s", $on_failure, $commiter, $task->project->name, $message, $output, $sha, $on_failure_cc_email);
             debug("Running failure command: $failure_cmd");
-            `$failure_cmd`;
+
+            # does it look like a module name?
+            if ($on_failure =~ /::/) {
+                # we should do some error checking here
+                $on_failure->new($conf,$task,$output)->run;
+            } else {
+                system($failure_cmd);
+            }
         }
         $desc->{'build'}{'version'}{$name} = $result;
         close $fh;
