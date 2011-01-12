@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::Most tests => 5;
+use Test::Most tests => 8;
 use Data::Dumper;
 use Test::MockObject;
 
@@ -10,7 +10,7 @@ use_ok "jitterbug::Emailer";
     my $buildconf = {
         on_failure_from_email     => 'bob@example.com',
         on_failure_cc_email       => 'steve@apple.com',
-        on_failure_subject_prefix => 'BLARG',
+        on_failure_subject_prefix => 'BLARG ',
     };
 
     my $conf    = { jitterbug => { build_process => $buildconf } };
@@ -38,5 +38,9 @@ use_ok "jitterbug::Emailer";
 
     my $header = $email->{'header'};
     isa_ok($header, 'Email::MIME::Header');
+
+    is($header->header_raw('cc'), 'steve@apple.com', 'cc header');
+    is($header->header_raw('subject'), 'BLARG ponie @ c0decafe', 'subject header');
+    is($header->header_raw('from'), 'bob@example.com', 'from header');
 
 }
