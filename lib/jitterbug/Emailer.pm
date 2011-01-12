@@ -21,14 +21,16 @@ sub run {
     my $buildconf = $self->{'conf'}->{'jitterbug'}{'build_process'};
     my $project   = $task->project->name;
     my $tap_output = $self->{'tap_output'};
-
     my $sha1 = $task->commit->sha256;
+    my $desc = JSON::decode_json( $task->commit->content );
+    my $email = $desc->{'author'}{'email'};
+
     my $body = <<BODY;
 $tap_output
 BODY
 
     Email::Stuff->from($buildconf->{'on_failure_from_email'})
-                ->to($buildconf->{'on_failure_to_email'})
+                ->to($email)
                 ->cc($buildconf->{'on_failure_cc_email'})
                 ->text_body($body)
                 ->subject(
