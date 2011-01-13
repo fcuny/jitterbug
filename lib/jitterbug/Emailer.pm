@@ -25,9 +25,15 @@ sub run {
     my $sha1       = $task->commit->sha256;
     my $desc       = JSON::decode_json( $task->commit->content );
     my $email      = $desc->{'author'}{'email'};
+    my $header     = $buildconf->{'on_failure_header'};
+    my $footer     = $buildconf->{'on_failure_footer'};
 
     my $body = <<BODY;
+$header
+
 $tap_output
+
+$footer
 BODY
 
     my $stuff = Email::Stuff->from($buildconf->{'on_failure_from_email'})
