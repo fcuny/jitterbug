@@ -150,6 +150,7 @@ sub run_task {
             # does it look like a module name?
             if ($on_failure =~ /::/) {
                 # we should do some error checking here
+                eval "require $on_failure";
                 $on_failure->new($conf,$task,$output)->run;
             } else {
                 system($failure_cmd);
