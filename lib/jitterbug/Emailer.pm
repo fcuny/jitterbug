@@ -41,6 +41,9 @@ $tap_output
 
 $footer
 BODY
+    # Expand placeholders in our on_failure header and footer
+    $body =~ s/%%PROJECT%%/$project/g;
+    $body =~ s/%%SHA1%%/$sha1/g;
 
     my $stuff = Email::Stuff->from($buildconf->{'on_failure_from_email'})
                 # bug in Email::Stuff brakes chaining if $email is empty
