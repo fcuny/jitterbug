@@ -16,12 +16,29 @@ sub new {
     return $self;
 }
 
+sub _make_body {
+    my ($header, $message, $tap, $footer) = @_;
+
+    no warnings 'uninitialized';
+    return <<BODY;
+$header
+
+Commit Message:
+$message
+
+TAP Output:
+$tap
+
+$footer
+BODY
+
+}
 sub run {
     my $self       = shift;
     my $task       = $self->{'task'};
     my $buildconf  = $self->{'conf'}->{'jitterbug'}{'build_process'};
     my $project    = $task->project->name;
-    my $tap_output = $self->{'tap_output'};
+    my $tap        = $self->{'tap_output'};
     my $sha1       = $task->commit->sha256;
     my $shortsha1  = substr($sha1, 0, 8);
     my $desc       = JSON::decode_json( $task->commit->content );
@@ -29,18 +46,8 @@ sub run {
     my $message    = $desc->{'message'};
     my $header     = $buildconf->{'on_failure_header'};
     my $footer     = $buildconf->{'on_failure_footer'};
+    my $body       = _make_body($header,$message, $tap, $footer);
 
-    my $body = <<BODY;
-$header
-
-Commit Message:
-$message
-
-TAP Output:
-$tap_output
-
-$footer
-BODY
     # Expand placeholders in our on_failure header and footer
     $body =~ s/%%PROJECT%%/$project/g;
     $body =~ s/%%SHA1%%/$sha1/g;
