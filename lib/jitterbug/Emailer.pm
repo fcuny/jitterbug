@@ -45,7 +45,7 @@ sub run {
     my $header     = $buildconf->{'on_failure_header'};
     my $footer     = $buildconf->{'on_failure_footer'};
     my $body       = _make_body($header,$message, $tap, $footer);
-    my $summary;
+    my $summary    = '';
 
     if ( $tap =~ m/^(Test Summary Report.*)/ms ) {
         $summary = $1;
