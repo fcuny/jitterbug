@@ -22,13 +22,11 @@ sub _make_body {
     no warnings 'uninitialized';
     return <<BODY;
 $header
-
 Commit Message:
 $message
 
 TAP Output:
 $tap
-
 $footer
 BODY
 
@@ -47,10 +45,17 @@ sub run {
     my $header     = $buildconf->{'on_failure_header'};
     my $footer     = $buildconf->{'on_failure_footer'};
     my $body       = _make_body($header,$message, $tap, $footer);
+    my $summary;
 
-    # Expand placeholders in our on_failure header and footer
+    if ( $tap =~ m/^(Test Summary Report.*)/ms ) {
+        $summary = $1;
+    }
+
+    # Expand placeholders in our failure email
     $body =~ s/%%PROJECT%%/$project/g;
     $body =~ s/%%SHA1%%/$sha1/g;
+    $body =~ s/%%SUMMARY%%/$summary/g;
+
 
     my $stuff = Email::Stuff->from($buildconf->{'on_failure_from_email'})
                 # bug in Email::Stuff brakes chaining if $email is empty
