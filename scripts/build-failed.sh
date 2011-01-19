@@ -1,7 +1,14 @@
 COMMITER=$1
-MESSAGE=$2
-OUTPUT=$3
-SHA=$4
-CC_EMAIL=$5
+PROJECT=$2
+MESSAGE=$3
+OUTPUT=$4
+SHA=$5
+CC_EMAIL=$6
 
-echo "Message:\n$MESSAGE\nTest Output:\n$OUTPUT\n" | mail -c "$CC_EMAIL" -s "[jitterbug] BUILD FAILED $SHA" $COMMITER
+echo "
+Message:
+$MESSAGE
+
+Test Output:
+$OUTPUT
+" | mail -c "$CC_EMAIL" -s "[jitterbug] FAIL $PROJECT @ $SHA" $COMMITER

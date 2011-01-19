@@ -1,7 +1,7 @@
 
 use strict;
 use warnings;
-use Test::Most tests => 7;
+use Test::Most tests => 9;
 use Data::Dumper;
 
 use jitterbug::Builder;
@@ -30,13 +30,45 @@ use jitterbug::Builder;
     my $b = jitterbug::Builder->new();
     isa_ok($b, 'jitterbug::Builder');
     is($b->{'configfile'}, 't/data/test.yml');
-    #warn Dumper [ $b ];
 
     is($b->run, 0, '->run returns 0 in cron mode');
     cmp_deeply($b->{'conf'}, {
-        'configfile' => 't/data/test.yml',
-        'cron'       => 1,
-        'sleep'      => undef
+            'engines' => {
+                         'xslate' => {
+                                     'type' => 'text',
+                                     'path' => '/',
+                                     'cache' => '0'
+                                   }
+                       },
+            'plugins' => {
+                           'DBIC' => {
+                                       'schema' => {
+                                                   'connect_info' => [
+                                                                       'dbi:SQLite:dbname=jitterbug.db'
+                                                                     ],
+                                                   'pckg' => 'jitterbug::Schema',
+                                                   'skip_automake' => '1'
+                                                 }
+                                     }
+                         },
+            'jitterbug' => {
+                             'build_process' => {
+                                                'on_failure' => './scripts/build-failed.sh',
+                                                'builder' => './scripts/capsule.sh'
+                                              },
+                             'builder' => {},
+                             'reports' => {
+                                          'dir' => '/tmp/jitterbug'
+                                        },
+                             'build' => {
+                                        'dir' => '/tmp/build'
+                                      }
+                           },
+            'template' => 'xslate',
+            'appname' => 'jitterbug',
+            'layout' => 'main',
+            'logger' => 'file',
+            'builds_per_feed' => '5'
     });
 
 
