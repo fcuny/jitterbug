@@ -9,7 +9,7 @@ use_ok "jitterbug::Emailer";
 sub setup {
     my $buildconf = {
         on_failure_from_email     => 'bob@example.com',
-        on_failure_cc_email       => 'steve@apple.com',
+        on_failure_cc_email       => 'steve@example.com',
         on_failure_subject_prefix => 'BLARG ',
         on_failure_header         => "Summary:\n%%SUMMARY%%",
         on_failure_footer         => "FOOT",
