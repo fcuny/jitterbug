@@ -45,7 +45,7 @@ sub setup {
     my $header = $email->{'header'};
     isa_ok($header, 'Email::MIME::Header');
 
-    is($header->header_raw('cc'), 'steve@apple.com', 'cc header');
+    is($header->header_raw('cc'), 'steve@example.com', 'cc header');
     like($header->header_raw('subject'), qr/BLARG ponie @ c0decafe blargly blarg/, 'subject header');
     is($header->header_raw('from'), 'bob@example.com', 'from header');
 }
