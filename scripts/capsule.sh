@@ -15,17 +15,21 @@ function jitterbug_build () {
         # ./Build installdeps is not available in older Module::Build's
         cpanm --installdeps .
         HARNESS_VERBOSE=1 ./Build test --verbose >> $logfile 2>&1
+    elif [ -f 'Makefile.PL' ]; then
+        echo "Found Makefile.PL"
+        perl Makefile.PL
+        cpanm --installdeps .
+        HARNESS_VERBOSE=1 make test >> $logfile 2>&1
     elif [ -f 'setup.pir' ]; then
         echo "Found setup.pir"
         HARNESS_VERBOSE=1 parrot setup.pir test >> $logfile 2>&1
     elif [ -f 'setup.nqp' ]; then
         echo "Found setup.nqp"
         HARNESS_VERBOSE=1 parrot-nqp setup.nqp test >> $logfile 2>&1
-    else
-        echo "Hoping to find Makefile.PL"
-        perl Makefile.PL
+    elif [ -f 'Configure.pl' ]; then
+        echo "Found Configure.pl"
+        perl Configure.pl
         cpanm --installdeps .
-        make
         HARNESS_VERBOSE=1 make test >> $logfile 2>&1
     fi
 }
