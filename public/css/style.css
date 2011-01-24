@@ -233,10 +233,12 @@ font-family:Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",m
 .repo p.desc{margin:0 0 3px 0;font-size:12px;color:#444;}
 .repo p.updated-at{margin:0;font-size:11px;color:#888;}
 
+.comming-builds{border:1px solid #d8d8d8;background-color:#f0f0f0}
+
 .commit .name{float:left; width: 100%;}
 .commit .name .date{color:#888;font-size:90%;}
 .commit .name .author{font-weight: bolder;line-height:2em}
 .commit .gravatar{border:1px solid #d0d0d0;padding:2px;background-color:white;float:left;margin-right:.7em;}
 
 .columns .first{float:left;width:450px;}
-.columns .last{float:right;width:450px;}
+.columns .last{float:right;width:300px;}

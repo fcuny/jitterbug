@@ -28,11 +28,13 @@
       <div class="last">
         <h3>Builds pending</h3>
 
+        <div class="comming-builds">
         <ul>
           : for $builds -> $build {
-          <li><a href="<: $uri_base :>task/<: $build :>"><: $build :></a></li>
+          <li><a href="<: $uri_base :>task/<: $build.id :>"><: $build.project :> (id: <: $build.id :>)</a></li>
           : }
         </ul>
+        </div>
       </div>
 
     </div>
