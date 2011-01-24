@@ -9,9 +9,16 @@ our $VERSION = '0.1';
 load_app 'jitterbug::Hook',       prefix => '/hook';
 load_app 'jitterbug::Project',    prefix => '/project';
 load_app 'jitterbug::WebService', prefix => '/api';
-#load_app 'jitterbug::Task',       prefix => '/task';
+load_app 'jitterbug::Task',       prefix => '/task';
 
 get '/' => sub {
+    my $projects = _get_projects();
+    my ( $builds, $runnings ) = _get_builds();
+
+    template 'index', { projects => $projects, builds => $builds };
+};
+
+sub _get_projects {
 
     my @projects = ();
 
@@ -41,7 +48,25 @@ get '/' => sub {
       sort { $b->{last_build}->{timestamp} cmp $a->{last_build}->{timestamp} }
       @projects;
 
-    template 'index', {projects => \@projects};
-};
+    return \@projects;
+}
+
+sub _get_builds {
+
+    my @builds   = ();
+    my @runnings = ();
+
+    my $builds = schema->resultset('Task')->search();
+    while ( my $build = $builds->next ) {
+        my $build_desc = {
+            project => $build->project->name,
+            id      => $build->id,
+            running => $build->running,
+        };
+        $build->running ? push @runnings, $build_desc : push @builds,
+          $build_desc;
+    }
+    return ( \@builds, \@runnings );
+}
 
 true;
