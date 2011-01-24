@@ -15,7 +15,8 @@ get '/' => sub {
     my $projects = _get_projects();
     my ( $builds, $runnings ) = _get_builds();
 
-    template 'index', { projects => $projects, builds => $builds };
+    template 'index',
+      { projects => $projects, builds => $builds, runnings => $runnings };
 };
 
 sub _get_projects {
