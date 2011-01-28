@@ -17,6 +17,7 @@ jitterbug:
     dir: /tmp/build
   build_process:
     builder: ./scripts/capsule.sh
+    builder_variables:
     on_failure: ./scripts/build-failed.sh
     on_failure_cc_email: alice@example.com
     on_failure_from_email: donotreply@example.com

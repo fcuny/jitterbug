@@ -44,7 +44,7 @@ use jitterbug::Builder;
                            'DBIC' => {
                                        'schema' => {
                                                    'connect_info' => [
-                                                                       'dbi:SQLite:dbname=jitterbug.db'
+                                                                       'dbi:SQLite:dbname=t/data/jitterbug.db'
                                                                      ],
                                                    'pckg' => 'jitterbug::Schema',
                                                    'skip_automake' => '1'
@@ -54,7 +54,8 @@ use jitterbug::Builder;
             'jitterbug' => {
                              'build_process' => {
                                                 'on_failure' => './scripts/build-failed.sh',
-                                                'builder' => './scripts/capsule.sh'
+                                                'builder' => './scripts/capsule.sh',
+                                                'builder_variables' => 'STUFF=BLAH',
                                               },
                              'builder' => {},
                              'reports' => {

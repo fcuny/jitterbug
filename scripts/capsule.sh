@@ -2,6 +2,12 @@
 
 # first arg:  build_dir
 # second arg: report path
+# third arg: should we use perlbrew?
+
+# this is getting smelly
+builddir=$1
+report_path=$2
+perlbrew=$3
 
 function jitterbug_build () {
     if [ -f 'dist.ini' ]; then
@@ -34,10 +40,6 @@ function jitterbug_build () {
     fi
 }
 
-# this is getting smelly
-builddir=$1
-report_path=$2
-perlbrew=$3
 
 echo "Creating report_path=$report_path"
 mkdir -p $report_path
