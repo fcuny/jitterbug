@@ -142,7 +142,7 @@ sub run_task {
             my $output           = $lines;
             my $sha              = $desc->{'id'};
             my $on_failure       = $conf->{'jitterbug'}{'build_process'}{'on_failure'};
-            my $on_failure_cc_email = $conf->{'jitterbug'}{'build_process'}{'on_failure_email'};
+            my $on_failure_cc_email = $conf->{'jitterbug'}{'build_process'}{'on_failure_cc_email'};
 
             $message  =~ s/'/\\'/g; $commiter =~ s/'/\\'/g; $output =~ s/'/\\'/g;
             my $failure_cmd = sprintf("%s '%s' %s '%s' '%s' %s %s", $on_failure, $commiter, $task->project->name, $message, $output, $sha, $on_failure_cc_email);
@@ -156,6 +156,21 @@ sub run_task {
             } else {
                 system($failure_cmd);
             }
+        } elsif ($conf->{'options'}{'email_on_pass'}) {
+            $result = "PASS";
+            my $message          = $desc->{'message'};
+            my $commiter         = $desc->{'author'}{'email'};
+            my $output           = $lines;
+            my $sha              = $desc->{'id'};
+            my $on_pass          = $conf->{'jitterbug'}{'build_process'}{'on_pass'};
+            my $on_pass_cc_email = $conf->{'jitterbug'}{'build_process'}{'on_pass_cc_email'};
+
+            $message  =~ s/'/\\'/g; $commiter =~ s/'/\\'/g; $output =~ s/'/\\'/g;
+            my $pass_cmd = sprintf("%s '%s' %s '%s' '%s' %s %s", $on_pass, $commiter, $task->project->name, $message, $output, $sha, $on_pass_cc_email);
+            debug("Running pass command: $pass_cmd");
+
+            # TODO: create perl pass emailer
+            system($pass_cmd);
         }
         $desc->{'build'}{'version'}{$name} = $result;
         close $fh;
