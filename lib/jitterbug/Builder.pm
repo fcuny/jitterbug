@@ -113,8 +113,8 @@ sub run_task {
 
     my $builder         = $conf->{'jitterbug'}{'build_process'}{'builder'};
 
-    my $perlbrew      = $conf->{'options'}{'perlbrew'};
-    my $email_on_pass = $conf->{'options'}{'email_on_pass'};
+    my $perlbrew      = $conf->{'jitterbug'}{'options'}{'perlbrew'};
+    my $email_on_pass = $conf->{'jitterbug'}{'options'}{'email_on_pass'};
 
     debug("email_on_pass = $email_on_pass");
     debug("perlbrew      = $perlbrew");
