@@ -24,7 +24,7 @@ jitterbug:
     on_failure_subject_prefix: "[jitterbug] FAIL "
     on_failure_header:
     on_failure_footer:
-    on_pass: ./scripts/build-passed.sh
+    on_pass: ./scripts/build-pass.sh
     on_pass_cc_email: alice@example.com
     on_pass_subject_prefix: "[jitterbug] PASS "
     on_pass_from_email: donotreply@example.com
