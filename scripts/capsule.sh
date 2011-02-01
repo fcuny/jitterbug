@@ -12,19 +12,19 @@ perlbrew=$3
 function jitterbug_build () {
     if [ -f 'dist.ini' ]; then
         echo "Found dist.ini, using Dist::Zilla"
-        dzil authordeps | cpanm
-        cpanm --installdeps .
+        dzil authordeps | cpanm >> $logfile 2>&1
+        cpanm --installdeps . >> $logfile 2>&1
         HARNESS_VERBOSE=1 dzil test >> $logfile  2>&1
     elif [ -f 'Build.PL' ]; then
         echo "Found Build.PL, using Build.PL"
-        perl Build.PL
+        perl Build.PL >> $logfile 2>&1
         # ./Build installdeps is not available in older Module::Build's
-        cpanm --installdeps .
+        cpanm --installdeps . >> $logfile 2>&1
         HARNESS_VERBOSE=1 ./Build test --verbose >> $logfile 2>&1
     elif [ -f 'Makefile.PL' ]; then
         echo "Found Makefile.PL"
-        perl Makefile.PL
-        cpanm --installdeps .
+        perl Makefile.PL >> $logfile 2>&1
+        cpanm --installdeps . >> $logfile 2>&1
         HARNESS_VERBOSE=1 make test >> $logfile 2>&1
     elif [ -f 'setup.pir' ]; then
         echo "Found setup.pir"
@@ -34,8 +34,8 @@ function jitterbug_build () {
         HARNESS_VERBOSE=1 parrot-nqp setup.nqp test >> $logfile 2>&1
     elif [ -f 'Configure.pl' ]; then
         echo "Found Configure.pl"
-        perl Configure.pl
-        cpanm --installdeps .
+        perl Configure.pl >> $logfile 2>&1
+        cpanm --installdeps . >> $logfile 2>&1
         HARNESS_VERBOSE=1 make test >> $logfile 2>&1
     fi
 }
