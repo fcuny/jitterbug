@@ -134,6 +134,9 @@ sub run_task {
         ($result) = $lines =~ /Result:\s(\w+)/;
         my ( $name, ) = basename($version);
         $name =~ s/\.txt//;
+
+        debug("Result of test suite is $result");
+
         if ( !$result || ($result && $result !~ /PASS/ )) {
             # mail author of the commit
             $result = "FAIL";
@@ -157,6 +160,7 @@ sub run_task {
                 system($failure_cmd);
             }
         } elsif ($conf->{'options'}{'email_on_pass'}) {
+            debug("Emailing PASS report");
             $result = "PASS";
             my $message          = $desc->{'message'};
             my $commiter         = $desc->{'author'}{'email'};
