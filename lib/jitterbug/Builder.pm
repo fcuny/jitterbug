@@ -113,7 +113,12 @@ sub run_task {
 
     my $builder         = $conf->{'jitterbug'}{'build_process'}{'builder'};
 
-    my $perlbrew = $conf->{'options'}{'perlbrew'} || 1;
+    my $perlbrew      = $conf->{'options'}{'perlbrew'};
+    my $email_on_pass = $conf->{'options'}{'email_on_pass'};
+
+    debug("email_on_pass = $email_on_pass");
+    debug("perlbrew      = $perlbrew");
+
     my $builder_variables = $conf->{'jitterbug'}{'build_process'}{'builder_variables'};
 
     my $builder_command = "$builder_variables $builder $build_dir $report_path $perlbrew";
@@ -159,7 +164,7 @@ sub run_task {
             } else {
                 system($failure_cmd);
             }
-        } elsif ($conf->{'options'}{'email_on_pass'}) {
+        } elsif ($email_on_pass) {
             debug("Emailing PASS report");
             $result = "PASS";
             my $message          = $desc->{'message'};
