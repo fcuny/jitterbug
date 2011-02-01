@@ -142,14 +142,17 @@ sub run_task {
 
         debug("Result of test suite is $result");
 
+        # TODO: Unify this code
+
         if ( !$result || ($result && $result !~ /PASS/ )) {
+            debug("Emailing FAIL report");
             # mail author of the commit
             $result = "FAIL";
-            my $message          = $desc->{'message'};
-            my $commiter         = $desc->{'author'}{'email'};
-            my $output           = $lines;
-            my $sha              = $desc->{'id'};
-            my $on_failure       = $conf->{'jitterbug'}{'build_process'}{'on_failure'};
+            my $message             = $desc->{'message'};
+            my $commiter            = $desc->{'author'}{'email'};
+            my $output              = $lines;
+            my $sha                 = $desc->{'id'};
+            my $on_failure          = $conf->{'jitterbug'}{'build_process'}{'on_failure'};
             my $on_failure_cc_email = $conf->{'jitterbug'}{'build_process'}{'on_failure_cc_email'};
 
             $message  =~ s/'/\\'/g; $commiter =~ s/'/\\'/g; $output =~ s/'/\\'/g;
@@ -160,7 +163,7 @@ sub run_task {
             if ($on_failure =~ /::/) {
                 # we should do some error checking here
                 eval "require $on_failure";
-                $on_failure->new($conf,$task,$output)->run;
+                $on_failure->new($conf,$task,$output,'failure')->run;
             } else {
                 system($failure_cmd);
             }
@@ -178,8 +181,14 @@ sub run_task {
             my $pass_cmd = sprintf("%s '%s' %s '%s' '%s' %s %s", $on_pass, $commiter, $task->project->name, $message, $output, $sha, $on_pass_cc_email);
             debug("Running pass command: $pass_cmd");
 
-            # TODO: create perl pass emailer
-            system($pass_cmd);
+            # does it look like a module name?
+            if ($on_pass =~ /::/) {
+                # we should do some error checking here
+                eval "require $on_pass";
+                $on_pass->new($conf,$task,$output, 'pass')->run;
+            } else {
+                system($pass_cmd);
+            }
         }
         $desc->{'build'}{'version'}{$name} = $result;
         close $fh;

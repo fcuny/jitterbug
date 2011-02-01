@@ -7,11 +7,12 @@ use JSON;
 
 sub new {
     my $self = bless {} => shift;
-    my ($conf,$task,$tap_output) = @_;
+    my ($conf,$task,$tap_output,$status) = @_;
     # smelly
-    $self->{'conf'} = $conf;
-    $self->{'task'} = $task;
+    $self->{'conf'}       = $conf;
+    $self->{'task'}       = $task;
     $self->{'tap_output'} = $tap_output;
+    $self->{'status'}     = $status;
 
     return $self;
 }
@@ -32,38 +33,39 @@ BODY
 
 }
 sub run {
-    my $self       = shift;
-    my $task       = $self->{'task'};
-    my $buildconf  = $self->{'conf'}->{'jitterbug'}{'build_process'};
-    my $project    = $task->project->name;
-    my $tap        = $self->{'tap_output'};
-    my $sha1       = $task->commit->sha256;
-    my $shortsha1  = substr($sha1, 0, 8);
-    my $desc       = JSON::decode_json( $task->commit->content );
-    my $email      = $desc->{'author'}{'email'};
-    my $message    = $desc->{'message'};
-    my $header     = $buildconf->{'on_failure_header'};
-    my $footer     = $buildconf->{'on_failure_footer'};
-    my $body       = _make_body($header,$message, $tap, $footer);
-    my $summary    = '';
+    my $self      = shift;
+    my $task      = $self->{'task'};
+    my $status    = $self->{'status'};
+    my $buildconf = $self->{'conf'}->{'jitterbug'}{'build_process'};
+    my $project   = $task->project->name;
+    my $tap       = $self->{'tap_output'};
+    my $sha1      = $task->commit->sha256;
+    my $shortsha1 = substr($sha1, 0, 8);
+    my $desc      = JSON::decode_json( $task->commit->content );
+    my $email     = $desc->{'author'}{'email'};
+    my $message   = $desc->{'message'};
+    my $header    = $buildconf->{"on_${status}_header"};
+    my $footer    = $buildconf->{"on_${status}_footer"};
+    my $body      = _make_body($header,$message, $tap, $footer);
+    my $summary   = '';
 
     if ( $tap =~ m/^(Test Summary Report.*)/ms ) {
         $summary = $1;
     }
 
-    # Expand placeholders in our failure email
+    # Expand placeholders in our email
     $body =~ s/%%PROJECT%%/$project/g;
     $body =~ s/%%SHA1%%/$sha1/g;
     $body =~ s/%%SUMMARY%%/$summary/g;
 
 
-    my $stuff = Email::Stuff->from($buildconf->{'on_failure_from_email'})
+    my $stuff = Email::Stuff->from($buildconf->{"on_${status}_from_email"})
                 # bug in Email::Stuff brakes chaining if $email is empty
                 ->to($email || " ")
-                ->cc($buildconf->{'on_failure_cc_email'})
+                ->cc($buildconf->{"on_${status}_cc_email"})
                 ->text_body($body)
                 ->subject(
-                    $buildconf->{'on_failure_subject_prefix'} . "$project @ $shortsha1 $message"
+                    $buildconf->{"on_${status}_subject_prefix"} . "$project @ $shortsha1 $message"
                   );
                 # Should we attach a build log for convenience?
                 # ->attach(io('dead_bunbun_faked.gif')->all,

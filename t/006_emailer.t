@@ -33,7 +33,7 @@ sub setup {
 {
     my ($conf, $commit, $project, $task) = setup();
     my $tap = "THIS IS TAP";
-    my $e = jitterbug::Emailer->new($conf, $task, $tap);
+    my $e = jitterbug::Emailer->new($conf, $task, $tap, 'failure');
 
     isa_ok($e,'jitterbug::Emailer');
     can_ok($e,qw/new run/);
@@ -89,7 +89,7 @@ Failed 1/11 test programs. 1/2498 subtests failed.
 Files=11, Tests=2498,  3 wallclock secs ( 0.20 usr  0.04 sys +  2.99 cusr  0.18 csys =  3.41 CPU)
 Result: FAIL
 TAP
-    my $e = jitterbug::Emailer->new($conf, $task, $tap);
+    my $e = jitterbug::Emailer->new($conf, $task, $tap, 'failure');
     $e->run;
     my $email = $e->{'last_email_sent'}{'email'};
     my $body = <<EMAIL;
