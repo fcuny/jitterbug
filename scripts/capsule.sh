@@ -37,6 +37,9 @@ function jitterbug_build () {
         perl Configure.pl >> $logfile 2>&1
         cpanm --installdeps . >> $logfile 2>&1
         HARNESS_VERBOSE=1 make test >> $logfile 2>&1
+    elif [ -f 'Makefile' ]; then
+        echo "Found a Makefile"
+        make test >> $logfile 2>&1
     fi
 }
 
