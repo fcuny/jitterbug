@@ -40,6 +40,8 @@ function jitterbug_build () {
     elif [ -f 'Makefile' ]; then
         echo "Found a Makefile"
         make test >> $logfile 2>&1
+    elif [ -f 'Rakefile' ]; then
+        rake test >> $logfile 2>&1
     fi
 }
 
