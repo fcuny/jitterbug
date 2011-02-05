@@ -14,7 +14,6 @@ lib/jitterbug/Schema/Result/Project.pm
 lib/jitterbug/Schema/Result/Task.pm
 lib/jitterbug/Task.pm
 lib/jitterbug/WebService.pm
-Makefile
 MANIFEST			This list of files
 MANIFEST.SKIP
 public/404.html
