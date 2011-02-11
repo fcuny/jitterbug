@@ -4,6 +4,8 @@ use warnings;
 use Test::Most tests => 9;
 use Data::Dumper;
 
+use lib 't/lib';
+use jitterbug::Test;
 use jitterbug::Builder;
 
 {
@@ -32,7 +34,9 @@ use jitterbug::Builder;
     is($b->{'configfile'}, 't/data/test.yml');
 
     is($b->run, 0, '->run returns 0 in cron mode');
-    cmp_deeply($b->{'conf'}, {
+use Test::Most;
+    #cmp_deeply($b->{'conf'}, {
+    eq_or_diff($b->{'conf'}, {
             'engines' => {
                          'xslate' => {
                                      'type' => 'text',
