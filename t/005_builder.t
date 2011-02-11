@@ -34,9 +34,8 @@ use jitterbug::Builder;
     is($b->{'configfile'}, 't/data/test.yml');
 
     is($b->run, 0, '->run returns 0 in cron mode');
-use Test::Most;
-    #cmp_deeply($b->{'conf'}, {
-    eq_or_diff($b->{'conf'}, {
+
+    cmp_deeply($b->{'conf'}, {
             'engines' => {
                          'xslate' => {
                                      'type' => 'text',
@@ -60,6 +59,17 @@ use Test::Most;
                                                 'on_failure' => './scripts/build-failed.sh',
                                                 'builder' => './scripts/capsule.sh',
                                                 'builder_variables' => 'STUFF=BLAH',
+                                                'on_pass_header' => undef,
+                                                'on_failure_subject_prefix' => '[jitterbug] FAIL ',
+                                                'on_failure_from_email' => 'donotreply@example.com',
+                                                'on_failure_footer' => undef,
+                                                'on_failure_header' => undef,
+                                                'on_pass_footer' => undef,
+                                                'on_pass_cc_email' => 'alice@example.com',
+                                                'on_pass_from_email' => 'donotreply@example.com',
+                                                'on_failure_cc_email' => 'alice@example.com',
+                                                'on_pass' => './scripts/build-pass.sh',
+                                                'on_pass_subject_prefix' => '[jitterbug] PASS '
                                               },
                              'builder' => {},
                              'reports' => {
@@ -67,13 +77,19 @@ use Test::Most;
                                         },
                              'build' => {
                                         'dir' => '/tmp/build'
-                                      }
+                                      },
+                             'options' => {
+                                        'email_on_pass' => '0',
+                                        'perlbrew' => '1'
+                                      },
+
                            },
             'template' => 'xslate',
             'appname' => 'jitterbug',
             'layout' => 'main',
             'logger' => 'file',
             'builds_per_feed' => '5'
+
     });
 
 
