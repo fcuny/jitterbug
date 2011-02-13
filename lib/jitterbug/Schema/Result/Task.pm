@@ -2,6 +2,7 @@ package jitterbug::Schema::Result::Task;
 use base qw/DBIx::Class::Core/;
 
 __PACKAGE__->table('task');
+__PACKAGE__->load_components(qw/InflateColumn::DateTime/);
 __PACKAGE__->add_columns(
     taskid => {
         data_type         => 'int',
@@ -13,8 +14,13 @@ __PACKAGE__->add_columns(
         is_foreign_key => 1,
     },
     running => {
-        data_type => 'bool',
-        default_value   => 0,
+        data_type     => 'bool',
+        default_value => 0,
+    },
+    started_when => {
+        data_type                 => 'datetime',
+        is_nullable               => 1,
+        datetime_undef_if_invalid => 1
     },
 );
 
