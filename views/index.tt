@@ -2,6 +2,17 @@
   <div id="content">
     <h2>Dashboard</h2>
 
+    <div class="builds-running">
+    : if $runnings {
+      <div class="running-build">
+      The following project is building:
+        : for $runnings -> $running {
+          <a href="<: $uri_base :>/task/<: $running.id :>"><: $running.project :></a>
+        : }
+        </div>
+    : }
+    </div>
+    
     <div class="columns">
 
       <div class="first"> 
@@ -26,13 +37,15 @@
       </div>
 
       <div class="last">
-        <h3>Builds pending</h3>
+        <h3>Builds pending (<: $builds.size :>)</h3>
 
+        <div class="comming-builds">
         <ul>
           : for $builds -> $build {
-          <li><a href="<: $uri_base :>task/<: $build :>"><: $build :></a></li>
+          <li><a href="<: $uri_base :>task/<: $build.id :>"><: $build.project :> (id: <: $build.id :>)</a></li>
           : }
         </ul>
+        </div>
       </div>
 
     </div>

@@ -1,0 +1,312 @@
+---
+schema:
+  procedures: {}
+  tables:
+    dbix_class_deploymenthandler_versions:
+      constraints:
+        - deferrable: 1
+          expression: ''
+          fields:
+            - id
+          match_type: ''
+          name: ''
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: PRIMARY KEY
+        - deferrable: 1
+          expression: ''
+          fields:
+            - version
+          match_type: ''
+          name: dbix_class_deploymenthandler_versions_version
+          on_delete: ''
+          on_update: ''
+          options: []
+          reference_fields: []
+          reference_table: ''
+          type: UNIQUE
+      fields:
+        ddl:
+          data_type: text
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: ddl
+          order: 3
+          size:
+            - 0
+        id:
+          data_type: int
+          default_value: ~
+          is_auto_increment: 1
+          is_nullable: 0
+          is_primary_key: 1
+          is_unique: 0
+          name: id
+          order: 1
+          size:
+            - 0
+        upgrade_sql:
+          data_type: text
+          default_value: ~
+          is_nullable: 1
+          is_primary_key: 0
+          is_unique: 0
+          name: upgrade_sql
+          order: 4
+          size:
+            - 0
+        version:
+          data_type: varchar
+          default_value: ~
+          is_nullable: 0
+          is_primary_key: 0
+          is_unique: 1
+          name: version
+          order: 2
+          size:
+            - 50
+      indices: []
+      name: dbix_class_deploymenthandler_versions
+      options: []
+      order: 1
+  triggers: {}
+  views: {}
+translator:
+  add_drop_table: 0
+  filename: ~
+  no_comments: 0
+  parser_args:
+    package: &1 !!perl/hash:jitterbug::Schema
+      class_mappings:
+        DBIx::Class::DeploymentHandler::VersionStorage::Standard::VersionResult: __VERSION
+        jitterbug::Schema::Result::Commit: Commit
+        jitterbug::Schema::Result::Project: Project
+        jitterbug::Schema::Result::Task: Task
+      source_registrations:
+        Commit: !!perl/hash:DBIx::Class::ResultSource::Table
+          _columns:
+            content:
+              data_type: text
+              extra: {}
+            projectid:
+              data_type: int
+              extra: {}
+              is_foreign_key: 1
+            sha256:
+              data_type: text
+              extra: {}
+              is_auto_increment: 0
+            timestamp:
+              _inflate_info:
+                deflate: !!perl/code '{ "DUMMY" }'
+                inflate: !!perl/code '{ "DUMMY" }'
+              data_type: datetime
+              extra: {}
+          _columns_info_loaded: 0
+          _ordered_columns:
+            - sha256
+            - content
+            - projectid
+            - timestamp
+          _primaries: &2
+            - sha256
+          _relationships:
+            project:
+              attrs:
+                accessor: single
+                is_foreign_key_constraint: 1
+                undef_on_null_fk: 1
+              class: jitterbug::Schema::Result::Project
+              cond:
+                foreign.projectid: self.projectid
+              source: jitterbug::Schema::Result::Project
+            tasks:
+              attrs:
+                accessor: multi
+                cascade_copy: 1
+                cascade_delete: 1
+                join_type: LEFT
+              class: jitterbug::Schema::Result::Task
+              cond:
+                foreign.taskid: self.sha256
+              source: jitterbug::Schema::Result::Task
+          _unique_constraints:
+            primary: *2
+          name: commit_push
+          result_class: jitterbug::Schema::Result::Commit
+          resultset_attributes: {}
+          resultset_class: DBIx::Class::ResultSet
+          schema: *1
+          source_name: Commit
+          sqlt_deploy_callback: default_sqlt_deploy_hook
+        Project: !!perl/hash:DBIx::Class::ResultSource::Table
+          _columns:
+            description:
+              data_type: text
+            name:
+              data_type: text
+            owner:
+              data_type: text
+            projectid:
+              data_type: int
+              is_auto_increment: 1
+            url:
+              data_type: text
+          _columns_info_loaded: 0
+          _ordered_columns:
+            - projectid
+            - name
+            - url
+            - description
+            - owner
+          _primaries: &3
+            - projectid
+          _relationships:
+            commits:
+              attrs:
+                accessor: multi
+                cascade_copy: 1
+                cascade_delete: 1
+                join_type: LEFT
+              class: jitterbug::Schema::Result::Commit
+              cond:
+                foreign.sha256: self.projectid
+              source: jitterbug::Schema::Result::Commit
+            tasks:
+              attrs:
+                accessor: multi
+                cascade_copy: 1
+                cascade_delete: 1
+                join_type: LEFT
+              class: jitterbug::Schema::Result::Task
+              cond:
+                foreign.taskid: self.projectid
+              source: jitterbug::Schema::Result::Task
+          _unique_constraints:
+            primary: *3
+            project_name:
+              - name
+          name: project
+          result_class: jitterbug::Schema::Result::Project
+          resultset_attributes: {}
+          resultset_class: DBIx::Class::ResultSet
+          schema: *1
+          source_name: Project
+          sqlt_deploy_callback: default_sqlt_deploy_hook
+        Task: !!perl/hash:DBIx::Class::ResultSource::Table
+          _columns:
+            projectid:
+              data_type: int
+              is_foreign_key: 1
+            sha256:
+              data_type: text
+              is_foreign_key: 1
+            taskid:
+              data_type: int
+              is_auto_increment: 1
+          _columns_info_loaded: 0
+          _ordered_columns:
+            - taskid
+            - sha256
+            - projectid
+          _primaries: &4
+            - taskid
+          _relationships:
+            commit:
+              attrs:
+                accessor: single
+                is_foreign_key_constraint: 1
+                undef_on_null_fk: 1
+              class: jitterbug::Schema::Result::Commit
+              cond:
+                foreign.sha256: self.sha256
+              source: jitterbug::Schema::Result::Commit
+            project:
+              attrs:
+                accessor: single
+                is_foreign_key_constraint: 1
+                undef_on_null_fk: 1
+              class: jitterbug::Schema::Result::Project
+              cond:
+                foreign.projectid: self.projectid
+              source: jitterbug::Schema::Result::Project
+          _unique_constraints:
+            primary: *4
+            task_projectid:
+              - projectid
+            task_sha256:
+              - sha256
+          name: task
+          result_class: jitterbug::Schema::Result::Task
+          resultset_attributes: {}
+          resultset_class: DBIx::Class::ResultSet
+          schema: *1
+          source_name: Task
+          sqlt_deploy_callback: default_sqlt_deploy_hook
+        __VERSION: !!perl/hash:DBIx::Class::ResultSource::Table
+          _columns:
+            ddl:
+              data_type: text
+              is_nullable: 1
+            id:
+              data_type: int
+              is_auto_increment: 1
+            upgrade_sql:
+              data_type: text
+              is_nullable: 1
+            version:
+              data_type: varchar
+              size: 50
+          _columns_info_loaded: 0
+          _ordered_columns:
+            - id
+            - version
+            - ddl
+            - upgrade_sql
+          _primaries: &5
+            - id
+          _relationships: {}
+          _unique_constraints:
+            dbix_class_deploymenthandler_versions_version:
+              - version
+            primary: *5
+          name: dbix_class_deploymenthandler_versions
+          result_class: DBIx::Class::DeploymentHandler::VersionStorage::Standard::VersionResult
+          resultset_attributes: {}
+          resultset_class: DBIx::Class::DeploymentHandler::VersionStorage::Standard::VersionResultSet
+          schema: *1
+          source_name: __VERSION
+          sqlt_deploy_callback: default_sqlt_deploy_hook
+      storage: !!perl/hash:DBIx::Class::Storage::DBI
+        _connect_info:
+          - dbi:SQLite:dbname=jitterbug.db
+        _dbh_gen: 0
+        _dbi_connect_info:
+          - dbi:SQLite:dbname=jitterbug.db
+          - ~
+          - ~
+          - &6
+            AutoCommit: 1
+            PrintError: 0
+            RaiseError: 1
+        _dbic_connect_attributes: *6
+        _in_dbh_do: 0
+        _sql_maker: ~
+        _sql_maker_opts: {}
+        debugobj: !!perl/hash:DBIx::Class::Storage::Statistics {}
+        savepoints: []
+        schema: *1
+        transaction_depth: 0
+    sources:
+      - __VERSION
+  parser_type: SQL::Translator::Parser::DBIx::Class
+  producer_args: {}
+  producer_type: SQL::Translator::Producer::YAML
+  show_warnings: 0
+  trace: 0
+  version: 0.11007
