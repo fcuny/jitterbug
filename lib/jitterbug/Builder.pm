@@ -3,6 +3,7 @@ package jitterbug::Builder;
 use strict;
 use warnings;
 
+use DateTime;
 use YAML qw/LoadFile Dump/;
 use JSON;
 use File::Path qw/rmtree/;
