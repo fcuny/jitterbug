@@ -21,16 +21,20 @@ post '/' => sub {
     my $repo = $payload->{repository}->{name};
     my $ref  = $payload->{ref};
 
-    my $authorized = _authorized_branch( $repo, $ref );
-    if ( !$authorized ) {
+    if ( !_authorized_branch( $repo, $ref ) ) {
         debug("this branch is not authorized");
         status 200;
         return;
     }
 
     my $project = schema->resultset('Project')->find( { name => $repo } );
+    $project = _create_new_project( $repo, $payload ) if !$project;
 
-    $project = _create_new_project($repo, $payload) if !$project;
+    if ( !_slot_available_for_task( $project->id ) ) {
+        debug("task already present for this project");
+        status 200;
+        return;
+    }
 
     my $last_commit = pop @{ $payload->{commits} };
     $last_commit->{compare} = $payload->{compare};
@@ -90,6 +94,18 @@ sub _create_new_project {
         error($_);
     };
     return $project;
+}
+
+sub _slot_available_for_task {
+    my $project_id = shift;
+
+    # is there already a task for this project, and could we stack ?
+    my $jtbg_settings = setting('jitterbug') || {};
+    my $stack_option = $jtbg_settings->{options}->{stack_tasks};
+    my $total_task =
+      schema->resultset('Task')->search( { projectid => $project_id } )->count;
+
+    ( $total_task && !$stack_option) ? return 0 : return 1;
 }
 
 sub _insert_commit {
