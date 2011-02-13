@@ -1,7 +1,7 @@
 package jitterbug::Schema;
 use base qw/DBIx::Class::Schema/;
 
-our $VERSION = '3';
+our $VERSION = '4';
 
 __PACKAGE__->load_namespaces();
 
