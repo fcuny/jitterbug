@@ -234,6 +234,7 @@ font-family:Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",m
 .repo p.updated-at{margin:0;font-size:11px;color:#888;}
 
 .comming-builds{border:1px solid #d8d8d8;background-color:#f0f0f0}
+.running-build{border:1px solid #d8d8d8;background-color:#f0f0f0}
 
 .commit .name{float:left; width: 100%;}
 .commit .name .date{color:#888;font-size:90%;}

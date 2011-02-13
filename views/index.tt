@@ -4,10 +4,12 @@
 
     <div class="builds-running">
     : if $runnings {
-      The following projects are building:
+      <div class="running-build">
+      The following project is building:
         : for $runnings -> $running {
           <a href="<: $uri_base :>/task/<: $running.id :>"><: $running.project :></a>
         : }
+        </div>
     : }
     </div>
     
