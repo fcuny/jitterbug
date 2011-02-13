@@ -86,7 +86,9 @@ sub run_task {
     my $desc   = JSON::decode_json( $task->commit->content );
     my $conf   = $self->{'conf'};
 
-    $desc->{'build'}{'start_time'} = time();
+    my $dt = DateTime->now();
+    $task->update({started_when => $dt});
+    $desc->{'build'}{'start_time'} = $dt->epoch;
     debug("Build Start");
 
     my $report_path = dir(
