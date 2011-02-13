@@ -3,7 +3,7 @@ use warnings;
 use 5.010;
 use LWP::UserAgent;
 use HTTP::Request::Common;
-use YAML::Syck;
+use YAML qw/LoadFile/;
 use JSON;
 
 my $content = LoadFile('t/data/test.yaml');

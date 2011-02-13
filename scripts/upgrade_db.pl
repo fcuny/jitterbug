@@ -4,7 +4,7 @@ use warnings;
 
 use lib 'lib';
 
-use YAML::Syck;
+use YAML qw/LoadFile/;
 use DBIx::Class::DeploymentHandler;
 use SQL::Translator;
 
@@ -51,20 +51,5 @@ if ( $version > 1 ) {
         }
     );
 }
-
-# print "generating graph\n";
-
-# my $trans = SQL::Translator->new(
-#     parser        => 'SQL::Translator::Parser::DBIx::Class',
-#     parser_args   => { package => $schema },
-#     producer_args => {
-#         show_constraints => 1,
-#         show_datatypes   => 1,
-#         show_sizes       => 1,
-#         show_fk_only     => 0,
-#     }
-# );
-
-# $trans->translate;
 
 print "done\n";
