@@ -1,4 +1,4 @@
-use Test::More tests => 11;
+use Test::More tests => 13;
 use strict;
 use warnings;
 
@@ -117,6 +117,48 @@ my $response;
         }
     );
     is $schema->resultset('Task')->search()->count(), 1, 'one task created since this branch is authorized for this project';
+}
+
+{
+    $schema->resultset('Project')->search()->delete();
+    $schema->resultset('Task')->search()->delete();
+
+    # this branch is forbiden for another project
+    setting jitterbug => { options => { stack_tasks => 0 } };
+    for ( 1 .. 2 ) {
+        $content->{commits}->[0]->{id} = $_;
+        $response = dancer_response(
+            POST => '/hook/',
+            {
+                headers =>
+                  [ 'Content-Type' => 'application/x-www-form-urlencoded' ],
+                body => _generate_post_request($content),
+            }
+        );
+    }
+    is $schema->resultset('Task')->search()->count(), 1,
+      'can\'t stack tasks for this project';
+}
+
+{
+    $schema->resultset('Project')->search()->delete();
+    $schema->resultset('Task')->search()->delete();
+
+    # this branch is forbiden for another project
+    setting jitterbug => { options => { stack_tasks => 1 } };
+    for ( 1 .. 2 ) {
+        $content->{commits}->[0]->{id} = $_;
+        $response = dancer_response(
+            POST => '/hook/',
+            {
+                headers =>
+                  [ 'Content-Type' => 'application/x-www-form-urlencoded' ],
+                body => _generate_post_request($content),
+            }
+        );
+    }
+    is $schema->resultset('Task')->search()->count(), 2,
+      'can stack tasks for this project';
 }
 
 sub _generate_post_request {
