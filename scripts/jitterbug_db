@@ -1,0 +1,116 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+use YAML qw/LoadFile/;
+use Getopt::Long;
+use Pod::Usage;
+
+use DBIx::Class::DeploymentHandler;
+use SQL::Translator;
+use jitterbug::Schema;
+
+GetOptions(
+    'deploy'   => \my $deploy,
+    'migrate'  => \my $migrate,
+    'config=s' => \my $config,
+);
+
+pod2usage(-exitstatus => 0, -verbose => 2) if !$config;
+
+die "need configuration file" unless $config;
+
+my $jitterbug_conf = LoadFile($config);
+my $dbix_conf      = $jitterbug_conf->{plugins}->{DBIC}->{schema};
+my $schema = jitterbug::Schema->connect( @{ $dbix_conf->{connect_info} } );
+
+if ($deploy) {
+    _deploy();
+}
+elsif ($migrate) {
+    _migrate();
+}
+else {
+    pod2usage(1);
+}
+
+sub _deploy {
+    print "deploying jitterbug::Schema...\n";
+    $schema->deploy;
+    print "done!\n";
+}
+
+sub _migrate {
+    my $version = jitterbug::Schema->VERSION;
+    die "version is missing in the schema" unless $version;
+
+    print "processing version $version of jitterbug::Schema...\n";
+
+    my $dh = DBIx::Class::DeploymentHandler->new(
+        {
+            schema              => $schema,
+            databases           => [qw/ SQLite PostgreSQL MySQL /],
+            sql_translator_args => { add_drop_table => 0, },
+        }
+    );
+
+    print "generating deployment script\n";
+    $dh->prepare_install;
+
+    if ( $version > 1 ) {
+        print "generating upgrade script\n";
+        $dh->prepare_upgrade(
+            {
+                from_version => $version - 1,
+                to_version   => $version,
+                version_set  => [ $version - 1, $version ],
+            }
+        );
+
+        print "generating downgrade script\n";
+        $dh->prepare_downgrade(
+            {
+                from_version => $version,
+                to_version   => $version - 1,
+                version_set  => [ $version, $version - 1 ],
+            }
+        );
+    }
+
+    print "done\n";
+}
+
+__END__
+
+=head1 NAME
+
+jitterbug_db - manage your jitterbug database
+
+=head1 SYNOPSIS
+
+jitterbug_db [options]
+
+  Options:
+   --config   path to the configuration file
+   --deploy   deploy the schema
+   --migrate  migrate the schema to a newer version
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<--config>
+
+path to the configuration file. The configuration file should contain information about the connection to the database
+
+=item B<--deploy>
+
+Instruct to deploy the schema
+
+=item B<--migrate>
+
+Instruct to migrate the schema to another version
+
+=back
+
+=cut
