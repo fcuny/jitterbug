@@ -67,6 +67,7 @@ get '/:project/feed' => sub {
 sub _sorted_builds {
     my $project = shift;
 
+    return [] if !defined $project;
     my $commits =
       schema->resultset('Commit')
       ->search( { projectid => $project->projectid } );
