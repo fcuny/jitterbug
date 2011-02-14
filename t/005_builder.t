@@ -8,6 +8,8 @@ use lib 't/lib';
 use jitterbug::Test;
 use jitterbug::Builder;
 
+jitterbug::Test->init();
+
 {
     local @ARGV = qw(-c t/data/test.yml -C);
     my $b = jitterbug::Builder->new();
