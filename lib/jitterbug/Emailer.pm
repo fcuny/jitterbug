@@ -58,6 +58,8 @@ sub run {
     $body =~ s/%%SHA1%%/$sha1/g;
     $body =~ s/%%SUMMARY%%/$summary/g;
 
+    my ($short_message) = split /\n/, $message;
+
 
     my $stuff = Email::Stuff->from($buildconf->{"on_${status}_from_email"})
                 # bug in Email::Stuff brakes chaining if $email is empty
@@ -65,7 +67,7 @@ sub run {
                 ->cc($buildconf->{"on_${status}_cc_email"})
                 ->text_body($body)
                 ->subject(
-                    $buildconf->{"on_${status}_subject_prefix"} . "$project @ $shortsha1 $message"
+                    $buildconf->{"on_${status}_subject_prefix"} . "$project @ $shortsha1 $short_message"
                   );
                 # Should we attach a build log for convenience?
                 # ->attach(io('dead_bunbun_faked.gif')->all,

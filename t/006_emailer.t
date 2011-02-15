@@ -23,7 +23,7 @@ sub setup {
     $project->mock('name', sub { 'ponie' });
 
     $commit->mock('sha256', sub { 'c0decafe' });
-    $commit->mock('content', sub { '{ "message" : "blargly blarg"  }' } );
+    $commit->mock('content', sub { '{ "message" : "blargly blarg\n\nLong message"  }' } );
 
     $task->mock('commit', sub { $commit });
     $task->mock('project', sub { $project });
@@ -105,6 +105,8 @@ Result: FAIL
 
 Commit Message:
 blargly blarg
+
+Long message
 
 TAP Output:
 Copying lib/Math/Primality/AKS.pm -> blib/lib/Math/Primality/AKS.pm
