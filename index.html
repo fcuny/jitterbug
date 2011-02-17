@@ -6,27 +6,41 @@
   <title>franckcuny/jitterbug @ GitHub</title>
 
   <style type="text/css">
+    @import url(http://fonts.googleapis.com/css?family=Droid+Sans:regular,bold);
+    @import url(http://fonts.googleapis.com/css?family=Droid+Serif:regular);
     body {
-      margin-top: 1.0em;
-      background-color: #edf1f3;
-      font-family: "Helvetica,Arial,FreeSans";
-      color: #000000;
+    margin-top: 1.0em;
+    font-family: "Helvetica,Arial,FreeSans";
+    background-color: #edf1f3;   
+    color: #222;
+    line-height: 1.4em;          
+    font-family: 'Droid Sans',Verdana, sans-serif;
+    text-align: center;
     }
     #container {
-      margin: 0 auto;
-      width: 700px;
+    background: #ffffff;
+    border-style: solid;
+    border-width: 1px;
+    padding: 1em;
+    font-size: 110%;
+    text-align: justify;
+    width: 50em;
+    margin: 3em auto 2em auto;
+    line-height: 1.5em;
     }
     h1 { font-size: 3.8em; color: #120e0c; margin-bottom: 3px; }
     h1 .small { font-size: 0.4em; }
     h1 a { text-decoration: none }
     h2 { font-size: 1.5em; color: #120e0c; }
-    h3 { text-align: center; color: #120e0c; }
+    h3 { font-size: 1.2em; color: #120e0c; }
     a { color: #120e0c; }
     .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
     .download { float: right; }
     pre { background: #000; color: #fff; padding: 15px;}
     hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
-    .footer { text-align:center; padding-top:30px; font-style: italic; }
+    .footer { text-align:center; padding-top:30px; font-style: italic;
+    }
+    .code {background: #f0f0f0; color: eee; padding: 15px; }
   </style>
 </head>
 
@@ -50,24 +64,9 @@
     </div>
 
     <p>Jitterbug is written in Perl 5 and depends on various CPAN modules, such as Dancer, DBIx::Class and Git::Repository.
-</p><h2>Dependencies</h2>
-<p>YAML
-Dancer
-XML::Feed
-DateTime
-JSON
-Git::Repository
-Dancer::Template::XSlate
-Dancer::Plugin::DBIC
-DBIx::Class
-SQL::Translator
-Digest::MD5
-App::perlbrew
-Dist::Zilla
-Email::Stuff
-</p>
-<h2>Install</h2>
-<p>perl Build.PL
+
+      <h2>Install</h2>
+    <pre>perl Build.PL
 
 # You can also use Makefile.PL, but you will then have to manually 
 # install dependencies
@@ -81,26 +80,27 @@ perl jitterbug.pl
 
 # If you need to start it on a different port use -p
 # perl jitterbug.pl -p 3001
-
+</pre>
+<br />    
 In another terminal, deploy a DBIx::Class schema ( which is SQLite by default, 
 change the values in config.yml to tweak) :
 
-perl scripts/jitterbug_db --config config.yml --deploy
+<pre>perl scripts/jitterbug_db --config config.yml --deploy</pre>
 
 Now add a post-receive hook to your github project that hits the /hook/ URL
 on the server that the jitterbug Dancer app is running on, i.e.
-    http://example.com:3001/hook/
+
+<pre>http://example.com:3001/hook/</pre>
 
 Now you must start the builder, which actually clones a new git repo for
 each task (this could be network-intensive) and actually runs the build
 and test commands for each project.
 
-    perl scripts/builder.pl -c config.yml
+<pre>perl scripts/builder.pl -c config.yml</pre>
 
 Now, when you commit to a project that has a Jitterbug post-receive hook,
 the builder check every 30 seconds for a new task and build and test your
 projects!
-
 
 </p>
 <h2>License</h2>
