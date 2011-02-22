@@ -30,6 +30,7 @@ jitterbug:
     on_pass_from_email: donotreply@example.com
     on_pass_header:
     on_pass_footer:
+    reuse_repo:    1
   options:
     perlbrew: 1
     email_on_pass: 0

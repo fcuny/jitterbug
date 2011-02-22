@@ -12,6 +12,7 @@ use Getopt::Long qw/:config no_ignore_case/;
 use File::Basename;
 use Git::Repository;
 use jitterbug::Schema;
+use Cwd;
 #use Data::Dumper;
 
 local $| = 1;
@@ -85,6 +86,7 @@ sub run_task {
     my ($task) = @_;
     my $desc   = JSON::decode_json( $task->commit->content );
     my $conf   = $self->{'conf'};
+    my $buildconf = $conf->{'jitterbug'}{'build_process'};
 
     my $dt = DateTime->now();
     $task->update({started_when => $dt});
@@ -101,15 +103,25 @@ sub run_task {
         $conf->{'jitterbug'}{'build'}{'dir'},
         $task->project->name,
     );
-
-    debug("Removing $build_dir");
-    rmtree($build_dir, { error => \my $err } );
-    warn @$err if @$err;
-
+    my ($r, $repo);
+    unless ($buildconf->{reuse_repo}) {
+        debug("Removing $build_dir");
+        rmtree($build_dir, { error => \my $err } );
+        warn @$err if @$err;
+        $repo    = $task->project->url . '.git';
+        $r       = Git::Repository->create( clone => $repo => $build_dir );
+    } else {
+        my $pwd = getcwd;
+        chdir $build_dir;
+        # TODO: Error Checking
+        debug("Cleaning git repo");
+        system("git clean -dfx");
+        debug("Rebasing new commits into $repo");
+        system("git pull --rebase");
+        chdir $pwd;
+        $r       = Git::Repository->new( work_tree => $build_dir );
+    }
     $self->sleep(1); # avoid race conditions
-
-    my $repo    = $task->project->url . '.git';
-    my $r       = Git::Repository->create( clone => $repo => $build_dir );
 
     debug("Checking out " . $task->commit->sha256 . " from $repo into $build_dir\n");
     $r->run( 'checkout', $task->commit->sha256 );
