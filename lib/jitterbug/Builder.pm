@@ -116,8 +116,8 @@ sub run_task {
         # TODO: Error Checking
         debug("Cleaning git repo");
         system("git clean -dfx");
-        debug("Rebasing new commits into $repo");
-        system("git pull --rebase");
+        debug("Fetching new commits into $repo");
+        system("git fetch");
         chdir $pwd;
         $r       = Git::Repository->new( work_tree => $build_dir );
     }
