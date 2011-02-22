@@ -103,23 +103,28 @@ sub run_task {
         $conf->{'jitterbug'}{'build'}{'dir'},
         $task->project->name,
     );
-    my ($r, $repo);
+    my $r;
+    my $repo    = $task->project->url . '.git';
     unless ($buildconf->{reuse_repo}) {
         debug("Removing $build_dir");
         rmtree($build_dir, { error => \my $err } );
         warn @$err if @$err;
-        $repo    = $task->project->url . '.git';
         $r       = Git::Repository->create( clone => $repo => $build_dir );
     } else {
-        my $pwd = getcwd;
-        chdir $build_dir;
-        # TODO: Error Checking
-        debug("Cleaning git repo");
-        system("git clean -dfx");
-        debug("Fetching new commits into $repo");
-        system("git fetch");
-        chdir $pwd;
-        $r       = Git::Repository->new( work_tree => $build_dir );
+        # If this is the first time, the repo won't exist yet
+        if( -e $build_dir ){
+            my $pwd = getcwd;
+            chdir $build_dir;
+            # TODO: Error Checking
+            debug("Cleaning git repo");
+            system("git clean -dfx");
+            debug("Fetching new commits into $repo");
+            system("git fetch");
+            chdir $pwd;
+            $r       = Git::Repository->new( work_tree => $build_dir );
+        } else {
+            $r       = Git::Repository->create( clone => $repo => $build_dir );
+        }
     }
     $self->sleep(1); # avoid race conditions
 
