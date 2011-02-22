@@ -29,6 +29,7 @@ my $builder = Module::Build->new(
         'App::perlbrew'            => 0,
         'Dist::Zilla'              => 0,
         'Email::Stuff'             => 0,
+        'DBIx::Class::DeploymentHandler' => 0,
     },
     add_to_cleanup      => [ 'jitterbug-' ],
     create_makefile_pl  => 'traditional',
