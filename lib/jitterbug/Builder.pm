@@ -137,7 +137,10 @@ sub run_task {
 
     debug("Checking out " . $task->commit->sha256 . " from $repo into $build_dir\n");
     # $r->run( 'checkout', $task->commit->sha256 );
+    my $pwd = getcwd;
+    chdir $build_dir;
     system("git checkout " . $task->commit->sha256 );
+    chdir $pwd;
 
     my $builder         = $conf->{'jitterbug'}{'build_process'}{'builder'};
 
