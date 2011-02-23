@@ -120,7 +120,9 @@ sub run_task {
             debug("Cleaning git repo");
             system("git clean -dfx");
             debug("Fetching new commits into $repo");
-            system("git pull --rebase");
+            system("git fetch");
+            debug("Rebasing onto origin/master");
+            system("git rebase origin/master");
             chdir $pwd;
             $r       = Git::Repository->new( work_tree => $build_dir );
         } else {
