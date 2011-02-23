@@ -16,7 +16,7 @@ use Cwd;
 #use Data::Dumper;
 
 local $| = 1;
-use constant DEBUG => 0;
+use constant DEBUG => $ENV{DEBUG} || 0;
 
 sub new {
     my $self = bless {} => shift;
@@ -121,8 +121,8 @@ sub run_task {
             system("git clean -dfx");
             debug("Fetching new commits into $repo");
             system("git fetch");
-            debug("Rebasing onto origin/master");
-            system("git rebase origin/master");
+            debug("Checking out correct commit");
+            system("git checkout " . $task->commit->sha256 );
             chdir $pwd;
             $r       = Git::Repository->new( work_tree => $build_dir );
         } else {
