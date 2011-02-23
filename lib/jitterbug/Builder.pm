@@ -98,11 +98,11 @@ sub run_task {
         $task->project->name,
         $task->commit->sha256,
     );
+    my $dir = $conf->{'jitterbug'}{'build'}{'dir'};
+    mkdir $dir unless -d $dir;
 
-    my $build_dir = dir(
-        $conf->{'jitterbug'}{'build'}{'dir'},
-        $task->project->name,
-    );
+    my $build_dir = dir($dir, $task->project->name);
+
     my $r;
     my $repo    = $task->project->url . '.git';
     unless ($buildconf->{reuse_repo}) {
@@ -112,24 +112,32 @@ sub run_task {
         $r       = Git::Repository->create( clone => $repo => $build_dir );
     } else {
         # If this is the first time, the repo won't exist yet
-        if( -e $build_dir ){
+        debug("build_dir = $build_dir");
+        if( -d $build_dir ){
             my $pwd = getcwd;
             chdir $build_dir;
             # TODO: Error Checking
             debug("Cleaning git repo");
             system("git clean -dfx");
             debug("Fetching new commits into $repo");
-            system("git fetch");
+            system("git pull --rebase");
             chdir $pwd;
             $r       = Git::Repository->new( work_tree => $build_dir );
         } else {
-            $r       = Git::Repository->create( clone => $repo => $build_dir );
+            debug("Creating new repo");
+            my $pwd = getcwd;
+            debug("pwd=$pwd");
+            chdir $build_dir;
+            system("git clone $repo $build_dir");
+            #$r       = Git::Repository->create( clone => $repo => $build_dir );
+            chdir $pwd;
         }
     }
     $self->sleep(1); # avoid race conditions
 
     debug("Checking out " . $task->commit->sha256 . " from $repo into $build_dir\n");
-    $r->run( 'checkout', $task->commit->sha256 );
+    # $r->run( 'checkout', $task->commit->sha256 );
+    system("git checkout " . $task->commit->sha256 );
 
     my $builder         = $conf->{'jitterbug'}{'build_process'}{'builder'};
 
