@@ -42,7 +42,6 @@ sub run {
     my $sha1      = $task->commit->sha256;
     my $shortsha1 = substr($sha1, 0, 8);
     my $desc      = JSON::decode_json( $task->commit->content );
-    my $email     = $desc->{'author'}{'email'};
     my $message   = $desc->{'message'};
     my $header    = $buildconf->{"on_${status}_header"};
     my $footer    = $buildconf->{"on_${status}_footer"};
@@ -60,6 +59,9 @@ sub run {
 
     my ($short_message) = split /\n/, $message;
 
+    # Default to the to_email specified in our config. If it isn't set,
+    # use the author email 
+    my $email = $buildconf->{"on_${status}_to_email"} || $desc->{'author'}{'email'};
 
     my $stuff = Email::Stuff->from($buildconf->{"on_${status}_from_email"})
                 # bug in Email::Stuff brakes chaining if $email is empty
