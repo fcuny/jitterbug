@@ -167,6 +167,8 @@ sub run_task {
         while (<$fh>){
             $lines .= $_;
         }
+        # if $result is undefined, either there was a build failure
+        # or the test output is not from a TAP harness
         ($result) = $lines =~ /Result:\s(\w+)/;
         my ( $name, ) = basename($version);
         $name =~ s/\.txt//;
