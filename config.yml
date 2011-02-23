@@ -19,12 +19,14 @@ jitterbug:
     builder: ./scripts/capsule.sh
     builder_variables:
     on_failure: ./scripts/build-failed.sh
+    on_failure_to_email:
     on_failure_cc_email: alice@example.com
     on_failure_from_email: donotreply@example.com
     on_failure_subject_prefix: "[jitterbug] FAIL "
     on_failure_header:
     on_failure_footer:
     on_pass: ./scripts/build-pass.sh
+    on_pass_to_email:
     on_pass_cc_email: alice@example.com
     on_pass_subject_prefix: "[jitterbug] PASS "
     on_pass_from_email: donotreply@example.com
