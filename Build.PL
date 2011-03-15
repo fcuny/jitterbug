@@ -24,6 +24,7 @@ my $builder = Module::Build->new(
         'Dancer::Template::Xslate' => 0,
         'Dancer::Plugin::DBIC'     => 0,
         'DBIx::Class'              => 0,
+        'DateTime::Format::SQLite' => 0,
         'SQL::Translator'          => 0,
         'Digest::MD5'              => 0,
         'App::perlbrew'            => 0,
