@@ -81,25 +81,27 @@ sub sleep {
 }
 
 sub run_task {
-    my $self   = shift;
-    my ($task) = @_;
-    my $desc   = JSON::decode_json( $task->commit->content );
-    my $conf   = $self->{'conf'};
+    my ($self,$task)   = @_;
+
+    my $desc    = JSON::decode_json( $task->commit->content );
+    my $conf    = $self->{'conf'};
+    my $project = $task->project;
 
     my $dt = DateTime->now();
     $task->update({started_when => $dt});
     $desc->{'build'}{'start_time'} = $dt->epoch;
     debug("Build Start");
 
+
     my $report_path = dir(
         $conf->{'jitterbug'}{'reports'}{'dir'},
-        $task->project->name,
+        $project->name,
         $task->commit->sha256,
     );
 
     my $build_dir = dir(
         $conf->{'jitterbug'}{'build'}{'dir'},
-        $task->project->name,
+        $project->name,
     );
 
     debug("Removing $build_dir");
@@ -114,7 +116,8 @@ sub run_task {
     debug("Checking out " . $task->commit->sha256 . " from $repo into $build_dir\n");
     $r->run( 'checkout', $task->commit->sha256 );
 
-    my $builder         = $conf->{'jitterbug'}{'build_process'}{'builder'};
+    my $builder       =    $conf->{'jitterbug'}{'projects'}{$project->name}{'builder'}
+                        || $conf->{'jitterbug'}{'build_process'}{'builder'};
 
     my $perlbrew      = $conf->{'jitterbug'}{'options'}{'perlbrew'};
     my $email_on_pass = $conf->{'jitterbug'}{'options'}{'email_on_pass'};
@@ -122,7 +125,9 @@ sub run_task {
     debug("email_on_pass = $email_on_pass");
     debug("perlbrew      = $perlbrew");
 
-    my $builder_variables = $conf->{'jitterbug'}{'build_process'}{'builder_variables'};
+    # If the project has custom builder variables, use those. Otherwise, use the global setting
+    my $builder_variables =    $conf->{'jitterbug'}{'projects'}{$project->name}{'builder_variables'}
+                            || $conf->{'jitterbug'}{'build_process'}{'builder_variables'};
 
     my $builder_command = "$builder_variables $builder $build_dir $report_path $perlbrew";
 
