@@ -3,16 +3,22 @@ package jitterbug::Builder;
 use strict;
 use warnings;
 
-use DateTime;
-use YAML qw/LoadFile Dump/;
-use JSON;
-use File::Path qw/rmtree/;
-use Path::Class;
-use Getopt::Long qw/:config no_ignore_case/;
-use File::Basename;
-use Git::Repository;
 use jitterbug::Schema;
-use Cwd;
+use Git::Repository;
+use Carp;
+use Email::Stuff;
+use Email::Sender::Simple qw/sendmail/;
+use JSON;
+use YAML qw/LoadFile Dump/;
+use DateTime;
+use IPC::Run3;
+use Try::Tiny;
+use Path::Class;
+use File::Slurp;
+use File::Basename;
+use File::Path qw/rmtree/;
+use Getopt::Long qw/:config no_ignore_case/;
+use FindBin '$Bin';
 #use Data::Dumper;
 
 local $| = 1;
@@ -36,7 +42,7 @@ sub new {
 }
 
 sub debug {
-    warn @_ if DEBUG;
+    carp @_ if DEBUG;
 }
 
 sub run {
@@ -67,7 +73,6 @@ sub build {
         }
 
         $self->{'cron'} and return 0;
-
         $self->sleep(5);
     }
 
@@ -102,140 +107,117 @@ sub run_task {
     mkdir $dir unless -d $dir;
 
     my $build_dir = dir($dir, $task->project->name);
+    chdir $build_dir;
 
-    my $r;
-    my $repo    = $task->project->url . '.git';
+    my $repo;
+    my $repo_addr = $task->project->url . '.git';
+
+    # hack to force ssh protocol for clone
+    if ($conf->{'jitterbug'}{'build_process'}{'force_ssh'}) {
+        $repo_addr =~ s#https://github.com/#git\@github.com:#;
+    }
+
     unless ($buildconf->{reuse_repo}) {
         debug("Removing $build_dir");
         rmtree($build_dir, { error => \my $err } );
-        warn @$err if @$err;
-        $r       = Git::Repository->create( clone => $repo => $build_dir );
+        debug @$err if @$err;
+
+        $repo = Git::Repository->create( clone => $repo_addr => $build_dir->stringify );
     } else {
         # If this is the first time, the repo won't exist yet
-        debug("build_dir = $build_dir");
         if( -d $build_dir ){
-            my $pwd = getcwd;
-            chdir $build_dir;
             # TODO: Error Checking
-            debug("Cleaning git repo");
-            system("git clean -dfx");
-            debug("Fetching new commits into $repo");
-            system("git fetch");
-            debug("Checking out correct commit");
-            system("git checkout " . $task->commit->sha256 );
-            chdir $pwd;
-            $r       = Git::Repository->new( work_tree => $build_dir );
+            $repo = Git::Repository->new( work_tree => $build_dir->stringify );
+            $repo->run(qw/clean -dfx/)                     and debug("Cleaning git repo");
+            $repo->run('fetch')                            and debug("Fetching new commits into $repo_addr");
+            $repo->run('checkout', $task->commit->sha256)  and debug("Checking out correct commit");
         } else {
             debug("Creating new repo");
-            my $pwd = getcwd;
-            debug("pwd=$pwd");
-            chdir $build_dir;
-            system("git clone $repo $build_dir");
-            #$r       = Git::Repository->create( clone => $repo => $build_dir );
-            chdir $pwd;
+            $repo = Git::Repository->create( clone => $repo_addr => $build_dir->stringify );
         }
     }
     $self->sleep(1); # avoid race conditions
 
-    debug("Checking out " . $task->commit->sha256 . " from $repo into $build_dir\n");
-    # $r->run( 'checkout', $task->commit->sha256 );
-    my $pwd = getcwd;
-    chdir $build_dir;
-    system("git checkout " . $task->commit->sha256 );
-    chdir $pwd;
+    debug("Checking out " . $task->commit->sha256 . " from $repo_addr into $build_dir\n");
+    $repo->run('checkout', $task->commit->sha256);
 
-    my $builder         = $conf->{'jitterbug'}{'build_process'}{'builder'};
+    my $builder            = $conf->{'jitterbug'}{'build_process'}{'builder'};
+    my $builder_variables  = $conf->{'jitterbug'}{'build_process'}{'builder_variables'};
+    my $perlbrew           = $conf->{'jitterbug'}{'options'}{'perlbrew'};
+    debug("perlbrew = $perlbrew");
 
-    my $perlbrew      = $conf->{'jitterbug'}{'options'}{'perlbrew'};
-    my $email_on_pass = $conf->{'jitterbug'}{'options'}{'email_on_pass'};
+    my @builder_command = grep defined, (
+        $builder_variables,
+        "${Bin}/${builder}",
+        $build_dir,
+        $report_path,
+        $perlbrew
+    );
 
-    debug("email_on_pass = $email_on_pass");
-    debug("perlbrew      = $perlbrew");
-
-    my $builder_variables = $conf->{'jitterbug'}{'build_process'}{'builder_variables'};
-
-    my $builder_command = "$builder_variables $builder $build_dir $report_path $perlbrew";
-
-    debug("Going to run builder : $builder_command");
-    my $res             = `$builder_command`;
-    debug($res);
+    debug('Going to run builder : ' . join ' ', @builder_command);
+    run3 \@builder_command, undef, \my $res;
 
     $desc->{'build'}{'end_time'} = time();
 
     my @versions = glob( $report_path . '/*' );
     foreach my $version (@versions) {
-        open my $fh, '<', $version;
-        my ($result, $lines);
-        while (<$fh>){
-            $lines .= $_;
-        }
+        my $output = read_file $version;
+
         # if $result is undefined, either there was a build failure
         # or the test output is not from a TAP harness
-        ($result) = $lines =~ /Result:\s(\w+)/;
-        my ( $name, ) = basename($version);
-        $name =~ s/\.txt//;
-
+        my ($result) = $output =~ /Result:\s(\w+)/;
         debug("Result of test suite is $result");
 
-        # TODO: Unify this code
+        my ($name)   = basename($version);
+        $name =~ s/\.txt//;
 
-        if ( !$result || ($result && $result !~ /PASS/ )) {
-            debug("Emailing FAIL report");
-            # mail author of the commit
-            $result = "FAIL";
-            my $message             = $desc->{'message'};
-            my $commiter            = $desc->{'author'}{'email'};
-            my $output              = $lines;
-            my $sha                 = $desc->{'id'};
-            my $on_failure          = $conf->{'jitterbug'}{'build_process'}{'on_failure'};
-            my $on_failure_cc_email = $conf->{'jitterbug'}{'build_process'}{'on_failure_cc_email'};
+        my $res
+            = ( !$result || ($result && $result !~ /PASS/ )) ? 'failure'
+            : 'pass';
 
-            $message  =~ s/'/\\'/g; $commiter =~ s/'/\\'/g; $output =~ s/'/\\'/g;
-            my $failure_cmd = sprintf("%s '%s' %s '%s' '%s' %s %s", $on_failure, $commiter, $task->project->name, $message, $output, $sha, $on_failure_cc_email);
-            debug("Running failure command: $failure_cmd");
+        # mail author of the commit
+        my $send_email_to_committer = $conf->{'jitterbug'}{'build_process'}{'send_email_to_committer'};
+        my $committer   = $send_email_to_committer ? ", @{[ $desc->{'author'}{'email'} ]}" : '';
+        my $from        = $conf->{'jitterbug'}{'build_process'}{'from_email'};
+        my $to          = $conf->{'jitterbug'}{'build_process'}{"on_${res}_to_email"};
+        my $cc_email    = $conf->{'jitterbug'}{'build_process'}{"on_${res}_cc_email"};
+        my $cmd         = $conf->{'jitterbug'}{'build_process'}{"on_${res}"};
+        my $subj_prefix = $conf->{'jitterbug'}{'build_process'}{"on_${res}_subject_prefix"};
 
-            # does it look like a module name?
-            if ($on_failure =~ /::/) {
-                # we should do some error checking here
-                eval "require $on_failure";
-                $on_failure->new($conf,$task,$output,'failure')->run;
-            } else {
-                system($failure_cmd);
-            }
-        } elsif ($email_on_pass) {
-            debug("Emailing PASS report");
-            $result = "PASS";
-            my $message          = $desc->{'message'};
-            my $commiter         = $desc->{'author'}{'email'};
-            my $output           = $lines;
-            my $sha              = $desc->{'id'};
-            my $on_pass          = $conf->{'jitterbug'}{'build_process'}{'on_pass'};
-            my $on_pass_cc_email = $conf->{'jitterbug'}{'build_process'}{'on_pass_cc_email'};
+        my $sha         = substr $desc->{'id'}, 0, 6;
+        my $message     = $desc->{'message'};
 
-            $message  =~ s/'/\\'/g; $commiter =~ s/'/\\'/g; $output =~ s/'/\\'/g;
-            my $pass_cmd = sprintf("%s '%s' %s '%s' '%s' %s %s", $on_pass, $commiter, $task->project->name, $message, $output, $sha, $on_pass_cc_email);
-            debug("Running pass command: $pass_cmd");
+        my $subject     = "${subj_prefix} @{[ $task->project->name ]} \@ ${sha}..";
+
+        try {
+            my $email = Email::Stuff->from     ($from                  )
+                                    ->subject  ($subject               )
+                                    ->to       ("${to} ${committer}"   )
+                                    ->text_body("${message}\n${output}");
+            $email    = $email->cc($cc_email) if $cc_email;
+            $email    = $email->email;
 
             # does it look like a module name?
-            if ($on_pass =~ /::/) {
-                # we should do some error checking here
-                eval "require $on_pass";
-                $on_pass->new($conf,$task,$output, 'pass')->run;
-            } else {
-                system($pass_cmd);
+            if ($cmd =~ /::/) {
+                require $cmd;
+                $cmd->new($conf, $task, $output,'failure', $email)->run;
+            } elsif ($cmd) {
+                # if on_pass / on_failure is set to truth, dispatch an email
+                debug("Emailing ${res} report");
+                sendmail($email);
             }
         }
+        catch {
+            debug $_;
+        };
+
+        # save our result
         $desc->{'build'}{'version'}{$name} = $result;
-        close $fh;
     }
 
-    $task->commit->update( {
-        content => JSON::encode_json($desc),
-    } );
-    debug("Task completed for " . $task->commit->sha256 . "\n");
-
+    $task->commit->update({ content => JSON::encode_json($desc) });
     $task->delete();
-
-    debug("Task removed from " . $task->project->name . "\n");
+    debug("[@{[ $task->project->name ]} : @{[ substr $task->commit->sha256, 0, 6 ]}] completed. Removed.");
 }
 
+1;
