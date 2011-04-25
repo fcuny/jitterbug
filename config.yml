@@ -12,30 +12,29 @@ engines:
 
 jitterbug:
   reports:
-    dir: /tmp/jitterbug
+    dir: /home/jitterbug/reports
   build:
-    dir: /tmp/build
+    dir: /home/co/jitterbug/
   build_process:
-    builder: ./scripts/capsule.sh
+    reuse_repo: 1
+    builder: capsule.sh
     builder_variables:
-    on_failure: ./scripts/build-failed.sh
-    on_failure_to_email:
-    on_failure_cc_email: alice@example.com
-    on_failure_from_email: donotreply@example.com
+    from_email: donotreply@replaceme.com
+    send_email_to_committer: 0
+    on_failure: 1
+    on_failure_to_email: devteam@replaceme.com
+    on_failure_cc_email:
     on_failure_subject_prefix: "[jitterbug] FAIL "
     on_failure_header:
     on_failure_footer:
-    on_pass: ./scripts/build-pass.sh
-    on_pass_to_email:
-    on_pass_cc_email: alice@example.com
+    on_pass: 0
+    on_pass_to_email: devteam@replaceme.com
+    on_pass_cc_email:
     on_pass_subject_prefix: "[jitterbug] PASS "
-    on_pass_from_email: donotreply@example.com
     on_pass_header:
     on_pass_footer:
-    reuse_repo:    1
   options:
     perlbrew: 1
-    email_on_pass: 0
 
 plugins:
   DBIC:
@@ -44,5 +43,3 @@ plugins:
       pckg: "jitterbug::Schema"
       connect_info:
         - dbi:SQLite:dbname=jitterbug.db
-
-
