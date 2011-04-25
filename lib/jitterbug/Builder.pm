@@ -87,26 +87,28 @@ sub sleep {
 }
 
 sub run_task {
-    my $self   = shift;
-    my ($task) = @_;
-    my $desc   = JSON::decode_json( $task->commit->content );
-    my $conf   = $self->{'conf'};
+    my ($self,$task)   = @_;
+
+    my $desc    = JSON::decode_json( $task->commit->content );
+    my $conf    = $self->{'conf'};
     my $buildconf = $conf->{'jitterbug'}{'build_process'};
+    my $project = $task->project;
 
     my $dt = DateTime->now();
     $task->update({started_when => $dt});
     $desc->{'build'}{'start_time'} = $dt->epoch;
     debug("Build Start");
 
+
     my $report_path = dir(
         $conf->{'jitterbug'}{'reports'}{'dir'},
-        $task->project->name,
+        $project->name,
         $task->commit->sha256,
     );
     my $dir = $conf->{'jitterbug'}{'build'}{'dir'};
     mkdir $dir unless -d $dir;
 
-    my $build_dir = dir($dir, $task->project->name);
+    my $build_dir = dir($dir, $project->name);
     chdir $build_dir;
 
     my $repo;
@@ -120,7 +122,8 @@ sub run_task {
     unless ($buildconf->{reuse_repo}) {
         debug("Removing $build_dir");
         rmtree($build_dir, { error => \my $err } );
-        debug @$err if @$err;
+        warn @$err if @$err;
+        $self->sleep(1); # avoid race conditions
 
         $repo = Git::Repository->create( clone => $repo_addr => $build_dir->stringify );
     } else {
@@ -144,7 +147,7 @@ sub run_task {
     my $builder            = $conf->{'jitterbug'}{'build_process'}{'builder'};
     my $builder_variables  = $conf->{'jitterbug'}{'build_process'}{'builder_variables'};
     my $perlbrew           = $conf->{'jitterbug'}{'options'}{'perlbrew'};
-    debug("perlbrew = $perlbrew");
+    my $email_on_pass      = $conf->{'jitterbug'}{'options'}{'email_on_pass'};
 
     my @builder_command = grep defined, (
         $builder_variables,
