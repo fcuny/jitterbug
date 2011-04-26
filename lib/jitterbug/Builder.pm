@@ -94,7 +94,6 @@ sub run_task {
     $desc->{'build'}{'start_time'} = $dt->epoch;
     debug("Build Start");
 
-
     my $report_path = dir(
         $conf->{'jitterbug'}{'reports'}{'dir'},
         $project->name,
@@ -104,8 +103,6 @@ sub run_task {
     mkdir $dir unless -d $dir;
 
     my $build_dir = dir($dir, $project->name);
-
-    $self->sleep(1); # avoid race conditions
 
     my $r;
     my $repo    = $task->project->url . '.git';
