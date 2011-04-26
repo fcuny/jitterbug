@@ -105,10 +105,6 @@ sub run_task {
 
     my $build_dir = dir($dir, $project->name);
 
-    debug("Removing $build_dir");
-    rmtree($build_dir, { error => \my $err } );
-    warn @$err if @$err;
-
     $self->sleep(1); # avoid race conditions
 
     my $r;
