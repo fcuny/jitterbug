@@ -132,14 +132,12 @@ sub run_task {
             debug("Checking out correct commit");
             system("git checkout " . $task->commit->sha256 );
             chdir $pwd;
-            $r       = Git::Repository->new( work_tree => $build_dir );
         } else {
             debug("Creating new repo");
             my $pwd = getcwd;
             debug("pwd=$pwd");
             chdir $build_dir;
             system("git clone $repo $build_dir");
-            #$r       = Git::Repository->create( clone => $repo => $build_dir );
             chdir $pwd;
         }
     }
