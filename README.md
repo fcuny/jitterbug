@@ -8,14 +8,15 @@ as Moose, Dancer, DBIx::Class and others.
 
 ### Installing Jitterbug
 
-perl Build.PL
-
-# You can also use Makefile.PL, but you will then have to manually 
-# install dependencies
-# perl Makefile.PL
+    # You can also use Makefile.PL, but you will then have to manually 
+    perl Build.PL
+    # perl Makefile.PL
 
     # install missing dependencies
     ./Build installdeps
+
+    # you can also use cpanm
+    # cpanm --installdeps .
 
     # Look at config.yaml or example.yaml for how to configure your Jitterbug instance
     $EDITOR config.yaml
@@ -43,6 +44,6 @@ and test commands for each project.
     perl scripts/builder.pl -c config.yml
 
 Now, when you commit to a project that has a Jitterbug post-receive hook,
-the builder check every 30 seconds for a new task and build and test your
+the builder check periodically for a new task and build and test your
 projects!
 
