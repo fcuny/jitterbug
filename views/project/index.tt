@@ -1,6 +1,6 @@
 <div id="page">
   <div id="content">
-    <h2><a href="<: $project.url :>"><: $project.name :></a> / build history <a href="<: $uri_base :>/project/<: $project.name :>/feed"><img src="<: $uri_base :>/images/feed.png" /></a></h2>
+    <h2><a href="../">Dashboard</a> / <a href="<: $project.url :>"><: $project.name :></a> / build history <a href="<: $uri_base :>/project/<: $project.name :>/feed"><img src="<: $uri_base :>/images/feed.png" /></a></h2>
 
     <div class="project_baseline"><strong>"<: $project.description :>"</strong></div>
 
