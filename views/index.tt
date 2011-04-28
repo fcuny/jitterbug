@@ -24,7 +24,7 @@
           <div class="repo-body">
             <p class="desc"><: $project.description :></p>
             :if $project.last_build.timestamp {
-            <p class="updated-at">last updated at <: $project.last_build.timestamp :></p>
+            <p class="updated-at">last updated at <: $project.last_build.timestamp :> by <: $project.last_build_author :></p>
             :}
             <div class="last-builds">
               :for $project.last_build.version.keys() -> $version {

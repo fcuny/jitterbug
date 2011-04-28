@@ -39,7 +39,9 @@ sub _get_projects {
 
         if ($last_commit) {
             # XXX see what data to store here
-            $proj_desc->{last_build} = from_json($last_commit->content);
+            my $json = from_json($last_commit->content);
+            $proj_desc->{last_build}        = $json;
+            $proj_desc->{last_build_author} = $json->{author}{name};
         }
 
         push @projects, $proj_desc;
