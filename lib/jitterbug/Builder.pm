@@ -154,7 +154,7 @@ sub run_task {
 
     # If the project has custom builder variables, use those. Otherwise, use the global setting
     my $builder_variables =    $conf->{'jitterbug'}{'projects'}{$project->name}{'builder_variables'}
-                            || $conf->{'jitterbug'}{'build_process'}{'builder_variables'};
+                            || $conf->{'jitterbug'}{'build_process'}{'builder_variables'} || '';
 
     my $builder_command = "$builder_variables $builder $build_dir $report_path $perlbrew";
 
