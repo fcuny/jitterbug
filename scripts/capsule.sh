@@ -20,6 +20,8 @@ function jitterbug_build () {
         perl Build.PL >> $logfile 2>&1
         # ./Build installdeps is not available in older Module::Build's
         cpanm --installdeps . >> $logfile 2>&1
+        # Run this again in case our Build is out of date (suboptimal)
+        perl Build.PL >> $logfile 2>&1
         HARNESS_VERBOSE=1 ./Build test --verbose >> $logfile 2>&1
     elif [ -f 'Makefile.PL' ]; then
         echo "Found Makefile.PL"

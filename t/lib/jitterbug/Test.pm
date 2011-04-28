@@ -10,12 +10,13 @@ use File::Spec;
 use File::Temp qw/tempdir/;
 
 sub init {
-    my $db_dir = tempdir( CLEANUP => 1 );
-    my $db_file = File::Spec->catfile( $db_dir, 'jitterbug.db' );
+    #my $db_dir = tempdir( CLEANUP => 1 );
+    # TODO: this should be pulled from the config file
+    my $db_file = File::Spec->catfile( qw/t data jitterbug.db/ );
     my $dsn     = 'dbi:SQLite:dbname=' . $db_file;
     my $schema  = jitterbug::Schema->connect($dsn);
     _setting($dsn);
-    $schema->deploy;
+    $schema->deploy unless -s $db_file;
 }
 
 sub _setting {

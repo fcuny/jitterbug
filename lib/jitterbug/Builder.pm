@@ -12,10 +12,11 @@ use Getopt::Long qw/:config no_ignore_case/;
 use File::Basename;
 use Git::Repository;
 use jitterbug::Schema;
+use Cwd;
 #use Data::Dumper;
 
 local $| = 1;
-use constant DEBUG => 0;
+use constant DEBUG => $ENV{DEBUG} || 0;
 
 sub new {
     my $self = bless {} => shift;
@@ -81,10 +82,12 @@ sub sleep {
 }
 
 sub run_task {
-    my $self   = shift;
-    my ($task) = @_;
-    my $desc   = JSON::decode_json( $task->commit->content );
-    my $conf   = $self->{'conf'};
+    my ($self,$task)   = @_;
+
+    my $desc    = JSON::decode_json( $task->commit->content );
+    my $conf    = $self->{'conf'};
+    my $buildconf = $conf->{'jitterbug'}{'build_process'};
+    my $project = $task->project;
 
     my $dt = DateTime->now();
     $task->update({started_when => $dt});
@@ -93,28 +96,55 @@ sub run_task {
 
     my $report_path = dir(
         $conf->{'jitterbug'}{'reports'}{'dir'},
-        $task->project->name,
+        $project->name,
         $task->commit->sha256,
     );
+    my $dir = $conf->{'jitterbug'}{'build'}{'dir'};
+    mkdir $dir unless -d $dir;
 
-    my $build_dir = dir(
-        $conf->{'jitterbug'}{'build'}{'dir'},
-        $task->project->name,
-    );
+    my $build_dir = dir($dir, $project->name);
 
-    debug("Removing $build_dir");
-    rmtree($build_dir, { error => \my $err } );
-    warn @$err if @$err;
-
+    my $r;
+    my $repo    = $task->project->url . '.git';
+    unless ($buildconf->{reuse_repo}) {
+        debug("Removing $build_dir");
+        rmtree($build_dir, { error => \my $err } );
+        warn @$err if @$err;
+        $r       = Git::Repository->create( clone => $repo => $build_dir );
+    } else {
+        # If this is the first time, the repo won't exist yet
+        debug("build_dir = $build_dir");
+        if( -d $build_dir ){
+            my $pwd = getcwd;
+            chdir $build_dir;
+            # TODO: Error Checking
+            debug("Cleaning git repo");
+            system("git clean -dfx");
+            debug("Fetching new commits into $repo");
+            system("git fetch");
+            debug("Checking out correct commit");
+            system("git checkout " . $task->commit->sha256 );
+            chdir $pwd;
+        } else {
+            debug("Creating new repo");
+            my $pwd = getcwd;
+            debug("pwd=$pwd");
+            chdir $build_dir;
+            system("git clone $repo $build_dir");
+            chdir $pwd;
+        }
+    }
     $self->sleep(1); # avoid race conditions
 
-    my $repo    = $task->project->url . '.git';
-    my $r       = Git::Repository->create( clone => $repo => $build_dir );
-
     debug("Checking out " . $task->commit->sha256 . " from $repo into $build_dir\n");
-    $r->run( 'checkout', $task->commit->sha256 );
+    # $r->run( 'checkout', $task->commit->sha256 );
+    my $pwd = getcwd;
+    chdir $build_dir;
+    system("git checkout " . $task->commit->sha256 );
+    chdir $pwd;
 
-    my $builder         = $conf->{'jitterbug'}{'build_process'}{'builder'};
+    my $builder       =    $conf->{'jitterbug'}{'projects'}{$project->name}{'builder'}
+                        || $conf->{'jitterbug'}{'build_process'}{'builder'};
 
     my $perlbrew      = $conf->{'jitterbug'}{'options'}{'perlbrew'};
     my $email_on_pass = $conf->{'jitterbug'}{'options'}{'email_on_pass'};
@@ -122,7 +152,9 @@ sub run_task {
     debug("email_on_pass = $email_on_pass");
     debug("perlbrew      = $perlbrew");
 
-    my $builder_variables = $conf->{'jitterbug'}{'build_process'}{'builder_variables'};
+    # If the project has custom builder variables, use those. Otherwise, use the global setting
+    my $builder_variables =    $conf->{'jitterbug'}{'projects'}{$project->name}{'builder_variables'}
+                            || $conf->{'jitterbug'}{'build_process'}{'builder_variables'} || '';
 
     my $builder_command = "$builder_variables $builder $build_dir $report_path $perlbrew";
 
@@ -139,6 +171,8 @@ sub run_task {
         while (<$fh>){
             $lines .= $_;
         }
+        # if $result is undefined, either there was a build failure
+        # or the test output is not from a TAP harness
         ($result) = $lines =~ /Result:\s(\w+)/;
         my ( $name, ) = basename($version);
         $name =~ s/\.txt//;

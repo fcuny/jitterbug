@@ -4,6 +4,7 @@ $(document).ready(function() {
         var class = "#commits-day-" + day;
         $(class).toggle();
     });
+    /* This times out on large test outputs
     $('.builds a').click(function() {
         var url = $(this).attr("href");
         var id = $(this).parents('.commit').attr('id');
@@ -12,4 +13,5 @@ $(document).ready(function() {
         });
         return false;
     })
+    */
 })
