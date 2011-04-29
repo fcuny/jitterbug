@@ -47,3 +47,22 @@ Now, when you commit to a project that has a Jitterbug post-receive hook,
 the builder check periodically for a new task and build and test your
 projects!
 
+### Configuring Jitterbug
+
+Take a look at example.yml, which uses all the advanced features of Jitterbug.
+The easiest thing is to copy this file and tweak it to your needs.
+
+Most of the configuration changes that you will make are in the "jitterbug" and
+"plugins" config keys. Under the "jitterbug" key we have the keys "reports",
+"build", "build_process", "options", "branches" and "projects". Both the
+"reports" and "build" keys take a "dir" key, such as:
+
+    jitterbug:
+    reports:
+        dir: /tmp/jitterbug
+    build:
+        dir: /tmp/build
+
+This means that reports should be stored in /tmp/jitterbug and build directories will be stored
+in /tmp/build.
+
