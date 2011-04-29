@@ -66,3 +66,26 @@ Most of the configuration changes that you will make are in the "jitterbug" and
 This means that reports should be stored in /tmp/jitterbug and build directories will be stored
 in /tmp/build.
 
+The "build_process" section has the most options, which may be overwhelming at first. Most of
+them are related to how emails will be formatted. The first three config keys are the most
+important:
+
+  build_process:
+    builder: ./scripts/capsule.sh
+    builder_variables: "DEBUG=1"
+    reuse_repo:    1
+
+The "builder" key is a path to a script that detects the language and type of
+test suite and then builds and tests a repo. Unless Jitterbug doesn't know how
+to autodetect and run the tests in your repo (please tell us!), you won't have
+to change this config key.
+
+The "build_variables" keys is for setting environment variabels in the builder
+process. Here, we set the environmanet variable DEBUG to a value of 1.
+
+The "reuse_repo" key tells Jitterbug whether it should reuse Git repos, i.e.
+not clone them again and again. If you have large git repos, this config key
+can be a life saver to minimize bandwidth and the time to build + test a
+commit.  If this is a true value, repos will be cached in the "build" directory
+specified above.
+
