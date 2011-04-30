@@ -89,3 +89,12 @@ can be a life saver to minimize bandwidth and the time to build + test a
 commit.  If this is a true value, repos will be cached in the "build" directory
 specified above.
 
+The rest of the options in this section are related to email
+notifications. The keys "on_failure" and "on_pass" list the
+name of a Perl class that handles emails. You probably won't
+need to change this.
+
+The config key "on_failure_subject_prefix" can be used to
+tweak the subject lines of emails that Jitterbug sends. By
+default, they will begin with "[jitterbug] FAIL". Similarly,
+there is a "on_pass_subject_prefix" which defaults to "[jitterbug] PASS".
