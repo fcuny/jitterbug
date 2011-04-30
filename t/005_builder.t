@@ -17,7 +17,7 @@ jitterbug::Test->init();
     isa_ok($b,'jitterbug::Builder');
     can_ok($b,qw/run build run_task sleep/);
 
-    is($b->{'configfile'}, 't/data/test.yml');
+    is($b->{'config'}, 't/data/test.yml');
     is($b->{'cron'}, 1 );
 }
 
@@ -33,7 +33,7 @@ jitterbug::Test->init();
     local @ARGV = qw(-c t/data/test.yml -C);
     my $b = jitterbug::Builder->new();
     isa_ok($b, 'jitterbug::Builder');
-    is($b->{'configfile'}, 't/data/test.yml');
+    is($b->{'config'}, 't/data/test.yml');
 
     is($b->run, 0, '->run returns 0 in cron mode');
 

@@ -23,14 +23,14 @@ sub new {
 
     GetOptions(
         'C|cron'         => \$self->{'cron'},
-        'c|configfile=s' => \$self->{'configfile'},
+        'c|config=s' => \$self->{'config'},
         's|sleep=i'      => \$self->{'sleep'},
     ) or die "Cannot get options\n";
 
-    $self->{'configfile'}
+    $self->{'config'}
         or die qq{missing config.yml, use "-c config.yml" to help us find it\n};
 
-    die "Does not exist!: " . $self->{'configfile'} unless -e $self->{'configfile'};
+    die "Does not exist!: " . $self->{'config'} unless -e $self->{'config'};
 
     return $self;
 }
@@ -41,10 +41,10 @@ sub debug {
 
 sub run {
     my $self      = shift || die "Must call run() from object\n";
-    my $conf      = $self->{'conf'} = LoadFile( $self->{'configfile'} );
+    my $conf      = $self->{'conf'} = LoadFile( $self->{'config'} );
     my $dbix_conf = $conf->{'plugins'}{'DBIC'}{'schema'};
 
-    debug("Loaded config file: " . $self->{'configfile'});
+    debug("Loaded config file: " . $self->{'config'});
     debug("Connection Info: " . join ':', @{ $dbix_conf->{'connect_info'} });
 
     $self->{'schema'}   = jitterbug::Schema->connect( @{ $dbix_conf->{'connect_info'} } );
