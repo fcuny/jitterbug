@@ -26,7 +26,7 @@ public/favicon.ico
 public/images/feed.png
 public/images/perldancer-bg.jpg
 public/images/perldancer.jpg
-README
+README.md
 scripts/builder.pl
 sql/_source/deploy/1/001-auto-__VERSION.yml
 sql/_source/deploy/1/001-auto.yml
