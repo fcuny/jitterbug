@@ -42,8 +42,16 @@ sub _get_projects {
             my $json = from_json($last_commit->content);
             $proj_desc->{last_build}        = $json;
             $proj_desc->{last_build_author} = $json->{author}{name};
+            # get the status of the last build
+            my $last_build_status = "PASS";
+            foreach my $version (keys %{$json->{build}->{version}}){
+                if ($json->{build}->{version}->{$version} eq "FAIL"){
+                    $last_build_status = "FAIL";
+                    last;
+                }
+            }
+            $proj_desc->{last_build_status} = $last_build_status;
         }
-
         push @projects, $proj_desc;
     }
 
