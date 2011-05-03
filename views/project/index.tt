@@ -39,6 +39,8 @@
               <br />
               <: if $commit.build.start_time { :>
                 built in&nbsp;<: $commit.build.end_time - $commit.build.start_time :>&nbsp;seconds
+              <: } else { :>
+                    running now
               <: } :>
               <br />
             </div>
