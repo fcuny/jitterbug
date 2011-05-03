@@ -10,7 +10,7 @@ get '/:task_id' => sub {
     my $task = schema->resultset('Task')->find($task_id);
 
     if (!$task) {
-        render_error("task doesn't exists", 404);
+        send_error("task does not exist!", 404);
     }
 
     template 'task/index', {task => $task };
