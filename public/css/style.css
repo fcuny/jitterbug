@@ -209,6 +209,7 @@ overflow: hidden;
 
 .commit .description {
 float: left;
+width: 100%;
 }
 
 .commit .git {
