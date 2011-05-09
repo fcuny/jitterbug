@@ -51,4 +51,27 @@ del '/task/:id' => sub {
     {status => "task $id deleted"};
 };
 
+get '/tasks' => sub {
+    my $tasks = schema->resultset('Task')->search();
+
+    my $content;
+
+    # I think we should never use internal ID when there is a sha256 available
+    while ( my $task = $tasks->next ) {
+        push @$content,
+          {
+            id           => $task->sha256,
+            running      => $task->running,
+            started_when => $task->started_when,
+            project      => {
+                id   => $task->projectid,
+                name => $task->project->name,
+            },
+            commit => from_json($task->commit->content),
+          };
+    }
+
+    {tasks => $content};
+};
+
 1;

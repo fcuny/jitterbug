@@ -1,4 +1,4 @@
-use Test::More tests => 15;
+use Test::More tests => 17;
 use strict;
 use warnings;
 
@@ -162,7 +162,6 @@ my $response;
 }
 
 {
-    # delete a task
     $schema->resultset('Project')->search()->delete();
     $schema->resultset('Task')->search()->delete();
 
@@ -179,9 +178,24 @@ my $response;
         }
     );
 
+    # delete a task
     my $task = $schema->resultset('Task')->search()->single();
     $response = dancer_response(DELETE => '/api/task/'.$task->sha256);
     is $response->status, 201;
+
+    # list all the tasks
+    $response = dancer_response(
+        POST => '/hook/',
+        {
+            headers =>
+              [ 'Content-Type' => 'application/x-www-form-urlencoded' ],
+            body => _generate_post_request($content),
+        }
+    );
+    my $tasks = dancer_response(GET => '/api/tasks');
+    is $response->status, 200;
+    my $content = from_json($tasks->content);
+    is scalar @{$content->{tasks}}, 1;
 }
 
 sub _generate_post_request {
