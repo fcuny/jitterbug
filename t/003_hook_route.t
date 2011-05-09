@@ -1,4 +1,4 @@
-use Test::More tests => 13;
+use Test::More tests => 15;
 use strict;
 use warnings;
 
@@ -159,6 +159,29 @@ my $response;
     }
     is $schema->resultset('Task')->search()->count(), 2,
       'can stack tasks for this project';
+}
+
+{
+    # delete a task
+    $schema->resultset('Project')->search()->delete();
+    $schema->resultset('Task')->search()->delete();
+
+    # 404 when there is no task
+    $response = dancer_response(DELETE => '/api/task/1');
+    is $response->status, 404;
+
+    $response = dancer_response(
+        POST => '/hook/',
+        {
+            headers =>
+              [ 'Content-Type' => 'application/x-www-form-urlencoded' ],
+            body => _generate_post_request($content),
+        }
+    );
+
+    my $task = $schema->resultset('Task')->search()->single();
+    $response = dancer_response(DELETE => '/api/task/'.$task->sha256);
+    is $response->status, 201;
 }
 
 sub _generate_post_request {

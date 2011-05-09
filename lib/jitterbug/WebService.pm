@@ -36,4 +36,19 @@ get '/build/:project/:commit/:version' => sub {
     }
 };
 
+del '/task/:id' => sub {
+    my $id = params->{id};
+
+    my $task = schema->resultset('Task')->find({sha256 => $id});
+
+    if (!$task){
+        send_error("Can't find task for $id", 404);
+        return;
+    }
+
+    $task->delete;
+    status(201);
+    {status => "task $id deleted"};
+};
+
 1;
