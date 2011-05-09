@@ -1,6 +1,29 @@
 <div id="page">
-     <div id="content">
-     <h2>Task <: $task.id :></h2>
-     started : <: $task.started_when :>
-     </div>
+  <div id="content">
+    <h2>Task <: $task.id :></h2>
+    <div class="commit" id="<: $task.id :>">
+      <div class="description">
+        <div class="message"><pre><: $commit.message :></pre></div>
+        <div class="name">
+          <div class="gravatar">
+            <img src="http://www.gravatar.com/avatar/<: $commit.avatar :>?s=30" />
+          </div>
+          <div class="author"><: $commit.author.name :></div>
+          <div class="date">pushed on <: $commit.timestamp :></div>
+        </div>
+        <div style="clear:both;"></div>
+      </div>
+      <div class="git">
+        commit&nbsp;&nbsp;&nbsp;<a href="<: $commit.url :>"><: $commit.id :></a><br />
+        <: if $commit.ref { :>
+          on&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<: $commit.ref :>
+        <: } :>
+        <br />
+        <: if $commit.build.start_time { :>
+          started <: $task.started_when :>
+        <: } :>
+        <br />
+      </div>
+    </div>
+  </div>
 </div>

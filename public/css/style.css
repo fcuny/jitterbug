@@ -232,7 +232,6 @@ font-family:Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",m
 .commit .builds span.PASS{color:green}
 .commit .builds span.FAIL{color:red}
 
-
 .repo{border:1px solid #d8d8d8;background-color:#f0f0f0;margin:0;margin:0 0 10px 0;padding:8px 10px 0 10px;border:1px solid #ddd;-webkit-border-radius:4px;-moz-border-radius:4px;border-radius:4px;}
 .repo h3{margin:0;font-size:14px;white-space:nowrap;}
 .repo p.desc{margin:0 0 3px 0;font-size:12px;color:#444;}
@@ -243,6 +242,7 @@ font-family:Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",m
 
 .commit .name{float:left; width: 100%;}
 .commit .name .date{color:#888;font-size:90%;}
+.commit .name .date_started{color:#888;font-size:90%;}
 .commit .name .author{font-weight: bolder;line-height:2em}
 .commit .gravatar{border:1px solid #d0d0d0;padding:2px;background-color:white;float:left;margin-right:.7em;}
 
