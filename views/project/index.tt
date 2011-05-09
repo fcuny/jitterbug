@@ -5,7 +5,7 @@
     <div class="project_baseline"><strong>"<: $project.description :>"</strong></div>
 
     :for $days -> $day {
-      <h3 class="builds-day" id="builds-day-<: $day :>"><: $day :></h3>
+      <h3 class="builds-day" id="builds-day-<: $day :>"><: $day :> (<: $total_by_days[$day] :> build(s))</h3>
       : if $~day == 0 {
         <div class="commits" id="commits-day-<: $day :>">
       : }else{

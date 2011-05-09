@@ -18,17 +18,19 @@ get '/:project' => sub {
     my $builds = _sorted_builds($project);
 
     my $commits;
+    my $total_by_days;
     foreach (@$builds) {
         $_->{avatar} = md5_hex( lc( $_->{author}->{email} ) );
         my $t = $_->{timestamp};
         (my $d) = $t =~ /^(\d{4}-\d{2}-\d{2})/;
         push @{$commits->{$d}}, $_;
+        $total_by_days->{$d}++;
     }
 
     my @days = sort {$b cmp $a} keys %$commits;
 
     template 'project/index',
-        {project => $project, days => \@days, commits => $commits};
+        {project => $project, days => \@days, commits => $commits, total_by_days => $total_by_days};
 };
 
 get '/:project/feed' => sub {
