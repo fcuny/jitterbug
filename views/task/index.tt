@@ -1,3 +1,4 @@
+
 <div id="page">
   <div id="content">
     <h2>Task <: $task.id :></h2>
@@ -19,7 +20,7 @@
           on&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<: $commit.ref :>
         <: } :>
         <br />
-        <: if $commit.build.start_time { :>
+        <: if $task.started_when { :>
           started <: $task.started_when :>
         <: } :>
         <br />

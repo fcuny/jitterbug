@@ -4,23 +4,21 @@ use Dancer ':syntax';
 use Dancer::Plugin::DBIC;
 use jitterbug::Plugin::Template;
 
-get '/:task_id' => sub {
-    my $task_id = params->{task_id};
+get '/:id' => sub {
+    my $task = schema->resultset('Task')->find( params->{id} );
 
-    my $task = schema->resultset('Task')->find($task_id);
-    my $commit =
-      schema->resultset('Commit')->find( { sha256 => $task->sha256 } );
 
-    if (!$task) {
+    if ( !$task ) {
         send_error("task does not exist!", 404);
     }
 
-    if (!$commit){
-        render_error("commit doesn't exists", 404);
-    }
+    my $commit = from_json( $task->commit->content );
 
-    my $content = from_json($commit->content);
-    template 'task/index', {task => $task, commit => $content };
+    template 'task/index',
+      {
+        task   => { id => $task->id, started_when => $task->started_when },
+        commit => $commit
+      };
 };
 
 1;
