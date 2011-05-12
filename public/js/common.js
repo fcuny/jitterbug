@@ -1,8 +1,8 @@
 $(document).ready(function() {
     $('.builds-day').click(function() {
-        var day = $(this).text();
-        var class = "#commits-day-" + day;
-        $(class).toggle();
+        var commit_id = $(this).attr('id').replace("builds","commits");
+        console.log(commit_id);
+        $("#" + commit_id).toggle();
     });
     /* This times out on large test outputs
     $('.builds a').click(function() {
