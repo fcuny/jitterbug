@@ -8,7 +8,7 @@
       : my $total  = $total_by_days[$day];
       : my $plural = $total > 1 ? 's' : '';
       <h3 class="builds-day" id="builds-day-<: $day :>"><: $day :> - <: $total_by_days[$day] :> build<: $plural :></h3>
-      : if $~day == 0 {
+      : if $~day < 3 {
         <div class="commits" id="commits-day-<: $day :>">
       : }else{
         <div class="commits" id="commits-day-<: $day :>" style="display:none">
