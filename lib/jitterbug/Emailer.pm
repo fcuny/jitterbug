@@ -66,7 +66,7 @@ sub run {
     my $stuff = Email::Stuff->from($buildconf->{"on_${status}_from_email"})
                 # bug in Email::Stuff brakes chaining if $email is empty
                 ->to($email || " ")
-                ->cc($buildconf->{"on_${status}_cc_email"})
+                ->cc($buildconf->{"on_${status}_cc_email"} || " ")
                 ->text_body($body)
                 ->subject(
                     $buildconf->{"on_${status}_subject_prefix"} . "$project @ $shortsha1 $short_message"
