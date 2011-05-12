@@ -5,6 +5,7 @@ use Dancer::Plugin::DBIC;
 use jitterbug::Plugin::Template;
 
 use Digest::MD5 qw/md5_hex/;
+use Time::Elapsed qw( elapsed );
 use DateTime;
 use XML::Feed;
 
@@ -76,8 +77,13 @@ sub _sorted_builds {
 
     my @builds;
     while ( my $c = $commits->next ) {
-        my $content = from_json($c->content);
-        $content->{id} = $c->sha256 if (!$content->{id});
+        my $content = from_json( $c->content );
+        $content->{id} = $c->sha256 if ( !$content->{id} );
+        if ( $content->{build}->{start_time} ) {
+            $content->{time_elapsed} =
+              elapsed( $content->{build}->{end_time} -
+                  $content->{build}->{start_time} );
+        }
         push @builds, $content;
     }
 
