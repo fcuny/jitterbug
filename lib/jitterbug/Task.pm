@@ -8,8 +8,9 @@ get '/:id' => sub {
     my $task = schema->resultset('Task')->find( params->{id} );
 
 
-    if ( !$task ) {
+    if ( !defined $task ) {
         send_error("task does not exist!", 404);
+        return;
     }
 
     my $commit = from_json( $task->commit->content );
