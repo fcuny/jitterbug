@@ -154,9 +154,7 @@ sub run_task {
                         || $conf->{'jitterbug'}{'build_process'}{'builder'};
 
     my $perlbrew      = $conf->{'jitterbug'}{'options'}{'perlbrew'};
-    my $email_on_pass = $conf->{'jitterbug'}{'options'}{'email_on_pass'};
 
-    debug("email_on_pass = $email_on_pass");
     debug("perlbrew      = $perlbrew");
 
     # If the project has custom builder variables, use those. Otherwise, use the global setting
@@ -170,6 +168,23 @@ sub run_task {
     debug($res);
 
     $desc->{'build'}{'end_time'} = time();
+
+    $self->_parse_results($report_path, $conf, $task, $desc);
+
+    $task->commit->update( {
+        content => JSON::encode_json($desc),
+    } );
+    debug("Task completed for " . $task->commit->sha256 . "\n");
+
+    $task->delete();
+
+    debug("Task removed from " . $task->project->name . "\n");
+}
+
+sub _parse_results {
+    my ($self, $report_path, $conf, $task, $desc) = @_;
+    my $email_on_pass = $conf->{'jitterbug'}{'options'}{'email_on_pass'};
+    debug("email_on_pass = $email_on_pass");
 
     my @versions = glob( $report_path . '/*' );
     foreach my $version (@versions) {
@@ -237,14 +252,4 @@ sub run_task {
         $desc->{'build'}{'version'}{$name} = $result;
         close $fh;
     }
-
-    $task->commit->update( {
-        content => JSON::encode_json($desc),
-    } );
-    debug("Task completed for " . $task->commit->sha256 . "\n");
-
-    $task->delete();
-
-    debug("Task removed from " . $task->project->name . "\n");
 }
-
