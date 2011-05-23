@@ -122,7 +122,9 @@ sub run_task {
             debug("Fetching new commits into $repo");
             system("git fetch");
             debug("Checking out correct commit");
-            system("git checkout " . $task->commit->sha256 );
+
+            # TODO: this may fail on non-unixy systems
+            system("git checkout " . $task->commit->sha256 . " &>/dev/null" );
             chdir $pwd;
         } else {
             debug("Creating new repo");
