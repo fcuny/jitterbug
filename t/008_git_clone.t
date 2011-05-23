@@ -20,6 +20,8 @@ use Dancer::Test;
 use Dancer::Config qw/setting/;
 use File::Spec::Functions;
 use File::Copy::Recursive qw/dircopy/;
+use File::Path qw/rmtree/;
+
 my $hook_data = catfile(qw/t data hook_data.yml/);
 
 my $content = LoadFile($hook_data);
@@ -39,6 +41,8 @@ setting plugins => {
         }
     }
 };
+
+rmtree(catfile(qw/t tmp build testing/));
 
 if (can_run('git')){
 
