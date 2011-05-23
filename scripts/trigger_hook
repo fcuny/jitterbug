@@ -7,15 +7,14 @@ use jitterbug::Schema;
 use JSON;
 use YAML qw/LoadFile Dump/;
 
-use File::Spec;
 use File::Temp qw/tempdir/;
 
 use Dancer::Test;
 use Dancer::Config qw/setting/;
+use File::Spec::Functions;
 
-my $content = LoadFile('t/data/test.yaml');
-
-my $db_file = File::Spec->catfile( qw/jitterbug.db/ );
+my $content = LoadFile(catfile(qw/t data hook_data.yml/));
+my $db_file = catfile( qw/t data jitterbug.db/ );
 my $dsn     = 'dbi:SQLite:dbname=' . $db_file;
 my $schema  = jitterbug::Schema->connect($dsn);
 # assume we have a deployed schema
