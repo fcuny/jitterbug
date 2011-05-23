@@ -10,7 +10,6 @@ use File::Path qw/rmtree/;
 use Path::Class;
 use Getopt::Long qw/:config no_ignore_case/;
 use File::Basename;
-use Git::Repository;
 use jitterbug::Schema;
 use Cwd;
 #use Data::Dumper;
@@ -110,7 +109,7 @@ sub run_task {
         debug("Removing $build_dir");
         rmtree($build_dir, { error => \my $err } );
         warn @$err if @$err;
-        $r       = Git::Repository->create( clone => $repo => $build_dir );
+        system("git clone $repo $build_dir");
     } else {
         # If this is the first time, the repo won't exist yet
         debug("build_dir = $build_dir");

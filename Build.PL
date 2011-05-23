@@ -20,7 +20,6 @@ my $builder = Module::Build->new(
         'XML::Feed'                => 0,
         'DateTime'                 => 0,
         'JSON'                     => 0,
-        'Git::Repository'          => 0,
         'YAML'                     => 0,
         'Dancer::Template::Xslate' => 0,
         'Dancer::Plugin::DBIC'     => 0,
