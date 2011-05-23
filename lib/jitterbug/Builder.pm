@@ -80,30 +80,9 @@ sub sleep {
     sleep $interval;
 }
 
-sub run_task {
-    my ($self,$task)   = @_;
+sub _prepare_git_repo {
+    my ($self, $task, $buildconf, $build_dir) = @_;
 
-    my $desc    = JSON::decode_json( $task->commit->content );
-    my $conf    = $self->{'conf'};
-    my $buildconf = $conf->{'jitterbug'}{'build_process'};
-    my $project = $task->project;
-
-    my $dt = DateTime->now();
-    $task->update({started_when => $dt});
-    $desc->{'build'}{'start_time'} = $dt->epoch;
-    debug("Build Start");
-
-    my $report_path = dir(
-        $conf->{'jitterbug'}{'reports'}{'dir'},
-        $project->name,
-        $task->commit->sha256,
-    );
-    my $dir = $conf->{'jitterbug'}{'build'}{'dir'};
-    mkdir $dir unless -d $dir;
-
-    my $build_dir = dir($dir, $project->name);
-
-    my $r;
     my $repo    = $task->project->url;
     unless ($buildconf->{reuse_repo}) {
         debug("Removing $build_dir");
@@ -144,6 +123,32 @@ sub run_task {
     # TODO: this may fail on non-unixy systems
     system("git checkout " . $task->commit->sha256 . "&>/dev/null");
     chdir $pwd;
+}
+
+sub run_task {
+    my ($self,$task)   = @_;
+
+    my $desc    = JSON::decode_json( $task->commit->content );
+    my $conf    = $self->{'conf'};
+    my $buildconf = $conf->{'jitterbug'}{'build_process'};
+    my $project = $task->project;
+
+    my $dt = DateTime->now();
+    $task->update({started_when => $dt});
+    $desc->{'build'}{'start_time'} = $dt->epoch;
+    debug("Build Start");
+
+    my $report_path = dir(
+        $conf->{'jitterbug'}{'reports'}{'dir'},
+        $project->name,
+        $task->commit->sha256,
+    );
+    my $dir = $conf->{'jitterbug'}{'build'}{'dir'};
+    mkdir $dir unless -d $dir;
+
+    my $build_dir = dir($dir, $project->name);
+
+    $self->_prepare_git_repo($task, $buildconf, $build_dir);
 
     my $builder       =    $conf->{'jitterbug'}{'projects'}{$project->name}{'builder'}
                         || $conf->{'jitterbug'}{'build_process'}{'builder'};
