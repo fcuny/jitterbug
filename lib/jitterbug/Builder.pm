@@ -104,7 +104,7 @@ sub run_task {
     my $build_dir = dir($dir, $project->name);
 
     my $r;
-    my $repo    = $task->project->url . '.git';
+    my $repo    = $task->project->url;
     unless ($buildconf->{reuse_repo}) {
         debug("Removing $build_dir");
         rmtree($build_dir, { error => \my $err } );

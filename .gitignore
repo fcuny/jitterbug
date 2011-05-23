@@ -14,3 +14,4 @@ Build
 jitterbug.db
 MYMETA.json
 t/data/jitterbug.db
+t/tmp
