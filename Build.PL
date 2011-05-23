@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 use Module::Build;
+use File::Spec::Functions;
 
 my $builder = Module::Build->new(
     module_name         => 'jitterbug',
@@ -33,7 +34,7 @@ my $builder = Module::Build->new(
         'Time::Elapsed'            => 0,
         'DBIx::Class::DeploymentHandler' => 0,
     },
-    add_to_cleanup      => [ 'jitterbug-' ],
+    add_to_cleanup      => [ 'jitterbug-', catfile(qw/t data jitterbug.db/) ],
     create_makefile_pl  => 'traditional',
     meta_merge     => {
         resources => {
