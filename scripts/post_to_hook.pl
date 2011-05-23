@@ -13,7 +13,8 @@ use Dancer::Test;
 use Dancer::Config qw/setting/;
 use File::Spec::Functions;
 
-my $content = LoadFile(catfile(qw/t data hook_data.yml/));
+my $content = LoadFile(shift || catfile(qw/t data hook_data.yml/));
+
 my $db_file = catfile( qw/t data jitterbug.db/ );
 my $dsn     = 'dbi:SQLite:dbname=' . $db_file;
 my $schema  = jitterbug::Schema->connect($dsn);
