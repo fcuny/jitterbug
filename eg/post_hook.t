@@ -6,7 +6,7 @@ use HTTP::Request::Common;
 use YAML qw/LoadFile/;
 use JSON;
 
-my $content = LoadFile('t/data/test.yaml');
+my $content = LoadFile('t/data/hook_data.yml');
 my $payload = JSON::encode_json($content);
 
 my $url = "http://localhost:5000/hook/";
