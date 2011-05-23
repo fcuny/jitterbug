@@ -44,7 +44,7 @@ my $response;
 }
 
 {
-    my $rs = $schema->resultset('Project')->find( { name => 'Dancer' } );
+    my $rs = $schema->resultset('Project')->find( { name => 'testing' } );
     ok !defined $rs, 'no project dancer yet';
 
     $response = dancer_response(
@@ -58,11 +58,11 @@ my $response;
 
     is $response->{status}, 200, 'status OK with payload';
     is_deeply JSON::decode_json( $response->{content} ),
-      { updated => 'Dancer' }, 'response OK with payload';
+      { updated => 'testing' }, 'response OK with payload';
 
-    $rs = $schema->resultset('Project')->find( { name => 'Dancer' } );
+    $rs = $schema->resultset('Project')->find( { name => 'testing' } );
     ok $rs, 'project exists in DB';
-    is $rs->name, 'Dancer', 'project\'s name is good';
+    is $rs->name, 'testing', 'project\'s name is good';
 
     is $schema->resultset('Task')->search()->count(), 1, 'one task created';
 }
@@ -90,7 +90,7 @@ my $response;
     $schema->resultset('Task')->search()->delete();
 
     # testing with invalid global branch
-    setting jitterbug => { branches => { Dancer => ['foo'], }, };
+    setting jitterbug => { branches => { testing => ['foo'], }, };
     $content->{ref} = 'refs/heads/foo';
     $response = dancer_response(
         POST => '/hook/',
