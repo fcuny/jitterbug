@@ -39,5 +39,5 @@ repository:
     name: franckcuny
   private: !!perl/scalar:JSON::XS::Boolean 1
   pushed_at: 2010/09/23 08:04:49 -0700
-  url: https://github.com/sukria/Dancer
+  url: ./t/data/testing.git
   watchers: 1
