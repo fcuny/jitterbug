@@ -47,7 +47,6 @@ function jitterbug_build () {
     fi
 }
 
-
 echo "Creating report_path=$report_path"
 mkdir -p $report_path
 
@@ -60,6 +59,9 @@ if [ $use_perlbrew ]; then
         theperl=$(perl -e 'print $^V')
         logfile="$report_path/perl-$theperl.txt"
 
+        mkdir -p $report_path
+        touch $logfile
+
         echo ">perlbrew switch $theperl"
         perlbrew switch $theperl
         # TODO: check error condition
@@ -69,5 +71,9 @@ if [ $use_perlbrew ]; then
 else
         theperl=$(perl -e 'print $^V')
         logfile="$report_path/perl-$theperl.txt"
+
+        mkdir -p $report_path
+        touch $logfile
+
         jitterbug_build
 fi

@@ -1,4 +1,4 @@
-use Test::More tests => 3;
+use Test::More tests => 4;
 use Test::Exception;
 use strict;
 use warnings;
@@ -49,11 +49,17 @@ if (can_run('git')){
     my $gitrepo = "t/data/testing";
     dircopy "$gitrepo/._git_", "$gitrepo/.git" unless -e "$gitrepo/.git";
 
-    lives_ok sub { system("$^X scripts/post_to_hook.pl") }, 'post_to_hook.pl lives';
+    lives_ok sub { system("$^X -Ilib scripts/post_to_hook.pl") }, 'post_to_hook.pl lives';
 
-    lives_ok sub { system("$^X scripts/builder.pl -c t/data/test.yml -C") }, 'builder.pl lives';
+
+    lives_ok sub { # $ENV{DEBUG} = 1;
+        system("$^X -Ilib scripts/builder.pl -c t/data/test.yml -C")
+    }, 'builder.pl lives';
 
     ok(-e "t/tmp/build/testing/.git", 'found a testing git repo');
+    chdir "t/tmp/build/testing";
+    chomp( my $sha1 = qx{git rev-parse HEAD} );
+    is($sha1,"3ab75b9a29e09bf027f64250b44cab19b316c128", "got expected sha1 in repo");
 } else {
     skip "Git not available, skipping tests", 3;
 }

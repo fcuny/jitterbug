@@ -124,7 +124,7 @@ sub run_task {
             debug("Checking out correct commit");
 
             # TODO: this may fail on non-unixy systems
-            system("git checkout " . $task->commit->sha256 . " &>/dev/null" );
+            system("git checkout " . $task->commit->sha256 . "&>/dev/null" );
             chdir $pwd;
         } else {
             debug("Creating new repo");
@@ -138,10 +138,11 @@ sub run_task {
     $self->sleep(1); # avoid race conditions
 
     debug("Checking out " . $task->commit->sha256 . " from $repo into $build_dir\n");
-    # $r->run( 'checkout', $task->commit->sha256 );
     my $pwd = getcwd;
     chdir $build_dir;
-    system("git checkout " . $task->commit->sha256 );
+
+    # TODO: this may fail on non-unixy systems
+    system("git checkout " . $task->commit->sha256 . "&>/dev/null");
     chdir $pwd;
 
     my $builder       =    $conf->{'jitterbug'}{'projects'}{$project->name}{'builder'}
