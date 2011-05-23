@@ -5,8 +5,9 @@ use LWP::UserAgent;
 use HTTP::Request::Common;
 use YAML qw/LoadFile/;
 use JSON;
+use File::Spec::Functions;
 
-my $content = LoadFile('t/data/test.yaml');
+my $content = LoadFile(catfile(qw/t data hook_data.yml/));
 my $payload = JSON::encode_json($content);
 
 my $url = "http://localhost:5000/hook/";

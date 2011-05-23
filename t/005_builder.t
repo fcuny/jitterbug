@@ -77,10 +77,10 @@ jitterbug::Test->init();
                                               },
                              'builder' => {},
                              'reports' => {
-                                          'dir' => '/tmp/jitterbug'
+                                          'dir' => './t/tmp/reports'
                                         },
                              'build' => {
-                                        'dir' => '/tmp/build'
+                                        'dir' => './t/tmp/build',
                                       },
                              'options' => {
                                         'email_on_pass' => '0',

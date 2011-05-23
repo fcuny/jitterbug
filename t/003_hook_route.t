@@ -13,8 +13,10 @@ use File::Temp qw/tempdir/;
 
 use Dancer::Test;
 use Dancer::Config qw/setting/;
+use File::Spec::Functions;
+my $hook_data = catfile(qw/t data hook_data.yml/);
 
-my $content = LoadFile('t/data/test.yaml');
+my $content = LoadFile($hook_data);
 
 my $db_dir = tempdir( CLEANUP => 1 );
 my $db_file = File::Spec->catfile( $db_dir, 'jitterbug.db' );

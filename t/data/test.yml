@@ -12,9 +12,9 @@ engines:
 
 jitterbug:
   reports:
-    dir: /tmp/jitterbug
+    dir: ./t/tmp/reports
   build:
-    dir: /tmp/build
+    dir: ./t/tmp/build
   build_process:
     builder: ./scripts/capsule.sh
     builder_variables: STUFF=BLAH

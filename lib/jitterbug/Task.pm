@@ -5,10 +5,14 @@ use Dancer::Plugin::DBIC;
 use jitterbug::Plugin::Template;
 
 get '/:id' => sub {
+    unless ( defined params->{id} ) {
+        send_error("task id missing!", 400);
+        return;
+    }
+
     my $task = schema->resultset('Task')->find( params->{id} );
 
-
-    if ( !defined $task ) {
+    unless ( defined $task ) {
         send_error("task does not exist!", 404);
         return;
     }
