@@ -111,7 +111,7 @@ sub _prepare_git_repo {
 
         debug("build_dir = $build_dir");
         mkdir $cached_repo_dir unless -d $cached_repo_dir;
-        my $cached_repo = catfile($cached_repo_dir,$name) );
+        my $cached_repo = catfile($cached_repo_dir,$name);
 
         unless ( -d $cached_repo ) {
             # If this is the first time, the repo won't exist yet
