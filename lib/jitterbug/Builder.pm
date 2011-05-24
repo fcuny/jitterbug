@@ -10,6 +10,7 @@ use File::Path qw/rmtree/;
 use Path::Class;
 use Getopt::Long qw/:config no_ignore_case/;
 use File::Basename;
+use File::Spec::Functions;
 use jitterbug::Schema;
 use Cwd;
 #use Data::Dumper;
