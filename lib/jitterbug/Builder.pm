@@ -113,7 +113,7 @@ sub _prepare_git_repo {
         unless ( -d catfile($cached_repo_dir,$name) ) {
             # If this is the first time, the repo won't exist yet
             # Clone it into our cached repo directory
-            _clone_into($repo, $cached_repo_dir);
+            _clone_into($repo, catfile($cached_repo_dir, $name));
         }
         my $pwd = getcwd;
 
