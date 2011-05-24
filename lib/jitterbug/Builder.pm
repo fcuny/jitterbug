@@ -125,24 +125,9 @@ sub _prepare_git_repo {
     chdir $pwd;
 }
 
-sub run_task {
-    my ($self,$task)   = @_;
-
-    my $desc    = JSON::decode_json( $task->commit->content );
-    my $conf    = $self->{'conf'};
+sub build_task {
+    my ($self, $conf, $project, $task, $report_path) = @_;
     my $buildconf = $conf->{'jitterbug'}{'build_process'};
-    my $project = $task->project;
-
-    my $dt = DateTime->now();
-    $task->update({started_when => $dt});
-    $desc->{'build'}{'start_time'} = $dt->epoch;
-    debug("Build Start");
-
-    my $report_path = dir(
-        $conf->{'jitterbug'}{'reports'}{'dir'},
-        $project->name,
-        $task->commit->sha256,
-    );
     my $dir = $conf->{'jitterbug'}{'build'}{'dir'};
     mkdir $dir unless -d $dir;
 
@@ -166,6 +151,26 @@ sub run_task {
     debug("Going to run builder : $builder_command");
     my $res             = `$builder_command`;
     debug($res);
+}
+
+sub run_task {
+    my ($self,$task)   = @_;
+
+    my $desc    = JSON::decode_json( $task->commit->content );
+    my $conf    = $self->{'conf'};
+    my $project = $task->project;
+    my $report_path = dir(
+        $conf->{'jitterbug'}{'reports'}{'dir'},
+        $project->name,
+        $task->commit->sha256,
+    );
+
+    my $dt = DateTime->now();
+    $task->update({started_when => $dt});
+    $desc->{'build'}{'start_time'} = $dt->epoch;
+    debug("Build Start");
+
+    $self->build_task($conf, $project, $task, $report_path);
 
     $desc->{'build'}{'end_time'} = time();
 
