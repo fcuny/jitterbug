@@ -95,42 +95,47 @@ sub _prepare_git_repo {
     my ($self, $task, $buildconf, $build_dir, $cached_repo_dir) = @_;
 
     my $repo    = $task->project->url;
+    my $name    = $task->project->name;
+
+    debug("Removing $build_dir");
+    rmtree($build_dir, { error => \my $err } );
+    warn @$err if @$err;
+
+    # If we aren't reusing/caching git repos, clone from remote into the build dir
     unless ($buildconf->{reuse_repo}) {
-        debug("Removing $build_dir");
-        rmtree($build_dir, { error => \my $err } );
-        warn @$err if @$err;
-
         _clone_into($repo, $build_dir);
-
     } else {
-        # If this is the first time, the repo won't exist yet
+        # We are caching git repos, so we clone a new repo from our local
+        # cached git repo, then checkout the correct sha1
+
         debug("build_dir = $build_dir");
-        if( -d $build_dir ){
-            my $pwd = getcwd;
-            chdir $build_dir;
-            # TODO: Error Checking
-            debug("Cleaning git repo");
-            system("git clean -dfx");
-            debug("Fetching new commits into $repo");
-            system("git fetch");
-            debug("Checking out correct commit");
-
-            # TODO: this may fail on non-unixy systems
-            system("git checkout " . $task->commit->sha256 . "&>/dev/null" );
-            chdir $pwd;
-        } else {
-            _clone_into($repo, $build_dir);
+        unless ( -d $cached_repo_dir ) {
+            # If this is the first time, the repo won't exist yet
+            # Clone it into our cached repo directory
+            _clone_into($repo, $cached_repo_dir);
         }
+        my $pwd = getcwd;
+
+        chdir $cached_repo_dir;
+        # TODO: Error Checking
+
+        debug("Fetching new commits into $repo");
+        system("git fetch --prune");
+        chdir $pwd;
+
+        debug("Cloning from cached repo $cached_repo_dir into $build_dir");
+
+        _clone_into($cached_repo_dir, $build_dir);
+        chdir $build_dir;
+
+        $self->sleep(1); # avoid race conditions
+
+        # TODO: this may fail on non-unixy systems
+        debug("checking out " . $task->commit->sha256);
+        system("git checkout " . $task->commit->sha256 . "&>/dev/null" );
+
+        chdir $pwd;
     }
-    $self->sleep(1); # avoid race conditions
-
-    debug("Checking out " . $task->commit->sha256 . " from $repo into $build_dir\n");
-    my $pwd = getcwd;
-    chdir $build_dir;
-
-    # TODO: this may fail on non-unixy systems
-    system("git checkout " . $task->commit->sha256 . "&>/dev/null");
-    chdir $pwd;
 }
 
 sub build_task {
