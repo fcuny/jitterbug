@@ -110,6 +110,8 @@ sub _prepare_git_repo {
         # cached git repo, then checkout the correct sha1
 
         debug("build_dir = $build_dir");
+        mkdir $cached_repo_dir unless -d $cached_repo_dir;
+
         unless ( -d catfile($cached_repo_dir,$name) ) {
             # If this is the first time, the repo won't exist yet
             # Clone it into our cached repo directory
@@ -124,9 +126,9 @@ sub _prepare_git_repo {
         system("git fetch --prune");
         chdir $pwd;
 
-        debug("Cloning from cached repo $cached_repo_dir into $build_dir");
+        debug("Cloning from cached repo $cached_repo_dir/$name into $build_dir");
 
-        _clone_into($cached_repo_dir, $build_dir);
+        _clone_into(catdir($cached_repo_dir,$name), $build_dir);
         chdir $build_dir;
 
         $self->sleep(1); # avoid race conditions
