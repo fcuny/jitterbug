@@ -28,7 +28,7 @@
               <br />
               <div class="builds">
                 :for $commit.build.version.keys() -> $version {
-                  <a href="<: $uri_base :>/api/build/<: $project.name :>/<: $commit.id :>/<: $version :>"><: $version :></a> <span class="<: $commit.build.version[$version] :>"><: $commit.build.version[$version] :></span>
+                  <a href="/api/build/<: $project.name :>/<: $commit.id :>/<: $version :>"><: $version :></a> <span class="<: $commit.build.version[$version] :>"><: $commit.build.version[$version] :></span>
                 :}
               </div>
             </div>

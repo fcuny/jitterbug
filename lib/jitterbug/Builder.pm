@@ -10,7 +10,7 @@ use File::Path qw/rmtree/;
 use Path::Class;
 use Getopt::Long qw/:config no_ignore_case/;
 use File::Basename;
-use Git::Repository;
+use File::Spec::Functions;
 use jitterbug::Schema;
 use Cwd;
 #use Data::Dumper;
@@ -81,75 +81,87 @@ sub sleep {
     sleep $interval;
 }
 
-sub run_task {
-    my ($self,$task)   = @_;
+sub _clone_into {
+    my ($repo, $dir) = @_;
+    my $pwd = getcwd;
+    chdir $dir;
 
-    my $desc    = JSON::decode_json( $task->commit->content );
-    my $conf    = $self->{'conf'};
+    debug("cloning $repo into $dir");
+    system("git clone $repo $dir");
+
+    chdir $pwd;
+}
+
+sub _prepare_git_repo {
+    my ($self, $task, $buildconf, $build_dir, $cached_repo_dir) = @_;
+
+    my $repo    = $task->project->url;
+    my $name    = $task->project->name;
+
+    debug("Removing $build_dir");
+    rmtree($build_dir, { error => \my $err } );
+    warn @$err if @$err;
+
+    # If we aren't reusing/caching git repos, clone from remote into the build dir
+    unless ($buildconf->{reuse_repo}) {
+        _clone_into($repo, $build_dir);
+    } else {
+        # We are caching git repos, so we clone a new repo from our local
+        # cached git repo, then checkout the correct sha1
+
+        debug("build_dir = $build_dir");
+        mkdir $cached_repo_dir unless -d $cached_repo_dir;
+        my $cached_repo = catfile($cached_repo_dir,$name);
+
+        unless ( -d $cached_repo ) {
+            # If this is the first time, the repo won't exist yet
+            # Clone it into our cached repo directory
+            _clone_into($repo, $cached_repo);
+        }
+        my $pwd = getcwd;
+
+        chdir $cached_repo;
+        # TODO: Error Checking
+
+        debug("Fetching new commits into $cached_repo");
+        system("git fetch --prune");
+
+        $self->sleep(1); # avoid race conditions
+
+        debug("Cloning from cached repo $cached_repo_dir/$name into $build_dir");
+        _clone_into(catdir($cached_repo_dir,$name), $build_dir);
+        chdir $build_dir;
+
+        $self->sleep(1); # avoid race conditions
+
+        # TODO: this may fail on non-unixy systems
+        debug("checking out " . $task->commit->sha256);
+        system("git checkout " . $task->commit->sha256 . "&>/dev/null" );
+
+        chdir $pwd;
+    }
+}
+
+sub build_task {
+    my ($self, $conf, $project, $task, $report_path) = @_;
+
     my $buildconf = $conf->{'jitterbug'}{'build_process'};
-    my $project = $task->project;
+    my $dir       = $conf->{'jitterbug'}{'build'}{'dir'};
 
-    my $dt = DateTime->now();
-    $task->update({started_when => $dt});
-    $desc->{'build'}{'start_time'} = $dt->epoch;
-    debug("Build Start");
-
-    my $report_path = dir(
-        $conf->{'jitterbug'}{'reports'}{'dir'},
-        $project->name,
-        $task->commit->sha256,
-    );
-    my $dir = $conf->{'jitterbug'}{'build'}{'dir'};
     mkdir $dir unless -d $dir;
 
     my $build_dir = dir($dir, $project->name);
+    my $cached_repo_dir = dir($dir, 'cached');
 
-    my $r;
-    my $repo    = $task->project->url . '.git';
-    unless ($buildconf->{reuse_repo}) {
-        debug("Removing $build_dir");
-        rmtree($build_dir, { error => \my $err } );
-        warn @$err if @$err;
-        $r       = Git::Repository->create( clone => $repo => $build_dir );
-    } else {
-        # If this is the first time, the repo won't exist yet
-        debug("build_dir = $build_dir");
-        if( -d $build_dir ){
-            my $pwd = getcwd;
-            chdir $build_dir;
-            # TODO: Error Checking
-            debug("Cleaning git repo");
-            system("git clean -dfx");
-            debug("Fetching new commits into $repo");
-            system("git fetch");
-            debug("Checking out correct commit");
-            system("git checkout " . $task->commit->sha256 );
-            chdir $pwd;
-        } else {
-            debug("Creating new repo");
-            my $pwd = getcwd;
-            debug("pwd=$pwd");
-            chdir $build_dir;
-            system("git clone $repo $build_dir");
-            chdir $pwd;
-        }
-    }
-    $self->sleep(1); # avoid race conditions
+    mkdir $cached_repo_dir unless -d $cached_repo_dir;
 
-    debug("Checking out " . $task->commit->sha256 . " from $repo into $build_dir\n");
-    # $r->run( 'checkout', $task->commit->sha256 );
-    my $pwd = getcwd;
-    chdir $build_dir;
-    system("git checkout " . $task->commit->sha256 );
-    chdir $pwd;
+    $self->_prepare_git_repo($task, $buildconf, $build_dir, $cached_repo_dir);
 
     my $builder       =    $conf->{'jitterbug'}{'projects'}{$project->name}{'builder'}
                         || $conf->{'jitterbug'}{'build_process'}{'builder'};
 
     my $perlbrew      = $conf->{'jitterbug'}{'options'}{'perlbrew'};
-    my $email_on_pass = $conf->{'jitterbug'}{'options'}{'email_on_pass'};
 
-    debug("email_on_pass = $email_on_pass");
     debug("perlbrew      = $perlbrew");
 
     # If the project has custom builder variables, use those. Otherwise, use the global setting
@@ -161,8 +173,46 @@ sub run_task {
     debug("Going to run builder : $builder_command");
     my $res             = `$builder_command`;
     debug($res);
+    return $res;
+}
+
+sub run_task {
+    my ($self,$task)   = @_;
+
+    my $desc    = JSON::decode_json( $task->commit->content );
+    my $conf    = $self->{'conf'};
+    my $project = $task->project;
+    my $report_path = dir(
+        $conf->{'jitterbug'}{'reports'}{'dir'},
+        $project->name,
+        $task->commit->sha256,
+    );
+
+    my $dt = DateTime->now();
+    $task->update({started_when => $dt});
+    $desc->{'build'}{'start_time'} = $dt->epoch;
+    debug("Build Start");
+
+    $self->build_task($conf, $project, $task, $report_path);
 
     $desc->{'build'}{'end_time'} = time();
+
+    $self->_parse_results($report_path, $conf, $task, $desc);
+
+    $task->commit->update( {
+        content => JSON::encode_json($desc),
+    } );
+    debug("Task completed for " . $task->commit->sha256 . "\n");
+
+    $task->delete();
+
+    debug("Task removed from " . $task->project->name . "\n");
+}
+
+sub _parse_results {
+    my ($self, $report_path, $conf, $task, $desc) = @_;
+    my $email_on_pass = $conf->{'jitterbug'}{'options'}{'email_on_pass'};
+    debug("email_on_pass = $email_on_pass");
 
     my @versions = glob( $report_path . '/*' );
     foreach my $version (@versions) {
@@ -193,15 +243,15 @@ sub run_task {
             my $on_failure_cc_email = $conf->{'jitterbug'}{'build_process'}{'on_failure_cc_email'};
 
             $message  =~ s/'/\\'/g; $commiter =~ s/'/\\'/g; $output =~ s/'/\\'/g;
-            my $failure_cmd = sprintf("%s '%s' %s '%s' '%s' %s %s", $on_failure, $commiter, $task->project->name, $message, $output, $sha, $on_failure_cc_email);
-            debug("Running failure command: $failure_cmd");
-
             # does it look like a module name?
             if ($on_failure =~ /::/) {
                 # we should do some error checking here
                 eval "require $on_failure";
                 $on_failure->new($conf,$task,$output,'failure')->run;
             } else {
+                my $failure_cmd = sprintf("%s '%s' %s '%s' '%s' %s %s", $on_failure, $commiter, $task->project->name, $message, $output, $sha, $on_failure_cc_email);
+                debug("Running failure command: $failure_cmd");
+
                 system($failure_cmd);
             }
         } elsif ($email_on_pass) {
@@ -215,8 +265,6 @@ sub run_task {
             my $on_pass_cc_email = $conf->{'jitterbug'}{'build_process'}{'on_pass_cc_email'};
 
             $message  =~ s/'/\\'/g; $commiter =~ s/'/\\'/g; $output =~ s/'/\\'/g;
-            my $pass_cmd = sprintf("%s '%s' %s '%s' '%s' %s %s", $on_pass, $commiter, $task->project->name, $message, $output, $sha, $on_pass_cc_email);
-            debug("Running pass command: $pass_cmd");
 
             # does it look like a module name?
             if ($on_pass =~ /::/) {
@@ -224,20 +272,12 @@ sub run_task {
                 eval "require $on_pass";
                 $on_pass->new($conf,$task,$output, 'pass')->run;
             } else {
+                my $pass_cmd = sprintf("%s '%s' %s '%s' '%s' %s %s", $on_pass, $commiter, $task->project->name, $message, $output, $sha, $on_pass_cc_email);
+                debug("Running pass command: $pass_cmd");
                 system($pass_cmd);
             }
         }
         $desc->{'build'}{'version'}{$name} = $result;
         close $fh;
     }
-
-    $task->commit->update( {
-        content => JSON::encode_json($desc),
-    } );
-    debug("Task completed for " . $task->commit->sha256 . "\n");
-
-    $task->delete();
-
-    debug("Task removed from " . $task->project->name . "\n");
 }
-

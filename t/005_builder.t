@@ -58,7 +58,7 @@ jitterbug::Test->init();
                          },
             'jitterbug' => {
                              'build_process' => {
-                                                'on_failure' => './scripts/build-failed.sh',
+                                                'on_failure' => 'jitterbug::Emailer',
                                                 'builder' => './scripts/capsule.sh',
                                                 'builder_variables' => 'STUFF=BLAH',
                                                 'on_pass_header' => undef,
@@ -72,7 +72,7 @@ jitterbug::Test->init();
                                                 'on_pass_to_email' => undef,
                                                 'on_pass_from_email' => 'donotreply@example.com',
                                                 'on_failure_cc_email' => 'alice@example.com',
-                                                'on_pass' => './scripts/build-pass.sh',
+                                                'on_pass' => 'jitterbug::Emailer',
                                                 'on_pass_subject_prefix' => '[jitterbug] PASS '
                                               },
                              'builder' => {},

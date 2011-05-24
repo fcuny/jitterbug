@@ -9,14 +9,12 @@ builddir=$1
 report_path=$2
 perlbrew=$3
 
-HARNESS_OPTS="HARNESS_VERBOSE=1 HARNESS_TIMER=1"
-
 function jitterbug_build () {
     if [ -f 'dist.ini' ]; then
         echo "Found dist.ini, using Dist::Zilla"
         dzil authordeps | cpanm >> $logfile 2>&1
         cpanm --installdeps . >> $logfile 2>&1
-        $HARNESS_OPTS dzil test >> $logfile  2>&1
+        HARNESS_VERBOSE=1 HARNESS_TIMER=1 dzil test >> $logfile  2>&1
     elif [ -f 'Build.PL' ]; then
         echo "Found Build.PL, using Build.PL"
         perl Build.PL >> $logfile 2>&1
@@ -24,23 +22,23 @@ function jitterbug_build () {
         cpanm --installdeps . >> $logfile 2>&1
         # Run this again in case our Build is out of date (suboptimal)
         perl Build.PL >> $logfile 2>&1
-        $HARNESS_OPTS ./Build test --verbose >> $logfile 2>&1
+        HARNESS_VERBOSE=1 HARNESS_TIMER=1 ./Build test --verbose >> $logfile 2>&1
     elif [ -f 'Makefile.PL' ]; then
         echo "Found Makefile.PL"
         perl Makefile.PL >> $logfile 2>&1
         cpanm --installdeps . >> $logfile 2>&1
-        $HARNESS_OPTS make test >> $logfile 2>&1
+        HARNESS_VERBOSE=1 HARNESS_TIMER=1 make test >> $logfile 2>&1
     elif [ -f 'setup.pir' ]; then
         echo "Found setup.pir"
-        $HARNESS_OPTS parrot setup.pir test >> $logfile 2>&1
+        HARNESS_VERBOSE=1 HARNESS_TIMER=1 parrot setup.pir test >> $logfile 2>&1
     elif [ -f 'setup.nqp' ]; then
         echo "Found setup.nqp"
-        $HARNESS_OPTS parrot-nqp setup.nqp test >> $logfile 2>&1
+        HARNESS_VERBOSE=1 HARNESS_TIMER=1 parrot-nqp setup.nqp test >> $logfile 2>&1
     elif [ -f 'Configure.pl' ]; then
         echo "Found Configure.pl"
         perl Configure.pl >> $logfile 2>&1
         cpanm --installdeps . >> $logfile 2>&1
-        $HARNESS_OPTS make test >> $logfile 2>&1
+        HARNESS_VERBOSE=1 HARNESS_TIMER=1 make test >> $logfile 2>&1
     elif [ -f 'Makefile' ]; then
         echo "Found a Makefile"
         make test >> $logfile 2>&1
@@ -48,7 +46,6 @@ function jitterbug_build () {
         rake test >> $logfile 2>&1
     fi
 }
-
 
 echo "Creating report_path=$report_path"
 mkdir -p $report_path
@@ -62,6 +59,9 @@ if [ $use_perlbrew ]; then
         theperl=$(perl -e 'print $^V')
         logfile="$report_path/perl-$theperl.txt"
 
+        mkdir -p $report_path
+        touch $logfile
+
         echo ">perlbrew switch $theperl"
         perlbrew switch $theperl
         # TODO: check error condition
@@ -71,5 +71,9 @@ if [ $use_perlbrew ]; then
 else
         theperl=$(perl -e 'print $^V')
         logfile="$report_path/perl-$theperl.txt"
+
+        mkdir -p $report_path
+        touch $logfile
+
         jitterbug_build
 fi
