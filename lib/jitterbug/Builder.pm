@@ -80,15 +80,28 @@ sub sleep {
     sleep $interval;
 }
 
+sub _clone_into {
+    my ($repo, $dir) = @_;
+    my $pwd = getcwd;
+    chdir $dir;
+
+    debug("cloning $repo into $dir");
+    system("git clone $repo $dir");
+
+    chdir $pwd;
+}
+
 sub _prepare_git_repo {
-    my ($self, $task, $buildconf, $build_dir) = @_;
+    my ($self, $task, $buildconf, $build_dir, $cached_repo_dir) = @_;
 
     my $repo    = $task->project->url;
     unless ($buildconf->{reuse_repo}) {
         debug("Removing $build_dir");
         rmtree($build_dir, { error => \my $err } );
         warn @$err if @$err;
-        system("git clone $repo $build_dir");
+
+        _clone_into($repo, $build_dir);
+
     } else {
         # If this is the first time, the repo won't exist yet
         debug("build_dir = $build_dir");
@@ -106,12 +119,7 @@ sub _prepare_git_repo {
             system("git checkout " . $task->commit->sha256 . "&>/dev/null" );
             chdir $pwd;
         } else {
-            debug("Creating new repo");
-            my $pwd = getcwd;
-            debug("pwd=$pwd");
-            chdir $build_dir;
-            system("git clone $repo $build_dir");
-            chdir $pwd;
+            _clone_into($repo, $build_dir);
         }
     }
     $self->sleep(1); # avoid race conditions
@@ -127,13 +135,18 @@ sub _prepare_git_repo {
 
 sub build_task {
     my ($self, $conf, $project, $task, $report_path) = @_;
+
     my $buildconf = $conf->{'jitterbug'}{'build_process'};
-    my $dir = $conf->{'jitterbug'}{'build'}{'dir'};
+    my $dir       = $conf->{'jitterbug'}{'build'}{'dir'};
+
     mkdir $dir unless -d $dir;
 
     my $build_dir = dir($dir, $project->name);
+    my $cached_repo_dir = dir($dir, 'cached');
 
-    $self->_prepare_git_repo($task, $buildconf, $build_dir);
+    mkdir $cached_repo_dir unless -d $cached_repo_dir;
+
+    $self->_prepare_git_repo($task, $buildconf, $build_dir, $cached_repo_dir);
 
     my $builder       =    $conf->{'jitterbug'}{'projects'}{$project->name}{'builder'}
                         || $conf->{'jitterbug'}{'build_process'}{'builder'};
@@ -151,6 +164,7 @@ sub build_task {
     debug("Going to run builder : $builder_command");
     my $res             = `$builder_command`;
     debug($res);
+    return $res;
 }
 
 sub run_task {
