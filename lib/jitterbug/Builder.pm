@@ -109,7 +109,7 @@ sub _prepare_git_repo {
         # cached git repo, then checkout the correct sha1
 
         debug("build_dir = $build_dir");
-        unless ( -d $cached_repo_dir ) {
+        unless ( -d catfile($cached_repo_dir,$name) ) {
             # If this is the first time, the repo won't exist yet
             # Clone it into our cached repo directory
             _clone_into($repo, $cached_repo_dir);
@@ -119,7 +119,7 @@ sub _prepare_git_repo {
         chdir $cached_repo_dir;
         # TODO: Error Checking
 
-        debug("Fetching new commits into $repo");
+        debug("Fetching new commits into $cached_repo_dir");
         system("git fetch --prune");
         chdir $pwd;
 
