@@ -234,15 +234,15 @@ sub _parse_results {
             my $on_failure_cc_email = $conf->{'jitterbug'}{'build_process'}{'on_failure_cc_email'};
 
             $message  =~ s/'/\\'/g; $commiter =~ s/'/\\'/g; $output =~ s/'/\\'/g;
-            my $failure_cmd = sprintf("%s '%s' %s '%s' '%s' %s %s", $on_failure, $commiter, $task->project->name, $message, $output, $sha, $on_failure_cc_email);
-            debug("Running failure command: $failure_cmd");
-
             # does it look like a module name?
             if ($on_failure =~ /::/) {
                 # we should do some error checking here
                 eval "require $on_failure";
                 $on_failure->new($conf,$task,$output,'failure')->run;
             } else {
+                my $failure_cmd = sprintf("%s '%s' %s '%s' '%s' %s %s", $on_failure, $commiter, $task->project->name, $message, $output, $sha, $on_failure_cc_email);
+                debug("Running failure command: $failure_cmd");
+
                 system($failure_cmd);
             }
         } elsif ($email_on_pass) {
@@ -256,8 +256,6 @@ sub _parse_results {
             my $on_pass_cc_email = $conf->{'jitterbug'}{'build_process'}{'on_pass_cc_email'};
 
             $message  =~ s/'/\\'/g; $commiter =~ s/'/\\'/g; $output =~ s/'/\\'/g;
-            my $pass_cmd = sprintf("%s '%s' %s '%s' '%s' %s %s", $on_pass, $commiter, $task->project->name, $message, $output, $sha, $on_pass_cc_email);
-            debug("Running pass command: $pass_cmd");
 
             # does it look like a module name?
             if ($on_pass =~ /::/) {
@@ -265,6 +263,8 @@ sub _parse_results {
                 eval "require $on_pass";
                 $on_pass->new($conf,$task,$output, 'pass')->run;
             } else {
+                my $pass_cmd = sprintf("%s '%s' %s '%s' '%s' %s %s", $on_pass, $commiter, $task->project->name, $message, $output, $sha, $on_pass_cc_email);
+                debug("Running pass command: $pass_cmd");
                 system($pass_cmd);
             }
         }

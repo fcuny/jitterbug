@@ -52,7 +52,7 @@ if (can_run('git')){
     lives_ok sub { system("$^X -Ilib scripts/post_to_hook.pl") }, 'post_to_hook.pl lives';
 
 
-    lives_ok sub { # $ENV{DEBUG} = 1;
+    lives_ok sub { $ENV{DEBUG} = 1;
         system("$^X -Ilib scripts/builder.pl -c t/data/test.yml -C")
     }, 'builder.pl lives';
 
