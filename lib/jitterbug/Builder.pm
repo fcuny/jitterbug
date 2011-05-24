@@ -111,23 +111,24 @@ sub _prepare_git_repo {
 
         debug("build_dir = $build_dir");
         mkdir $cached_repo_dir unless -d $cached_repo_dir;
+        my $cached_repo = catfile($cached_repo_dir,$name) );
 
-        unless ( -d catfile($cached_repo_dir,$name) ) {
+        unless ( -d $cached_repo ) {
             # If this is the first time, the repo won't exist yet
             # Clone it into our cached repo directory
-            _clone_into($repo, catfile($cached_repo_dir, $name));
+            _clone_into($repo, $cached_repo);
         }
         my $pwd = getcwd;
 
-        chdir $cached_repo_dir;
+        chdir $cached_repo;
         # TODO: Error Checking
 
-        debug("Fetching new commits into $cached_repo_dir");
+        debug("Fetching new commits into $cached_repo");
         system("git fetch --prune");
-        chdir $pwd;
+
+        $self->sleep(1); # avoid race conditions
 
         debug("Cloning from cached repo $cached_repo_dir/$name into $build_dir");
-
         _clone_into(catdir($cached_repo_dir,$name), $build_dir);
         chdir $build_dir;
 
