@@ -102,6 +102,10 @@ sub _prepare_git_repo {
     rmtree($build_dir, { error => \my $err } );
     warn @$err if @$err;
 
+    if ($repo =~ s/^http/git/){
+        $repo .= ".git";
+    }
+
     # If we aren't reusing/caching git repos, clone from remote into the build dir
     unless ($buildconf->{reuse_repo}) {
         _clone_into($repo, $build_dir);
