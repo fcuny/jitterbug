@@ -15,7 +15,11 @@ as Moose, Dancer, DBIx::Class and others.
     # install missing dependencies
     ./Build installdeps
 
-    # you can also use cpanm
+    # The dependencies of Jitterbug currently need some XML libs to be installed
+    # On Debian-like systems you can do
+    sudo apt-get install libxml2-dev libexpat-dev
+
+    # you can also use cpanm to install all Perl dependencies
     # cpanm --installdeps .
 
     # Look at config.yaml or example.yaml for how to configure your Jitterbug instance
