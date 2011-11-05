@@ -16,3 +16,4 @@ MYMETA.json
 t/data/jitterbug.db
 t/tmp
 cover_db
+lib/logs/development.log
