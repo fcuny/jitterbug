@@ -46,6 +46,8 @@ function jitterbug_build () {
         make test >> $logfile 2>&1
     elif [ -f 'Rakefile' ]; then
         rake test >> $logfile 2>&1
+    elif [ -f 'setup.py' ]; then
+        setup.py test >> $logfile 2>&1
     fi
 }
 
