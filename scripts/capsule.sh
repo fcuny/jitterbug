@@ -23,6 +23,8 @@ function jitterbug_build () {
         # Run this again in case our Build is out of date (suboptimal)
         perl Build.PL >> $logfile 2>&1
         HARNESS_VERBOSE=1 HARNESS_TIMER=1 ./Build test --verbose >> $logfile 2>&1
+        coverlogfile="$report_path/perl-$theperl-coverage.txt"
+        HARNESS_VERBOSE=1 HARNESS_TIMER=1 ./Build testcover --verbose >> $coverlogfile 2>&1
     elif [ -f 'Makefile.PL' ]; then
         echo "Found Makefile.PL"
         perl Makefile.PL >> $logfile 2>&1
