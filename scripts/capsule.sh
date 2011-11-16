@@ -36,6 +36,10 @@ function jitterbug_build () {
     elif [ -f 'setup.nqp' ]; then
         echo "Found setup.nqp"
         HARNESS_VERBOSE=1 HARNESS_TIMER=1 parrot-nqp setup.nqp test >> $logfile 2>&1
+    elif [ -f 'setup.winxed' ]; then
+        echo "Found setup.winxed"
+        winxed setup.winxed build >> $logfile 2>&1
+        winxed setup.winxed test  >> $logfile 2>&1
     elif [ -f 'Configure.pl' ]; then
         echo "Found Configure.pl"
         perl Configure.pl >> $logfile 2>&1
