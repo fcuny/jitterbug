@@ -41,7 +41,7 @@ jitterbug::Test->init();
             'engines' => {
                          'xslate' => {
                                      'type' => 'text',
-                                     'path' => '/',
+                                     'path' => [ '/' ],
                                      'cache' => '0'
                                    }
                        },

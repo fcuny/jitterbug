@@ -35,7 +35,7 @@ sub _setting {
     setting views    => 'views';
     setting engines  => {
         xslate => {
-            path  => '/',
+            path  => [ '/' ],
             type  => 'text',
             cache => 0,
         }

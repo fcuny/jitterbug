@@ -20,7 +20,6 @@ get '/' => sub {
 };
 
 sub _get_projects {
-
     my @projects = ();
 
     my $projects = schema->resultset('Project')->search();

@@ -6,7 +6,8 @@ builds_per_feed: 5
 template: "xslate"
 engines:
   xslate:
-    path: /
+    path:
+      - /
     type: text
     cache: 0
 

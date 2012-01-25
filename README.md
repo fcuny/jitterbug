@@ -34,7 +34,7 @@ as Moose, Dancer, DBIx::Class and others.
 In another terminal, deploy a DBIx::Class schema ( which is SQLite by default, 
 change the values in config.yml to tweak) :
 
-    perl scripts/jitterbug_db --config config.yml --deploy
+    perl -Ilib scripts/jitterbug_db --config config.yml --deploy
 
 Now add a post-receive hook to your github project that hits the /hook/ URL
 on the server that the jitterbug Dancer app is running on, i.e.
