@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::SQLite
--- Created on Sun Feb 13 17:36:49 2011
+-- Created on Wed Apr 17 16:25:31 2013
 -- 
 
 ;
@@ -15,4 +15,4 @@ CREATE TABLE dbix_class_deploymenthandler_versions (
   upgrade_sql text
 );
 CREATE UNIQUE INDEX dbix_class_deploymenthandler_versions_version ON dbix_class_deploymenthandler_versions (version);
-COMMIT
+COMMIT;

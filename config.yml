@@ -6,7 +6,8 @@ builds_per_feed: 5
 template: "xslate"
 engines:
   xslate:
-    path: /
+    path:
+        - "/"
     type: text
     cache: 0
 
@@ -40,9 +41,8 @@ jitterbug:
 plugins:
   DBIC:
     schema:
+      dsn: dbi:SQLite:dbname=jitterbug.db
+      schema_class: "jitterbug::Schema"
       skip_automake: 1
-      pckg: "jitterbug::Schema"
-      connect_info:
-        - dbi:SQLite:dbname=jitterbug.db
 
 

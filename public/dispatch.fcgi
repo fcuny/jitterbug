@@ -1,6 +1,20 @@
 #!/usr/bin/env perl
+use local::lib "/home2/cimichae/perl5";
+use strict;
+use warnings;
+use Dancer ':syntax';
+use FindBin '$RealBin';
 use Plack::Handler::FCGI;
 
-my $app = do('/home/franck/code/projects/c/jitterbug/jitterbug.pl');
-my $server = Plack::Handler::FCGI->new(nproc  => 5, detach => 1);
+# For some reason Apache SetEnv directives dont propagate
+# correctly to the dispatchers, so forcing PSGI and env here 
+# is safer.
+set apphandler => 'PSGI';
+set environment => 'production';
+
+my $psgi = path($RealBin, '..', 'bin', 'jitterbug.pl');
+my $app = do($psgi);
+die "Unable to read startup script: $@" if $@;
+my $server = Plack::Handler::FCGI->new(nproc => 5, detach => 1);
+
 $server->run($app);

@@ -1,4 +1,5 @@
-log: "debug"
+logger: "console"
+log: "core"
 warnings: 1
 show_errors: 1
-auto_reload: 0
+auto_reload: 1
